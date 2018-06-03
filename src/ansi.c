@@ -109,7 +109,7 @@ void inverse (int8_t on){
 }
 
 
-void window (int8_t x1, int8_t y1, int8_t x2, int8_t y2, char str[], int8_t style){
+void window (int8_t x1, int8_t y1, int8_t x2, int8_t y2, char str[], int8_t style){ // Draws window with text in the middle
 int8_t len = strlen(str);
 int8_t i, j;
 int8_t dx = x2-x1;
@@ -164,7 +164,10 @@ for (i=1; i<=dx; i++){
 
 }
 
-void box (int8_t x1, int8_t y1, int8_t x2, int8_t y2, int8_t style){
+
+
+
+void box (int8_t x1, int8_t y1, int8_t x2, int8_t y2, int8_t style){ // Draws box
 int8_t i, j;
 int8_t dx = x2-x1+1;
 int8_t dy = y2-y1;
@@ -205,7 +208,7 @@ for (i=1; i<=dx; i++){
 
 }
 
-void minibox (int8_t x1, int8_t y1, int8_t x2, int8_t y2, int8_t style, uint8_t n){
+void minibox (int8_t x1, int8_t y1, int8_t x2, int8_t y2, int8_t style, uint8_t n){ // Draws small box with number
 int8_t dx = x2-x1+1;
 int8_t dy = y2-y1+1;
 
@@ -248,14 +251,3 @@ printf("%c",vline);
 gotoxy(x1+dx/2+1,y1+dy/2-4);
 printf("%c%c%c%c%c%c%c%c%c%c",vlcorner, hline,hline, hline, hline, hline, hline, hline, hline, hlcorner);
 }
-
-void initbold (struct ball_t* ball, int32_t x, int32_t y){
-ball->x = x;
-ball-> y = y;
-ball->dx = 0;
-ball->dy = 0;
-
-}
-
-
-
