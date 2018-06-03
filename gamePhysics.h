@@ -4,10 +4,10 @@
 #include "struct.h"
 
 
-
-void update(struct ball_t * ball, int8_t hit,int8_t x1 , int8_t y1,int8_t x2,int8_t y2);
+void initbold (struct ball_t* ball, int32_t x, int32_t y, int32_t dx, int32_t dy);
+void update(struct ball_t * ball,int8_t x1 , int8_t y1,int8_t x2,int8_t y2);
 void drawball(struct ball_t * ball);
-int8_t checkEdge(struct ball_t * ball, int8_t x1 , int8_t y1,int8_t x2,int8_t y2);
+int8_t checkWallCollision(struct ball_t * ball, int8_t x1 , int8_t y1,int8_t x2,int8_t y2);
 
 
 #endif /* _GAMEPHYSICS_H_ */
