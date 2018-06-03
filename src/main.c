@@ -10,43 +10,49 @@
 #include "struct.h"
 #include "gamePhysics.h"
 
-#define FIX14_SHIFT 14
-#define FIX14_MULT(a, b) ( (a) * (b) >> FIX14_SHIFT )
-#define FIX14_DIV(a ,b) ( ((a) << FIX14_SHIFT )
 
-#define ESC 0x1B
-
-
-
-
+#define X1 1
+#define Y1 1
+#define X2 24
+#define Y2 80
 
 int main(void)
     {
-        init_usb_uart( 115200 ); // Initialize USB serial at 9600 baud
+
+    // Initialize terminal connection
+    init_usb_uart( 115200 ); // Initialize USB serial at 9600 baud
+
+
+    /***************************/
+	/* Initialization          */
+	/***************************/
         struct ball_t bold;
-        initbold(&bold,35,59);
-        bold.dx=1;
-        bold.dy=1;
         int32_t timer=0;
-        int16_t counter=0;
-        int8_t hit=0;
-        int8_t x1=30,y1=30,x2=52,y2=88;
+        int16_t hitcounter=0;
+
 
         clrscr();
-        box(x1,y1,x2,y2,1);
-        minibox(x1,y1,x2,y2,0, counter);
+        initbold(&bold,12,10,1,1);
+        box(X1,Y1,X2,Y2,1);
+        minibox(X1,Y1,X2,Y2,0, hitcounter);
         drawball(&bold);
 
+
+
+	/***************************/
+	/* Main Loop	           */
+	/***************************/
         while(1){
-        if (++timer==100000ul){
-            hit = checkEdge(&bold,x1,y1,x2,y2);
-            counter += hit;
-            minibox(30,30,52,88,0, counter);
-            update(&bold, hit,x1 ,y1 ,x2 ,y2);
+        if (++timer==130000ul){
+            hitcounter += checkWallCollision(&bold,X1,Y1,X2,Y2);
+            minibox(X1 ,Y1 ,X2 ,Y2 ,0, hitcounter);
+            update(&bold,X1,Y1,X2,Y2);
             drawball(&bold);
             timer=0;
         }
-        if(counter > 255){
+
+        // Stops loop
+        if(hitcounter > 255){
             break;
         }
 
