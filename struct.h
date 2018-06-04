@@ -14,7 +14,10 @@ struct ball_t {
 };
 
 
-
+struct timepoint {
+    uint8_t hours, minutes, seconds, centiseconds;
+};
+volatile struct timepoint tid; //Global variables
 
 // theoretical structs
 struct Player {
