@@ -172,6 +172,8 @@ int8_t i, j;
 int8_t dx = x2-x1+1;
 int8_t dy = y2-y1;
 
+fgcolor(15);
+
 
 if (x1 >= x2 || y1 >= y2){
     return;
@@ -251,3 +253,19 @@ printf("%c",vline);
 gotoxy(x1+dx/2+1,y1+dy/2-4);
 printf("%c%c%c%c%c%c%c%c%c%c",vlcorner, hline,hline, hline, hline, hline, hline, hline, hline, hlcorner);
 }
+
+void stopWatchWindow(int8_t x1, int8_t y1, int8_t x2, int8_t y2, char str[], int8_t style) {
+    int8_t dx = x2-x1+1;
+    int8_t dy = y2-y1+1;
+
+    window(x1, y1, x2, y2, str, style);
+    gotoxy(x1+1,y1+2);
+    printf("Time since start:  ");
+    gotoxy(x1+2,y1+2);
+    printf("Split time 1:      ");
+    gotoxy(x1+3,y1+2);
+    printf("Split time 2:      ");
+}
+
+
+
