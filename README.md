@@ -130,3 +130,4 @@ showLevelPutty(){
 showScorePutty(){
 //Vis score på Putty
 }
+a
