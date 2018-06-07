@@ -11,10 +11,10 @@ PowerUps/Downs Ideer:
 - Reverse board direction
 
 Controller Ideer:
-- Joystick - (Første kontroller vi skal have til at virke)
+- Joystick - (FÃ¸rste kontroller vi skal have til at virke)
 - Ret
 - Wiiboard
-- Potentiometer (blå dimser) - (Kan måske bruges til ændring af hastighed ingame)
+- Potentiometer (blÃ¥ dimser) - (Kan mÃ¥ske bruges til Ã¦ndring af hastighed ingame)
 - Accelerometer
 
 
@@ -26,7 +26,7 @@ Funktioner:
 
 chooseMenuOptions(){
 //while(1) styr med "controller" op og ned og button-click to choose
-//Vælg mellem: Play, options, highscore, help
+//VÃ¦lg mellem: Play, options, highscore, help
 //Mulig styre metode: joystick - up/ned og right to choose, left to go back 
 }
 
@@ -35,7 +35,7 @@ changeOptions(){
 }
 
 chooseLevel(){
-//Efter play er valgt, kan levels (maps) vælges
+//Efter play er valgt, kan levels (maps) vÃ¦lges
 }
 
 helpMenu(){
@@ -94,7 +94,7 @@ updateLives(){
 
 updateScore(){
 // Hvis block ramt, updater score
-// Score incrementes alt efter sværhedsgrad
+// Score incrementes alt efter svÃ¦rhedsgrad
 // Kaldes fra updateBall/checkBlockCollision
 }
 
@@ -108,76 +108,25 @@ checkWallCollision(struct ball_t bold, X1,Y1,X2,Y2){
 //DISPLAY:
 
 showLivesLCD(){
-// Vis liv på LCD
+// Vis liv pÃ¥ LCD
 }
 
 showLevelLCD(){
-// Vis level på LCD
+// Vis level pÃ¥ LCD
 }
 
 showScoreLCD(){
-// Vis score på LCD
+// Vis score pÃ¥ LCD
 }
 
 showLivesPutty(){
-// Vis liv på Putty
+// Vis liv pÃ¥ Putty
 }
 
 showLevelPutty(){
-// Vis level på Putty
+// Vis level pÃ¥ Putty
 }
 
 showScorePutty(){
-//Vis score på Putty
+//Vis score pÃ¥ Putty
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
