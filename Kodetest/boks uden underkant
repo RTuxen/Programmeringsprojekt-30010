@@ -1,0 +1,36 @@
+void box (int8_t x1, int8_t y1, int8_t x2, int8_t y2, int8_t style){ // Draws box
+    int8_t i, j;
+    int8_t dx = x2-x1+1;
+    int8_t dy = y2-y1;
+
+    fgcolor(15);
+
+
+    if (x1 >= x2 || y1 >= y2){
+        return;
+    }
+
+    gotoxy(x1,y1);
+
+    for (i=1; i<=dx; i++){
+        if (i==1) {
+            printf("%c",style? 201:218);
+        } else{
+            printf("%c",style? 186:179);
+        }
+        for ( j=1; j<=dy; j++){
+            if (i==1){
+                printf("%c",style? 205:196);
+            } else {
+                printf(" ");
+            }
+        }
+        if (i==1) {
+            printf("%c",style? 187:191);
+        } else{
+            printf("%c",style? 186:179);
+        }
+        gotoxy(x1+i,y1);
+    }
+
+}
