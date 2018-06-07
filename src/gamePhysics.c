@@ -48,6 +48,17 @@ void drawball(struct ball_t * ball){
 int8_t checkWallCollision(struct ball_t * ball, int8_t x1 , int8_t y1 ,int8_t x2 ,int8_t y2){
     int8_t i = 0;
 
+    if ( ball->x <= x1+1 || ball->x >= x2-1 ){
+            ball->vec.x *= -1;
+            i = 1;
+    }
+    if ( ball->y <= y1+1 || ball->y >= y2-1 ){
+            ball->vec.y *= -1;
+            i= 1;
+    }
+
+
+/*
     // Check for collision with top wall
     if (ball->x <= x1+1 && ball->vec.y > 0){ // if ball comes from left
         rotat(&ball->vec,-128);
@@ -84,7 +95,6 @@ int8_t checkWallCollision(struct ball_t * ball, int8_t x1 , int8_t y1 ,int8_t x2
         rotat(&ball->vec,128);
         i = 1;
     }
-
-
+*/
     return i;
 }
