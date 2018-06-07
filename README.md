@@ -22,24 +22,21 @@ Controller Ideer:
 
 Funktioner:
 
-//MENU:
-
-chooseMenuOptions(){
-// While(1) styr med "controller" op og ned og button-click to choose
-// Vælg mellem: Play, options, highscore, help
-// Mulig styre metode: joystick - up/ned og right to choose, left to go back 
+MENU:
+-chooseMenuOptions()
+{
+While(1) styr med "controller" op og ned og button-click to choose
+Vælg mellem: Play, options, highscore, help
+Mulig styre metode: joystick - up/ned og right to choose, left to go back 
 }
-
-changeOptions(){
-//Change difficulty - speed and direction
+-changeOptions(){
+Change difficulty - speed and direction
 }
-
-chooseLevel(){
-//Efter play er valgt, kan levels (maps) vælges
+-chooseLevel(){
+Efter play er valgt, kan levels (maps) vælges
 }
-
-helpMenu(){
-//Vis controls
+-helpMenu(){
+Vis controls
 }
 
 //DRAW:
