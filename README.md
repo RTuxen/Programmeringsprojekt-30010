@@ -24,11 +24,11 @@ Funktioner:
 
 //MENU:
 
-chooseMenuOptions(){
-// While(1) styr med "controller" op og ned og button-click to choose
-// Vælg mellem: Play, options, highscore, help
-// Mulig styre metode: joystick - up/ned og right to choose, left to go back 
-}
+chooseMenuOptions(){;
+// While(1) styr med "controller" op og ned og button-click to choose;
+// Vælg mellem: Play, options, highscore, help;
+// Mulig styre metode: joystick - up/ned og right to choose, left to go back ;
+};
 
 changeOptions(){
 //Change difficulty - speed and direction
