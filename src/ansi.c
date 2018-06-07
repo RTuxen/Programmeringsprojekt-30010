@@ -1,13 +1,7 @@
 #include "stm32f30x_conf.h" // STM32 config
 #include "30010_io.h" // Input/output library for this course
 
-#include <stdio.h>
-#include <time.h>
-
-#include <string.h>
 #include "ansi.h"
-#include "LUT.h"
-#include "struct.h"
 
 
 void fgcolor(uint8_t foreground) {
@@ -108,9 +102,36 @@ void inverse (int8_t on){
     }
 }
 
+void saveCursor() { // Save the position of the cursor
+	printf("%c[s", ESC);
+}
+
+void getSavedCursor() { // Get the last saved position
+	printf("%c[u", ESC);
+}
+
+/*
+dir = 'A' for up
+dir= 'B' for down
+dir = 'C' for forward
+dir = 'D' for back
+
+*/
+
+void moveCursor(char dir, unsigned char n) { // Move cursor in some direction
+	printf("%c[%d%c", ESC, n, dir);
+}
+
+uint8_t strlens(char* text) { // Calculate the length of a string
+	uint8_t length = 0;
+	while(*text++ != '\0')
+		length++;
+	return length;
+}
+
 
 void window (int8_t x1, int8_t y1, int8_t x2, int8_t y2, char str[], int8_t style){ // Draws window with text in the middle
-int8_t len = strlen(str);
+int8_t len = strlens(str);
 int8_t i, j;
 int8_t dx = x2-x1;
 int8_t dy = y2-y1;
@@ -254,9 +275,9 @@ gotoxy(x1+dx/2+1,y1+dy/2-4);
 printf("%c%c%c%c%c%c%c%c%c%c",vlcorner, hline,hline, hline, hline, hline, hline, hline, hline, hlcorner);
 }
 
-void stopWatchWindow(int8_t x1, int8_t y1, int8_t x2, int8_t y2, char str[], int8_t style) {
-    int8_t dx = x2-x1+1;
-    int8_t dy = y2-y1+1;
+void stopWatchWindow(int8_t x1, int8_t y1, char str[], int8_t style) {
+    int8_t x2 = x1+5;
+    int8_t y2 = y1+30;
 
     window(x1, y1, x2, y2, str, style);
     gotoxy(x1+1,y1+2);
@@ -267,5 +288,61 @@ void stopWatchWindow(int8_t x1, int8_t y1, int8_t x2, int8_t y2, char str[], int
     printf("Split time 2:      ");
 }
 
+void textReturn(int8_t len){
+ char text[len];
+ int8_t i = 1;
+ int j;
+    for (j = 0; j <= len; j++){
+            text[j] = 0x00;
+    }
+ //   text[len] = '\0';
+    text[0] = uart_getc();
+    while(i<len-1 && text[i-1] != 0x0D){
+    text[i]=uart_getc();
+    i++;
+    }
+    text[i-1] = 0x00;
+
+ //   gotoxy(16,30);
+ //   printf("%s",text);
+    compareString(text);
+}
 
 
+void compareString(char * text){ // Controls stopwatch using strings
+char start[] = "start";
+char split1[] = "split1";
+char split2[] = "split2";
+char reset[] = "reset";
+char help[] = "help";
+    if (strcmp(text,start) == 0){
+        printf("\nstarting");
+        stopWatchControl(16);
+
+    } else if(strcmp(text,split1) == 0){
+        gotoxy(12,30);
+        stopWatchControl(4);
+        getSavedCursor();
+    } else if(strcmp(text,split2) == 0){
+        gotoxy(13,30);
+        stopWatchControl(8);
+        getSavedCursor();
+    } else if(strcmp(text,reset) == 0){
+        printf("\nresetting");
+        stopWatchControl(2);
+
+    } else if(strcmp(text,help) == 0){
+        userGuide();
+    } else{
+        commandList();
+    }
+
+}
+
+void commandList(){
+    printf("\nList of Proper Commands:\n1:start\n2:split1\n3:split2\n4:reset\n5:help");
+}
+
+void userGuide(){
+    printf("\nType any command into Putty.");
+ }
