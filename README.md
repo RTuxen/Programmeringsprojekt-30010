@@ -36,91 +36,105 @@ Efter play er valgt, kan levels (maps) vælges
 Vis controls
 
 
-//DRAW:
+DRAW:
 
-drawMenu(){
-//Clear screen
-//Draw window with title at top and options in middle
-}
-
-initLevel(){
-// Draws current window(3 walls), level, player and ball.
-// Gives angle and speed upon starting
-}
-
-drawPlayer(struct player_t){
-// Draws stick
-}
-
-drawLevel(struct level_t){
-// Draws all blocks with color depending on number of lives.
-}
-
-drawBall(struct ball_t){
-// Draws ball
-}
+- drawMenu()
+Clear screen
+Draw window with title at top and options in middle
 
 
-//GAMEPHYSICS:
+- initLevel()
 
-updatePlayerPos(struct player_t){
-// Check direction, drawPlayer
-}
+Draws current window(3 walls), level, player and ball.
+Gives angle and speed upon starting
 
-updateBall(struct ball_t){
-// Check for kollision
-// Hvis kollision med blocks, updateLevel, updateVector
-// Hvis kollision med player eller en af 3 walls, updateVector og drawBall
-// Hvis ingen kollision, drawBall ud fra sidste position og vector
-// Hvis out of bounds, restart ballPos og playerPos uden restart af level (mulig brug af initLevel), updateLives
-}
 
-updateLevel(struct level_t){
-// Fjern block, hvis ramt
-// Kaldes fra updateBall/checkBlockCollision
-// Hvis sidste block er ramt, nextLevel
-}
+- drawPlayer(struct player_t)
 
-updateLives(){
-// Hvis out of bounds (under player), -1 fra antal liv
-// Kaldes fra updateBall/checkWallCollision
-}
+Draws stick
 
-updateScore(){
-// Hvis block ramt, updater score
-// Score incrementes alt efter sværhedsgrad
-// Kaldes fra updateBall/checkBlockCollision
-}
 
-checkPlayerCollision(struct ball_t bold, struct player_t player);
+- drawLevel(struct level_t)
+
+Draws all blocks with color depending on number of lives.
+
+
+- drawBall(struct ball_t)
+
+Draws ball
+
+
+
+GAMEPHYSICS:
+
+- updatePlayerPos(struct player_t)
+
+Check direction, drawPlayer
+
+
+- updateBall(struct ball_t)
+
+Check for kollision
+Hvis kollision med blocks, updateLevel, updateVector
+Hvis kollision med player eller en af 3 walls, updateVector og drawBall
+Hvis ingen kollision, drawBall ud fra sidste position og vector
+Hvis out of bounds, restart ballPos og playerPos uden restart af level (mulig brug af initLevel), updateLives
+
+
+- updateLevel(struct level_t)
+
+Fjern block, hvis ramt
+Kaldes fra updateBall/checkBlockCollision
+Hvis sidste block er ramt, nextLevel
+
+
+- updateLives()
+
+Hvis out of bounds (under player), -1 fra antal liv
+Kaldes fra updateBall/checkWallCollision
+
+
+- updateScore()
+
+Hvis block ramt, updater score
+Score incrementes alt efter sværhedsgrad
+Kaldes fra updateBall/checkBlockCollision
+
+
+- checkPlayerCollision(struct ball_t bold, struct player_t player)
+
 checkBlockCollision(struct ball_t bold, struct level_t level);
 checkWallCollision(struct ball_t bold, X1,Y1,X2,Y2){
-// Also checks loss condition
-}
+Also checks loss condition
 
 
-//DISPLAY:
 
-showLivesLCD(){
-// Vis liv på LCD
-}
+DISPLAY:
 
-showLevelLCD(){
-// Vis level på LCD
-}
+- showLivesLCD()
 
-showScoreLCD(){
-// Vis score på LCD
-}
+Vis liv på LCD
 
-showLivesPutty(){
-// Vis liv på Putty
-}
 
-showLevelPutty(){
-// Vis level på Putty
-}
+- showLevelLCD()
+Vis level på LCD
 
-showScorePutty(){
-//Vis score på Putty
-}
+
+- showScoreLCD()
+Vis score på LCD
+
+
+- showLivesPutty()
+
+Vis liv på Putty
+
+
+- showLevelPutty()
+
+Vis level på Putty
+
+
+- showScorePutty()
+
+Vis score på Putty
+
