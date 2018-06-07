@@ -11,10 +11,10 @@ PowerUps/Downs Ideer:
 - Reverse board direction
 
 Controller Ideer:
-- Joystick - (FÃ¸rste kontroller vi skal have til at virke)
+- Joystick - (Første kontroller vi skal have til at virke)
 - Ret
 - Wiiboard
-- Potentiometer (blÃ¥ dimser) - (Kan mÃ¥ske bruges til Ã¦ndring af hastighed ingame)
+- Potentiometer (blå dimser) - (Kan måske bruges til ændring af hastighed ingame)
 - Accelerometer
 
 
@@ -26,7 +26,7 @@ Funktioner:
 
 chooseMenuOptions(){
 //while(1) styr med "controller" op og ned og button-click to choose
-//VÃ¦lg mellem: Play, options, highscore, help
+//Vælg mellem: Play, options, highscore, help
 //Mulig styre metode: joystick - up/ned og right to choose, left to go back 
 }
 
@@ -35,7 +35,7 @@ changeOptions(){
 }
 
 chooseLevel(){
-//Efter play er valgt, kan levels (maps) vÃ¦lges
+//Efter play er valgt, kan levels (maps) vælges
 }
 
 helpMenu(){
@@ -75,7 +75,7 @@ updatePlayerPos(struct player_t){
 
 updateBall(struct ball_t){
 // Check for kollision
-// Hvis kollision med blocks, updateLevel, updateVector
+// Hvis kollision med blocks, updateLevel, updateVector updateScore
 // Hvis kollision med player eller en af 3 walls, updateVector og drawBall
 // Hvis ingen kollision, drawBall ud fra sidste position og vector
 // Hvis out of bounds, restart ballPos og playerPos uden restart af level (mulig brug af initLevel), updateLives
@@ -94,7 +94,7 @@ updateLives(){
 
 updateScore(){
 // Hvis block ramt, updater score
-// Score incrementes alt efter svÃ¦rhedsgrad
+// Score incrementes alt efter sværhedsgrad
 // Kaldes fra updateBall/checkBlockCollision
 }
 
@@ -108,25 +108,76 @@ checkWallCollision(struct ball_t bold, X1,Y1,X2,Y2){
 //DISPLAY:
 
 showLivesLCD(){
-// Vis liv pÃ¥ LCD
+// Vis liv på LCD
 }
 
 showLevelLCD(){
-// Vis level pÃ¥ LCD
+// Vis level på LCD
 }
 
 showScoreLCD(){
-// Vis score pÃ¥ LCD
+// Vis score på LCD
 }
 
 showLivesPutty(){
-// Vis liv pÃ¥ Putty
+// Vis liv på Putty
 }
 
 showLevelPutty(){
-// Vis level pÃ¥ Putty
+// Vis level på Putty
 }
 
 showScorePutty(){
-//Vis score pÃ¥ Putty
+//Vis score på Putty
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
