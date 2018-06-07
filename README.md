@@ -17,11 +17,6 @@ Controller Ideer:
 - Potentiometer (blå dimser) - (Kan måske bruges til ændring af hastighed ingame)
 - Accelerometer
 
-
-
-
-Funktioner:
-
 MENU:
 -chooseMenuOptions()
 {
