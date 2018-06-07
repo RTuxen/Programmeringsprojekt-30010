@@ -6,8 +6,6 @@ PowerUps/Downs Ideer:
 - Extra board speed on demand
 - Bigger/smaller board
 - DangerBomb
-
-hej
 - Extra life
 - Sticky board
 - Reverse board direction
@@ -21,19 +19,21 @@ Controller Ideer:
 
 MENU:
 -chooseMenuOptions()
--While(1) styr med "controller" op og ned og button-click to choose
+
+While(1) styr med "controller" op og ned og button-click to choose
 Vælg mellem: Play, options, highscore, help
 Mulig styre metode: joystick - up/ned og right to choose, left to go back 
-}
--changeOptions(){
+-changeOptions()
+
 Change difficulty - speed and direction
-}
--chooseLevel(){
+-chooseLevel()
+
 Efter play er valgt, kan levels (maps) vælges
-}
--helpMenu(){
+
+-helpMenu()
+
 Vis controls
-}
+
 
 //DRAW:
 
