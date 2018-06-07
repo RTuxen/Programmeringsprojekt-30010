@@ -6,6 +6,7 @@ PowerUps/Downs Ideer:
 - Extra board speed on demand
 - Bigger/smaller board
 - DangerBomb
+
 hej
 - Extra life
 - Sticky board
