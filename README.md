@@ -18,7 +18,8 @@ Controller Ideer:
 - Accelerometer
 
 
-Menu:
+
+MENU FUNCTIONS:
 - chooseMenuOptions()
 
 While(1) styr med "controller" op og ned og button-click to choose
@@ -36,9 +37,11 @@ Efter play er valgt, kan levels (maps) vælges
 Vis controls
 
 
-DRAW:
+
+DRAW FUNCTIONS:
 
 - drawMenu()
+
 Clear screen
 Draw window with title at top and options in middle
 
@@ -65,7 +68,8 @@ Draws ball
 
 
 
-GAMEPHYSICS:
+
+GAMEPHYSICS FUNCTIONS:
 
 - updatePlayerPos(struct player_t)
 
