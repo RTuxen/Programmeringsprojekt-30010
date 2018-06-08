@@ -24,30 +24,58 @@ Funktioner:
 
 //MENU:
 
-chooseMenuOptions(){
+void chooseMenuOptions(){
+//variable: k, x1, y1, higscores[] og n
 //while(1) styr med "controller" op og ned og button-click to choose
 //Vælg mellem: Play, options, highscore, help
 //Mulig styre metode: joystick - up/ned og right to choose, left to go back 
 }
 
-changeOptions(){
+void chooseOptions(){
+//Variable: k og n
 //Change difficulty - speed and direction
 }
 
-chooseLevel(){
+void chooseLevel(){
+//Variable: k og n
 //Efter play er valgt, kan levels (maps) vælges
 }
 
-helpMenu(){
+void chooseHighscore() {
+//Variable: n, 
+// Score and highscores wil be shown. 
+}
+
+void chooseHelp(){
+//variable: n
 //Vis controls
 }
 
+
+
 //DRAW:
 
-drawMenu(){
+drawMenuWindow() 
+//Variable: x2, y2 og char str[]
 //Clear screen
 //Draw window with title at top and options in middle
 }
+
+
+void drawPlayWindow() {
+//Variable: x2, y2 og char str[]
+//Drawing window - shows all the levels you can choose.
+}
+
+void drawOptionWindow() {
+//Variable: x2, y2 og char str[]
+//Drawing window - shows all the options you can choose (speed-mode, mirrow-mode) .
+}
+void drawHighscoreWindow() {
+//Variable: x2, y2 og char str[]
+//Drawing the window for highscore 
+}
+
 
 initLevel(){
 // Draws current window(3 walls), level, player and ball.
@@ -76,13 +104,17 @@ drawBall(struct ball_t){
 }
 
 
+
+
 //GAMEPHYSICS:
 
-updatePlayerPos(struct player_t){
+void updatePlayerPos(struct player_t *striker){
+//Varible: oldx og oldy
 // Check direction, drawPlayer
 }
 
-updateBall(struct ball_t){
+uint8_t updateBallPos(struct ball_t * ball,struct player_t *striker, int8_t x1 , int8_t y1,int8_t x2,int8_t y2){
+//Variable: struct ball_t * ball,struct player_t *striker, int8_t x1 , int8_t y1,int8_t x2,int8_t y2
 // Check for kollision
 // Hvis kollision med blocks, updateLevel, updateVector updateScore
 // Hvis kollision med player eller en af 3 walls, updateVector og drawBall
