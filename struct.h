@@ -3,6 +3,16 @@
 #include "stm32f30x_conf.h" // STM32 config
 #include "30010_io.h" // Input/output library for this course
 
+#define X1 1
+#define Y1 1
+#define X2 60
+#define Y2 241
+
+//#define X2 40
+//#define Y2 119
+
+
+
 struct vector_t {
     int32_t x, y;
 };
@@ -20,7 +30,7 @@ struct timepoint {
 volatile struct timepoint tid; //Global variables
 
 // theoretical structs
-struct Player {
+struct player_t {
 	int32_t x;
 	int32_t y;
 	int8_t points;
@@ -28,16 +38,15 @@ struct Player {
 	int8_t level;
 };
 
-struct Block {
-	int8_t lifes;
-	int8_t x;
-	int8_t y;
+struct block_t {
+	uint16_t x;
+	uint16_t y;
+	uint8_t lifes;
 };
 
-struct Level {
-	struct Block blocks[128];
-	int8_t lifes;
-	int8_t wall[4];
+struct level_t {
+	struct block_t blocks[128];
+	uint8_t lifes;
 };
 
 #endif /*_STRUCT_H_*/
