@@ -25,30 +25,37 @@ Funktioner:
 //MENU:
 
 void chooseMenuOptions(){
-//variable: k, x1, y1, higscores[] og n
-//while(1) styr med "controller" op og ned og button-click to choose
+//variable: k, q, higscores[] og n
+//while(1) styr med "controller" op og ned og button-click.
 //Vælg mellem: Play, options, highscore, help
-//Mulig styre metode: joystick - up/ned og right to choose, left to go back 
+//Mulig styre metode: joystick - up/ned og højre for at vælge, venstre for at gå tilbage 
+}
+
+
+void chooseLevel(){
+//Variable: k, q og n
+//Efter play er valgt, kan levels (maps) vælges.
 }
 
 void chooseOptions(){
-//Variable: k og n
-//Change difficulty - speed and direction
-}
-
-void chooseLevel(){
-//Variable: k og n
-//Efter play er valgt, kan levels (maps) vælges
+//Variable: k,q og n
+//Vælg sværhedsgrad - hastighed og omvendt styring.
 }
 
 void chooseHighscore() {
 //Variable: n, 
-// Score and highscores wil be shown. 
+//Viser score og highscores. 
 }
 
 void chooseHelp(){
-//variable: n
-//Vis controls
+//variable: n og q
+//Viser en guide til spillet.
+}
+
+uint8_t changeSpeed(){
+//Variable: k, g n
+//Kan ændre hastigheden.
+//kan styres med joystikket.
 }
 
 
@@ -56,40 +63,33 @@ void chooseHelp(){
 //DRAW:
 
 drawMenuWindow() 
-//Variable: x2, y2 og char str[]
-//Clear screen
-//Draw window with title at top and options in middle
+//Variable: char str[]
+//Tegner vindue med tittel i toppen og options i midten
 }
 
 
 void drawPlayWindow() {
-//Variable: x2, y2 og char str[]
-//Drawing window - shows all the levels you can choose.
+//Variable: char str[]
+//tegner viduet der viser alle levelsne man kan vælge.
 }
 
 void drawOptionWindow() {
-//Variable: x2, y2 og char str[]
-//Drawing window - shows all the options you can choose (speed-mode, mirrow-mode) .
+//Variable: char str[]
+//tegner vinduet, der viser de options man kan vælge (speed-mode, mirrow-mode) .
 }
+
 void drawHighscoreWindow() {
-//Variable: x2, y2 og char str[]
-//Drawing the window for highscore 
+//Variable: char str[]
+//Tegner higscorevinduet. 
+}
+
+void drawHelpWindow() {
+//Variable: char str[]
+//tegner "Hjælp". 
 }
 
 
-initLevel(){
-// Draws current window(3 walls), level, player and ball.
-// Gives angle and speed upon starting
-}
 
-drawArrow(){
-// Draws arrow in menues
-}
-
-updateArrow(){
-// Moves arrow up or down if there is room.
-// Deletes old arrow and calls drawArrow(); for new arrow
-}
 
 drawPlayer(struct player_t){
 // Draws stick
@@ -107,14 +107,29 @@ drawBall(struct ball_t){
 
 
 //GAMEPHYSICS:
+void initLevel(struct ball_t *ball, struct player_t *striker, struct level_t *level){
+//Variable: i 
+// Draws current window(3 walls), level, player and ball.
+// Gives angle and speed upon starting
+}
+
+void initbold (struct ball_t* ball, int32_t x, int32_t y, int32_t dx, int32_t dy){
+//Variable: x, y, dx og dy
+}
+
+void initPlayer(struct player_t * striker, uint16_t x, uint16_t y){
+//Variable: x, y, lifes, level og point
+}
+
+
 
 void updatePlayerPos(struct player_t *striker){
 //Varible: oldx og oldy
-// Check direction, drawPlayer
+// Tjekker retning for at kunne tegne spilleren
 }
 
 uint8_t updateBallPos(struct ball_t * ball,struct player_t *striker, int8_t x1 , int8_t y1,int8_t x2,int8_t y2){
-//Variable: struct ball_t * ball,struct player_t *striker, int8_t x1 , int8_t y1,int8_t x2,int8_t y2
+//Variable: oldx og old y
 // Check for kollision
 // Hvis kollision med blocks, updateLevel, updateVector updateScore
 // Hvis kollision med player eller en af 3 walls, updateVector og drawBall
