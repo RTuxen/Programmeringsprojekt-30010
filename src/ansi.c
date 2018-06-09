@@ -71,7 +71,7 @@ void clreol ()
     printf("%c[K",ESC);
 }
 
-void gotoxy(int8_t x, int8_t y)
+void gotoxy(uint16_t x, uint16_t y)
 {
     printf("%c[%d;%dH", ESC, x, y);
 }
