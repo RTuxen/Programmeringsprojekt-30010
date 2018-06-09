@@ -14,10 +14,6 @@
 // SIN: a 512 long LUT of 16bit values in 2.14 format
 // sin(x*pi/256)
 
-#define FIX14_SHIFT 14
-#define FIX14_MULT(a, b) ( (a) * (b) >> FIX14_SHIFT )
-#define FIX14_DIV(a ,b) ( ((a) << FIX14_SHIFT )
-
 int32_t expand(int32_t i){
 // Converts an 18.14 fixed point number to 16.16
     return i << 2;
