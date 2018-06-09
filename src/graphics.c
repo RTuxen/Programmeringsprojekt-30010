@@ -11,11 +11,11 @@ uint8_t strlens(char* text) { // Calculate the length of a string
 }
 
 
-void window (int8_t x1, int8_t y1, int8_t x2, int8_t y2, char str[], int8_t style){ // Draws window with text in the middle
-int8_t len = strlens(str);
-int8_t i, j;
-int8_t dx = x2-x1;
-int8_t dy = y2-y1;
+void window (uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2, char str[], uint8_t style){ // Draws window with text in the middle
+uint8_t len = strlens(str);
+uint8_t i, j;
+uint8_t dx = x2-x1;
+uint8_t dy = y2-y1;
 
 
 if (x1 >= x2 || y1 >= y2 || len > dy-2){
@@ -230,19 +230,21 @@ void userGuide(){
     printf("\nType any command into Putty.");
  }
 
-void drawWalls (uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2, int8_t style){ // Draws walls
-    int8_t i, j;
-    uint8_t dx = x2-x1+1;
-    uint8_t dy = y2-y1;
+void drawWalls (){ // Draws walls
+    uint16_t i, j;
+    uint16_t dx = X2-X1+1;
+    uint16_t dy = Y2-Y1;
+
+    uint16_t style = 1; // Determines the style with which the walls are drawn
 
     fgcolor(15);
 
 
-    if (x1 >= x2 || y1 >= y2){
+    if (X1 >= X2 || Y1 >= Y2){
         return;
     }
 
-    gotoxy(x1,y1);
+    gotoxy(X1,Y1);
 
     for (i=1; i<=dx; i++){
         if (i==1) {
@@ -262,7 +264,7 @@ void drawWalls (uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2, int8_t style){ /
         } else{
             printf("%c",style? 186:179);
         }
-        gotoxy(x1+i,y1);
+        gotoxy(X1+i,Y1);
     }
 
 }
@@ -271,13 +273,56 @@ void drawWalls (uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2, int8_t style){ /
 
 void drawball(struct ball_t * ball){
     fgcolor(15);
-    gotoxy(ball->x,ball->y);
-    printf("o");
+    gotoxy(ball->x >> 14,ball->y >> 14);
+    printf("O");
 }
 
 void drawPlayer(struct player_t *striker){
     fgcolor(1);
-    gotoxy(striker->x,striker->y-3);
-    printf("%c%c%c%c%c%c%c",111,205,205,205,205,205,111);
+    gotoxy(striker->x,striker->y-7);
+    printf("%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c",111,205,205,205,205,205,205,205,205,205,205,205,205,205,111);
 
+}
+
+void drawBlock(struct block_t block) { // Each block is 15 wide and 2 high
+
+	if (block.lifes >= 0) {
+		gotoxy(block.x, block.y);
+
+		if (block.lifes == 0) { // Delete block if it has no lifes left.
+			fgcolor(0);
+			printf("               ");
+			gotoxy(block.x+1,block.y);
+			printf("               ");
+		} else if (block.lifes == 1) { // Draws block depending on lives.
+			fgcolor(9);
+			printf("%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c", 176, 176, 176, 176, 176, 176, 176, 176, 176, 176, 176, 176, 176, 176, 176);
+			gotoxy(block.x+1,block.y);
+			printf("%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c", 176, 176, 176, 176, 176, 176, 176, 176, 176, 176, 176, 176, 176, 176, 176);
+		} else if (block.lifes == 2) {
+			fgcolor(10);
+			printf("%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c", 219, 219, 219, 219, 219, 219, 219, 219, 219, 219, 219, 219, 219, 219, 219);
+			gotoxy(block.x+1,block.y);
+			printf("%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c", 219, 219, 219, 219, 219, 219, 219, 219, 219, 219, 219, 219, 219, 219, 219);
+		} else if (block.lifes == 3) {
+			fgcolor(7);
+			printf("%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c", 219, 219, 219, 219, 219, 219, 219, 219, 219, 219, 219, 219, 219, 219, 219);
+			gotoxy(block.x+1,block.y);
+			printf("%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c", 219, 219, 219, 219, 219, 219, 219, 219, 219, 219, 219, 219, 219, 219, 219);
+		} else {
+			fgcolor(4);
+			printf("%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c", 219, 219, 219, 219, 219, 219, 219, 219, 219, 219, 219, 219, 219, 219, 219);
+			gotoxy(block.x+1,block.y);
+			printf("%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c", 219, 219, 219, 219, 219, 219, 219, 219, 219, 219, 219, 219, 219, 219, 219);
+		}
+	}
+
+	gotoxy(0, 0);
+}
+
+void drawBlockMap(struct block_t *bricks){
+    uint8_t i;
+    for (i = 0; i < 32; i++) {
+            drawBlock(bricks[i]); // Draw blocks
+        }
 }
