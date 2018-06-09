@@ -204,7 +204,7 @@ void initLED(){
 
 
 
-int8_t readJoyStick(){
+int8_t readJoyStickContinous(){
     int8_t direction = 0;
     uint16_t valRight = GPIOC->IDR & (0x0001 << 0);
     uint16_t valDown = GPIOB->IDR & (0x0001 << 0);
@@ -230,6 +230,40 @@ int8_t readJoyStick(){
 
     return direction;
 
+}
+
+int8_t readJoyStick(){
+    static uint8_t old_direction;
+    uint8_t direction = 0;
+    uint16_t valRight = GPIOC->IDR & (0x0001 << 0);
+    uint16_t valDown = GPIOB->IDR & (0x0001 << 0);
+    uint16_t valCenter = GPIOB->IDR & (0x0001 << 5);
+    uint16_t valLeft = GPIOC->IDR & (0x0001 << 1);
+    uint16_t valUp = GPIOA->IDR & (0x0001 << 4);
+
+    if (valUp){
+        direction += 1;
+    }
+    if (valDown){
+        direction += 2;
+    }
+    if (valLeft){
+        direction += 4;
+    }
+    if (valRight){
+        direction += 8;
+    }
+    if (valCenter){
+        direction += 16;
+    }
+
+    if (old_direction != direction) {
+        old_direction = direction;
+        return direction;
+    }
+
+    old_direction = direction;
+    return 32;
 }
 
 void setLed(int8_t value){ // LED turns on at low
