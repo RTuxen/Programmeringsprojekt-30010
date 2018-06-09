@@ -12,14 +12,10 @@
 #include "charset.h"
 #include "graphics.h"
 #include "menu.h"
-
-#define X1 1
-#define Y1 1
-#define X2 40
-#define Y2 119
+#include "levels.h"
 
 
-void playGame();
+
 int main(void)
     {
 
@@ -192,46 +188,67 @@ int main(void)
         }
 */
 
+    /***************************/
+    /* LCD - Striker Points    */
+    /***************************/
+/*
+    uint16_t val1, val2, val3;
+    struct player_t striker;
+    striker.level = 3;
+    striker.lifes = 10;
+    striker.points = 50;
+    uint8_t buffer[512];
+    char str1[30], str2[30], str3[30];
+    initADC();
+    initDisplay(buffer);
+    while (1) {
+        val1 = striker.level;
+        val2 = striker.points;
+        val3 = striker.lifes;
+        sprintf(str1, "Level  = %4d", val1);
+        sprintf(str2, "Points = %4d", val2);
+        sprintf(str3, "Lifes  = %4d", val3);
+
+        lcd_write_string(buffer, str1, 1, 0);
+        lcd_write_string(buffer, str2, 1, 1);
+        lcd_write_string(buffer, str3 , 2, 2);
+   }
+*/
 
 	/***************************/
 	/* Main Loop	           */
 	/***************************/
 
-//        playGame();
 
-        initJoystick();
-        fgcolor(15);
-        clrscr();
-        while(1){
-            chooseMenuOptions();
-        }
-}
-
-
-void playGame(){
+//        initJoystick();
+//        fgcolor(15);
+//        clrscr();
+//        while(1){
+//            chooseMenuOptions();
+//        }
         struct ball_t bold;
         struct player_t striker;
+        struct level_t bane;
         int32_t timerCount=0;
         int16_t slut=0;
-        clrscr();
 
-        initbold(&bold,12,10,1,1);
-        initPlayer(&striker,37,58);
-        initJoystick();
+        initLevel(&bold,&striker,&bane);
 
-        drawWalls(X1,Y1,X2,Y2,1);
-        drawball(&bold);
-        drawPlayer(&striker);
-        gotoxy(50,0);
 
         while(1){
-            if (++timerCount==130000ul){
+            if (++timerCount==50000ul){
                 updatePlayerPos(&striker);
-                slut = updateBallPos(&bold,&striker,X1,Y1,X2,Y2);
+                slut = updateBallPos(&bold,&striker,&bane);
                 if (slut){
                     break;
                 }
                 timerCount=0;
             }
         }
+
+
+        while(1){
+        }
 }
+
+
