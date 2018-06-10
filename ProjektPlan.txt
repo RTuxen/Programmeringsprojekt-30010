@@ -43,7 +43,7 @@ void chooseOptions(){
 }
 
 void chooseHighscore() {
-//Variable: n, 
+//Variable: n 
 //Viser score og highscores. 
 }
 
@@ -62,7 +62,7 @@ uint8_t changeSpeed(){
 
 //DRAW:
 
-drawMenuWindow() 
+void drawMenuWindow() 
 //Variable: char str[]
 //Tegner vindue med tittel i toppen og options i midten
 }
@@ -166,32 +166,32 @@ void lcd_write_string(uint8_t *buffer, char *text, uint8_t slice, uint8_t line){
 }
 
 
-
-
-
-
-/***************************/
-/* LCD - Dreje håndtag     */
-/***************************/
-   uint16_t val1, val2, val3;
-   uint8_t buffer[512];
-   char str1[30], str2[30];
-   initADC();
-   initDisplay(buffer);
-   while (0) {
-       val1 = readADC_pa0();
-       val2 = readADC_pa1();
-       sprintf(str1, "Value 1 = %4d", val1);
-       sprintf(str2, "Value 2 = %4d", val2);
-       sprintf(str3, "Value 3 = %4d", val3);
-
-
-       lcd_write_string(buffer, "Level:", 1, 0);
-       lcd_write_string(buffer, "Score:", 1, 1);
-       lcd_write_string(buffer,"Lives":, 2, 2);
-       lcd_write_string(buffer,"-------", 2, 3);
-initADC();
+ uint16_t val1, val2, val3;
+    struct player_t striker;
+    striker.level = 3;
+    striker.lifes = 10;
+    striker.points = 50;
+    uint8_t buffer[512];
+    char str1[30], str2[30], str3[30];
+    initADC();
+    initDisplay(buffer);
+    while (1) {
+        val1 = striker.level;
+        val2 = striker.points;
+        val3 = striker.lifes;
+        sprintf(str1, "Level  = %4d", val1);
+        sprintf(str2, "Points = %4d", val2);
+        sprintf(str3, "Lifes  = %4d", val3);
+        lcd_write_string(buffer, str1, 1, 0);
+        lcd_write_string(buffer, str2, 1, 1);
+        lcd_write_string(buffer, str3 , 2, 2);
    }
+
+
+
+
+
+
 
 
 
