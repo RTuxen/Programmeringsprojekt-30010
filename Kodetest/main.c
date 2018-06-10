@@ -228,19 +228,18 @@ int main(void)  {
 //        struct ball_t bold;
 //        struct player_t striker;
 //        struct level_t bane;
-//        int32_t timerCount=0;
 //        int16_t slut=0;
 //        initLevel(&bold,&striker,&bane);
 //
 //
 //        while(1){
-//            if (++timerCount==50000ul){
+//            if (gameflag){
 //                updatePlayerPos(&striker);
 //                slut = updateBallPos(&bold,&striker,&bane);
 //                if (slut){
 //                    break;
 //                }
-//                timerCount=0;
+//                gameflag=0;
 //            }
 //        }
 
