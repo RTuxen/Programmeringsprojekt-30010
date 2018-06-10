@@ -85,31 +85,36 @@ void drawHighscoreWindow() {
 
 void drawHelpWindow() {
 //Variable: char str[]
-//tegner "Hjælp". 
+//tegner viduet for "Hjælp". 
 }
 
 
 
-
-
-
-
-drawPlayer(struct player_t){
-// Draws stick
+void drawWalls (){ 
+//Variable: i, j, dx, dy og style   
+//Tegner væggene i spillet.
 }
 
-drawLevel(struct level_t){
-// Draws all blocks with color depending on number of lives.
+void drawball(struct ball_t * ball){
+//Tegner bolden
 }
 
-drawBall(struct ball_t){
-// Draws ball
+void drawPlayer(struct player_t *striker){
+//Tegner spilleren(boardet). 
 }
 
+void drawBlock(struct block_t block) { 
+//Tegner blokkene, hver blok er 15 bred og 2 høj.
 
+}
+
+void drawBlockMap(struct block_t *bricks){
+//Variable: i
+//Tegner alle blokkene i spillet.
 
 
 //GAMEPHYSICS:
+
 
 void initbold (struct ball_t* ball, int32_t x, int32_t y, int32_t dx, int32_t dy){
 //Variable: x, y, dx og dy
@@ -156,57 +161,15 @@ uint16_t checkBlockCollision(struct ball_t* ball, struct level_t* level) {
 void initDisplay(uint8_t *buffer){
 //Variable: 
 //initialiserer display. 
+nulstiller
 
 }
 
 void lcd_write_string(uint8_t *buffer, char *text, uint8_t slice, uint8_t line){ //Antager slice [0,128] og line[0,3]
 //Variable: textlenght, i, j og k 
-//
+//sørger for at vi kan skrive indenfor rammerne og skriver
    
 }
-
-
- uint16_t val1, val2, val3;
-    struct player_t striker;
-    striker.level = 3;
-    striker.lifes = 10;
-    striker.points = 50;
-    uint8_t buffer[512];
-    char str1[30], str2[30], str3[30];
-    initADC();
-    initDisplay(buffer);
-    while (1) {
-        val1 = striker.level;
-        val2 = striker.points;
-        val3 = striker.lifes;
-        sprintf(str1, "Level  = %4d", val1);
-        sprintf(str2, "Points = %4d", val2);
-        sprintf(str3, "Lifes  = %4d", val3);
-        lcd_write_string(buffer, str1, 1, 0);
-        lcd_write_string(buffer, str2, 1, 1);
-        lcd_write_string(buffer, str3 , 2, 2);
-   }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
