@@ -91,6 +91,9 @@ void drawHelpWindow() {
 
 
 
+
+
+
 drawPlayer(struct player_t){
 // Draws stick
 }
@@ -107,29 +110,24 @@ drawBall(struct ball_t){
 
 
 //GAMEPHYSICS:
-void initLevel(struct ball_t *ball, struct player_t *striker, struct level_t *level){
-//Variable: i 
-// Draws current window(3 walls), level, player and ball.
-// Gives angle and speed upon starting
-}
 
 void initbold (struct ball_t* ball, int32_t x, int32_t y, int32_t dx, int32_t dy){
 //Variable: x, y, dx og dy
+//initialiserer bolden
 }
 
 void initPlayer(struct player_t * striker, uint16_t x, uint16_t y){
 //Variable: x, y, lifes, level og point
+//Spillerens liv, level og point.
 }
 
-
-
-void updatePlayerPos(struct player_t *striker){
-//Varible: oldx og oldy
-// Tjekker retning for at kunne tegne spilleren
+void initLevel(struct ball_t *ball, struct player_t *striker, struct level_t *level){
+//Variable: i 
+//Opstiller banen og funktionerne for det valgte level.
 }
 
 uint8_t updateBallPos(struct ball_t * ball,struct player_t *striker, int8_t x1 , int8_t y1,int8_t x2,int8_t y2){
-//Variable: oldx og old y
+//Variable: playerhit, wallhit
 // Check for kollision
 // Hvis kollision med blocks, updateLevel, updateVector updateScore
 // Hvis kollision med player eller en af 3 walls, updateVector og drawBall
@@ -137,31 +135,95 @@ uint8_t updateBallPos(struct ball_t * ball,struct player_t *striker, int8_t x1 ,
 // Hvis out of bounds, restart ballPos og playerPos uden restart af level (mulig brug af initLevel), updateLives
 }
 
-updateLevel(struct level_t){
-// Fjern block, hvis ramt
-// Kaldes fra updateBall/checkBlockCollision
-// Hvis sidste block er ramt, nextLevel
+void updatePlayerPos(struct player_t *striker){
+//Varible: oldx og oldy
+// Tjekker retning for at kunne tegne spilleren, anvender joystik.
 }
 
-updateLives(){
-// Hvis out of bounds (under player), -1 fra antal liv
-// Kaldes fra updateBall/checkWallCollision
-}
+uint16_t checkPlayerCollision(struct ball_t * ball, struct player_t * striker){
+//Varisable: hit
+//Tjekker om playeren rammes, hvis ikke trækkes et liv fra. 
 
-updateScore(){
-// Hvis block ramt, updater score
-// Score incrementes alt efter sværhedsgrad
-// Kaldes fra updateBall/checkBlockCollision
-}
+uint16_t checkBlockCollision(struct ball_t* ball, struct level_t* level) {
+//Variable: i, hit
+//Rammes en block, trækkes et liv fra blokken. 
 
-checkPlayerCollision(struct ball_t bold, struct player_t player);
-checkBlockCollision(struct ball_t bold, struct level_t level);
-checkWallCollision(struct ball_t bold, X1,Y1,X2,Y2){
-// Also checks loss condition
-}
+
 
 
 //DISPLAY:
+
+void initDisplay(uint8_t *buffer){
+//Variable: 
+//initialiserer display. 
+
+}
+
+void lcd_write_string(uint8_t *buffer, char *text, uint8_t slice, uint8_t line){ //Antager slice [0,128] og line[0,3]
+//Variable: textlenght, i, j og k 
+//
+   
+}
+
+
+
+
+
+
+/***************************/
+/* LCD - Dreje håndtag     */
+/***************************/
+   uint16_t val1, val2, val3;
+   uint8_t buffer[512];
+   char str1[30], str2[30];
+   initADC();
+   initDisplay(buffer);
+   while (0) {
+       val1 = readADC_pa0();
+       val2 = readADC_pa1();
+       sprintf(str1, "Value 1 = %4d", val1);
+       sprintf(str2, "Value 2 = %4d", val2);
+       sprintf(str3, "Value 3 = %4d", val3);
+
+
+       lcd_write_string(buffer, "Level:", 1, 0);
+       lcd_write_string(buffer, "Score:", 1, 1);
+       lcd_write_string(buffer,"Lives":, 2, 2);
+       lcd_write_string(buffer,"-------", 2, 3);
+initADC();
+   }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 showLivesLCD(){
 // Vis liv på LCD
