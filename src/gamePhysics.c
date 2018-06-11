@@ -43,6 +43,20 @@ void initLevel(struct ball_t *ball, struct player_t *striker, struct level_t *le
         drawPlayer(striker);
 }
 
+void restartLevel(struct ball_t *ball, struct player_t *striker, struct level_t *level){
+        clrscr();
+
+        initbold(ball,X2-7,Y2/2,0,0);
+        striker->x =X2-5;
+        striker->y = Y2/2;
+
+
+        drawWalls();
+        drawBlockMap(level->blocks);
+        drawball(ball);
+        drawPlayer(striker);
+}
+
 
 
 
@@ -51,7 +65,7 @@ uint16_t updateBallPos(struct ball_t * ball,struct player_t *striker, struct lev
         printf(" ");
         uint16_t playerhit = checkPlayerCollision(ball,striker);
         uint16_t wallhit = checkWallCollision(ball);
-        checkBlockCollision(ball,level);
+        checkBlockCollision(ball,level,striker);
 
 
         if ( ball->vec.x == 0 && ball->vec.y == 0){
@@ -84,7 +98,13 @@ uint16_t updateBallPos(struct ball_t * ball,struct player_t *striker, struct lev
                 ball->y = Y1+1;
             }
         } else if (wallhit ==2){ // Ball dead
-            return 1;
+            if ( striker->lifes > 1){
+                    striker->lifes -=1;
+                    restartLevel(ball,striker,level);
+            } else{
+                striker->lifes -=1;
+                return 1;
+            }
         }
 
         if (playerhit){ // If ball hits player
@@ -101,14 +121,14 @@ void updatePlayerPos(struct player_t *striker){
     printf("               ");
 
     if (readJoyStickContinous() == 4){ //Left
-        if(oldy-1 >= Y1+8){
-            striker->y -= 1;
+        if(oldy-3 >= Y1+8){
+            striker->y -= 3;
         } else if(oldy-1 >= Y1+8){
             striker->y -=1;
         }
     } else if (readJoyStickContinous() == 8){ // Right
-        if (oldy+1 <= Y2-7){
-            striker->y += 1;
+        if (oldy+3 <= Y2-7){
+            striker->y += 3;
         } else if (oldy+1 <= Y2-7){
             striker->y +=1;
         }
@@ -131,66 +151,82 @@ uint16_t checkWallCollision(struct ball_t * ball){
         i= 1;
     }
 
-/*
-    // Check for collision with top wall
-    if (ball->x <= x1+1 && ball->vec.y > 0){ // if ball comes from left
-        rotat(&ball->vec,-128);
-        i = 1;
-    } else if (ball->x <= x1+1 && ball->vec.y < 0){ // if ball comes from right
-        rotat(&ball->vec,128);
-        i = 1;
-    }
-
-    // Check for collision with bottom wall
-    else if (ball->x >= x2-1 && ball->vec.y > 0){ // if ball comes from left
-        rotat(&ball->vec,128);
-        i = 1;
-    } else if (ball->x >= x2-1 && ball->vec.y < 0){ // if ball comes from right
-        rotat(&ball->vec,-128);
-        i = 1;
-    }
-
-
-    // Check for collision with right wall
-    if (ball->y <= y1+1 && ball->vec.x > 0){ // if ball comes from above
-        rotat(&ball->vec,128);
-        i = 1;
-    } else if (ball->y <= y1+1 && ball->vec.x < 0){ // if ball comes from bellow
-        rotat(&ball->vec,-128);
-        i = 1;
-    }
-
-    // Check for collision with left wall
-    else if (ball->y >= y2-1 && ball->vec.x > 0){ // if ball comes from above
-        rotat(&ball->vec,-128);
-        i = 1;
-    } else if (ball->y >= y2-1 && ball->vec.x < 0){ // if ball comes from bellow
-        rotat(&ball->vec,128);
-        i = 1;
-    }
-*/
     return i;
 }
+
+//uint16_t checkPlayerCollision(struct ball_t * ball, struct player_t * striker){
+//    uint16_t hit = 0;
+//
+//    // Player is divided into 5 sections
+//    if((ball->x >> 14) == striker->x || ball->vec.x+(ball->x >> 14) == striker->x){ // Central
+//        if(((ball->y >> 14) >= striker->y-1 && (ball->y >> 14) <= striker->y+1)  || ((ball->y >> 14)+ball->vec.y >= striker->y-1 && (ball->y >> 14)+ball->vec.y <= striker->y-1)){ // Middle
+//            ball->vec.x = -ball->vec.x;
+//            hit = 1;
+//        } else if(((ball->y >> 14) >= striker->y-4 && (ball->y >> 14) <= striker->y-2) || ((ball->y >> 14)+ball->vec.y >= striker->y-4 && (ball->y >> 14)+ball->vec.y <= striker->y-2)){ // Left Medium
+//            ball->vec.x = -ball->vec.x;
+//            hit = 1;
+//        } else if(((ball->y >> 14) >= striker->y+2 && (ball->y >> 14) <= striker->y+4) || ((ball->y >> 14)+ball->vec.y >= striker->y+2 && (ball->y >> 14)+ball->vec.y <= striker->y+4)){ // Right Medium
+//            ball->vec.x = -ball->vec.x;
+//            hit = 1;
+//        } else if(((ball->y >> 14) >= striker->y-7 && (ball->y >> 14) <= striker->y-5) || ((ball->y >> 14)+ball->vec.y >= striker->y-7 && (ball->y >> 14)+ball->vec.y <= striker->y-5)){ // Left End
+//            ball->vec.x = -ball->vec.x;
+//            hit = 1;
+//        } else if(((ball->y >> 14) >= striker->y+5 && (ball->y >> 14) <= striker->y+7) || ((ball->y >> 14)+ball->vec.y >= striker->y+5 && (ball->y >> 14)+ball->vec.y <= striker->y+7)){ // Right End
+//            ball->vec.x = -ball->vec.x;
+//            hit = 1;
+//        }
+//    }
+//    return hit;
+//
+//}
 
 uint16_t checkPlayerCollision(struct ball_t * ball, struct player_t * striker){
     uint16_t hit = 0;
 
     // Player is divided into 5 sections
-    if((ball->x >> 14) == striker->x || ball->vec.x+(ball->x >> 14) == striker->x){ // Central
-        if(((ball->y >> 14) >= striker->y-1 && (ball->y >> 14) <= striker->y+1)  || ((ball->y >> 14)+ball->vec.y >= striker->y-1 && (ball->y >> 14)+ball->vec.y <= striker->y-1)){ // Middle
+    if((ball->x >> 14) == striker->x || (ball->vec.x+ball->x) >> 14 == striker->x){ // Central
+        if(((ball->y >> 14) >= striker->y-1 && (ball->y >> 14) <= striker->y+1)  || ((ball->y+ball->vec.y) >> 14 >= striker->y-1 && (ball->y+ball->vec.y) >> 14 <= striker->y-1)){ // Middle
             ball->vec.x = -ball->vec.x;
             hit = 1;
-        } else if(((ball->y >> 14) >= striker->y-4 && (ball->y >> 14) <= striker->y-2) || ((ball->y >> 14)+ball->vec.y >= striker->y-4 && (ball->y >> 14)+ball->vec.y <= striker->y-2)){ // Left Medium
+        } else if(((ball->y >> 14) >= striker->y-4 && (ball->y >> 14) <= striker->y-2) || ((ball->y+ball->vec.y) >> 14 >= striker->y-4 && (ball->y+ball->vec.y) >> 14 <= striker->y-2)){ // Left Medium
             ball->vec.x = -ball->vec.x;
+
+            if (ball->vec.y > 0){
+                ball->vec.y /= -1.5;
+            } else{
+                ball->vec.y *= 1.5;
+            }
+
             hit = 1;
-        } else if(((ball->y >> 14) >= striker->y+2 && (ball->y >> 14) <= striker->y+4) || ((ball->y >> 14)+ball->vec.y >= striker->y+2 && (ball->y >> 14)+ball->vec.y <= striker->y+4)){ // Right Medium
+        } else if(((ball->y >> 14) >= striker->y+2 && (ball->y >> 14) <= striker->y+4) || ((ball->y+ball->vec.y) >> 14 >= striker->y+2 && (ball->y+ball->vec.y) >> 14 <= striker->y+4)){ // Right Medium
             ball->vec.x = -ball->vec.x;
+
+            if (ball->vec.y > 0){
+                ball->vec.y *= 1.5;
+            } else{
+                ball->vec.y /= -1.5;
+            }
+
             hit = 1;
-        } else if(((ball->y >> 14) >= striker->y-7 && (ball->y >> 14) <= striker->y-5) || ((ball->y >> 14)+ball->vec.y >= striker->y-7 && (ball->y >> 14)+ball->vec.y <= striker->y-5)){ // Left End
+        } else if(((ball->y >> 14) >= striker->y-7 && (ball->y >> 14) <= striker->y-5) || ((ball->y+ball->vec.y) >> 14 >= striker->y-7 && (ball->y+ball->vec.y) >> 14 <= striker->y-5)){ // Left End
             ball->vec.x = -ball->vec.x;
+
+            if (ball->vec.y > 0){
+                ball->vec.y /= -3;
+            } else{
+                ball->vec.y *= 3;
+            }
+
             hit = 1;
-        } else if(((ball->y >> 14) >= striker->y+5 && (ball->y >> 14) <= striker->y+7) || ((ball->y >> 14)+ball->vec.y >= striker->y+5 && (ball->y >> 14)+ball->vec.y <= striker->y+7)){ // Right End
+        } else if(((ball->y >> 14) >= striker->y+5 && (ball->y >> 14) <= striker->y+7) || ((ball->y+ball->vec.y) >> 14 >= striker->y+5 && (ball->y+ball->vec.y) >> 14 <= striker->y+7)){ // Right End
             ball->vec.x = -ball->vec.x;
+
+            if (ball->vec.y > 0){
+                ball->vec.y *= 3;
+            } else{
+                ball->vec.y /= -3;
+            }
+
             hit = 1;
         }
     }
@@ -198,7 +234,7 @@ uint16_t checkPlayerCollision(struct ball_t * ball, struct player_t * striker){
 
 }
 
-uint16_t checkBlockCollision(struct ball_t* ball, struct level_t* level) {
+uint16_t checkBlockCollision(struct ball_t* ball, struct level_t* level, struct player_t * striker) {
 	uint8_t i;
 	uint8_t hit;
 	struct block_t * blocks = level->blocks;
@@ -220,6 +256,7 @@ uint16_t checkBlockCollision(struct ball_t* ball, struct level_t* level) {
 				blocks[i].lifes--;
 				drawBlock(blocks[i]);
 				level->lifes--;
+				striker->points++;
 
 			}
 
