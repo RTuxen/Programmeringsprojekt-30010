@@ -48,22 +48,26 @@ void lcd_update(uint8_t *buffer){
 }
 
 
-    void LCD_Printer(uint16_t P, uint16_t L, uint16_t){
-         uint16_t P = val1, L = val2
-         uint8_t buffer[512];
-         char str1[30], str2[30];
-         initADC();
-         initDisplay(buffer);
-          while (1) {
-            val1 = readADC_pa0();
-            val2 = readADC_pa1();
-            sprintf(str1, "Value 1 = %4d", val1);
-            sprintf(str2, "Value 2 = %4d", val2);
-            lcd_write_string(buffer, str1, 1, 0);
-            lcd_write_string(buffer, str2, 1, 1);
+ void LCD_Printer(uint16_t Level, uint16_t Lifes, uint16_t Points ){
+    uint16_t val1, val2, val3;
+    struct player_t striker;
+    striker.level = Level;
+    striker.lifes = Lifes;
+    striker.points = Points;
+    uint8_t buffer[512];
+    char str1[30], str2[30], str3[30];
+    initADC();
+    initDisplay(buffer);
+    while (1) {
+        val1 = striker.level;
+        val2 = striker.points;
+        val3 = striker.lifes;
+        sprintf(str1, "Level  = %4d", val1);
+        sprintf(str2, "Points = %4d", val2);
+        sprintf(str3, "Lifes  = %4d", val3);
+        lcd_write_string(buffer, str1, 1, 0);
+        lcd_write_string(buffer, str2, 1, 1);
+        lcd_write_string(buffer, str3 , 2, 2);
     }
-}
-
-
-
-
+ }
+    
