@@ -1,6 +1,4 @@
 #include "display.h"
-#include "display.h"
-#include "display.h"
 
 
 void initDisplay(uint8_t *buffer){
