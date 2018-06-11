@@ -33,20 +33,31 @@ volatile struct timepoint tid; //Global variables
 struct player_t {
 	int32_t x;
 	int32_t y;
-	int8_t points;
-	int8_t lifes;
+    int8_t points;
+	int8_t lives;
 	int8_t level;
+
 };
 
 struct block_t {
 	uint16_t x;
 	uint16_t y;
-	uint8_t lifes;
+	uint8_t lives;
 };
 
 struct level_t {
 	struct block_t blocks[128];
-	uint8_t lifes;
+	uint8_t lives;
 };
+
+//struct game_state_t {
+//  uint8_t speed;
+//  uint8_t mirror;
+//  uint8_t highscores[5];
+//  uint8_t score;
+//	int8_t points;
+//	int8_t lives;
+//	int8_t level;
+//};
 
 #endif /*_STRUCT_H_*/
