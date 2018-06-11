@@ -7,17 +7,19 @@
 #include "IO.h"
 #include "ansi.h"
 
-void chooseMenuOptions();
+void chooseMenuOptions(uint8_t score);
 void chooseLevel();
 void chooseOptions();
 void chooseHighscore();
 void chooseHelp();
-uint8_t changeSpeed();
+void chooseGameOver(uint8_t score);
+uint8_t changeSpeed(uint8_t changeValue);
 
 void drawMenuWindow();
 void drawPlayWindow();
 void drawOptionWindow();
 void drawHighscoreWindow(uint8_t *highscores);
 void drawHelpWindow();
+void drawGameOverWindow();
 
 #endif
