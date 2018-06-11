@@ -33,27 +33,27 @@ void chooseMenuOptions(){
 
 
 void chooseLevel(){
-//Variable: k, q og n
+//Variable: k og q 
 //Efter play er valgt, kan levels (maps) vælges.
 }
 
 void chooseOptions(){
-//Variable: k,q og n
+//Variable: k og q 
 //Vælg sværhedsgrad - hastighed og omvendt styring.
 }
 
 void chooseHighscore() {
-//Variable: n 
+//Variable: q 
 //Viser score og highscores. 
 }
 
 void chooseHelp(){
-//variable: n og q
+//variable: q
 //Viser en guide til spillet.
 }
 
 uint8_t changeSpeed(){
-//Variable: k, g n
+//Variable: k og q
 //Kan ændre hastigheden.
 //kan styres med joystikket.
 }
