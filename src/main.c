@@ -226,25 +226,47 @@ int main(void)
 //        while(1){
 //            chooseMenuOptions();
 //        }
+
+//        uint8_t score = 8;
+//        initJoystick();
+//        fgcolor(15);
+//        clrscr();
+//        while(1){
+//            //chooseMenuOptions(score);
+//            chooseGameOver(score);
+//        }
+
+
         struct ball_t bold;
         struct player_t striker;
         struct level_t bane;
         int32_t timerCount=0;
         int16_t slut=0;
 
+        initTimer100Hz();
         initLevel(&bold,&striker,&bane);
 
 
         while(1){
-            if (++timerCount==50000ul){
+            if (++timerCount==100000ul){
                 updatePlayerPos(&striker);
                 slut = updateBallPos(&bold,&striker,&bane);
                 if (slut){
-                    break;
+                    chooseGameOver(striker.points);
                 }
                 timerCount=0;
             }
         }
+
+//        while(1){
+//                if (get_game_flag()){
+//                    updatePlayerPos(&striker);
+//                    slut = updateBallPos(&bold,&striker,&bane);
+//                    if (slut){
+//                        chooseGameOver(striker.points);
+//                    }
+//                }
+//        }
 
 
         while(1){
