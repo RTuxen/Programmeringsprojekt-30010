@@ -67,7 +67,7 @@ void lcd_update(uint8_t *buffer){
         sprintf(str3, "Lifes  = %4d", val3);
         lcd_write_string(buffer, str1, 1, 0);
         lcd_write_string(buffer, str2, 1, 1);
-        lcd_write_string(buffer, str3 , 2, 2);
+        lcd_write_string(buffer, str3, 2, 2);
     }
  }
     
