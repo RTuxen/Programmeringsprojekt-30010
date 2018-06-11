@@ -18,7 +18,7 @@ void lcd_write_string(uint8_t *buffer, char *text, uint8_t slice, uint8_t line){
                 if (7*i+k+j >= 128*line+128) {
                     break;
                 }
-                buffer[7*i+k+j]= character_data[text[i]-0x20][j];
+                buffer[7*i+k+j]= character_data[text[i]-0x20][j];  
             }
     }
     lcd_push_buffer(buffer);
@@ -45,5 +45,11 @@ void lcd_update(uint8_t *buffer){
         lcd_push_buffer(buffer);
 
     }
+}
+
+
+void LCD_Printer(uint16_t P, uint16_t L, uint16_t ){
+    striker.points=x;
+    
 }
 
