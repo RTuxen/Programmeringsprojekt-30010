@@ -16,7 +16,8 @@
 
 
 
-int main(void)  {
+int main(void)
+    {
 
     // Initialize terminal connection
     init_usb_uart( 115200 ); // Initialize USB serial at 9600 baud
@@ -218,29 +219,54 @@ int main(void)  {
 	/* Main Loop	           */
 	/***************************/
 
-        uint8_t score = 8;
-        initJoystick();
-        fgcolor(15);
-        clrscr();
-        while(1){
-            chooseMenuOptions(score);
-        }
+
+//        initJoystick();
+//        fgcolor(15);
+//        clrscr();
+//        while(1){
+//            chooseMenuOptions();
+//        }
+
+//        uint8_t score = 8;
+//        initJoystick();
+//        fgcolor(15);
+//        clrscr();
+//        while(1){
+//            //chooseMenuOptions(score);
+//            chooseGameOver(score);
+//        }
+    initJoystick();
+    playGame(1);
+
 //        struct ball_t bold;
 //        struct player_t striker;
 //        struct level_t bane;
+//        int32_t timerCount=0;
 //        int16_t slut=0;
+//
+//        initTimer100Hz();
 //        initLevel(&bold,&striker,&bane);
 //
 //
 //        while(1){
-//            if (gameflag){
+//            if (++timerCount==100000ul){
 //                updatePlayerPos(&striker);
 //                slut = updateBallPos(&bold,&striker,&bane);
 //                if (slut){
-//                    break;
+//                    chooseGameOver(striker.points);
 //                }
-//                gameflag=0;
+//                timerCount=0;
 //            }
+//        }
+//
+//        while(1){
+//                if (get_game_flag()){
+//                    updatePlayerPos(&striker);
+//                    slut = updateBallPos(&bold,&striker,&bane);
+//                    if (slut){
+//                        chooseGameOver(striker.points);
+//                    }
+//                }
 //        }
 
 

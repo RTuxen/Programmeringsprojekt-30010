@@ -10,15 +10,15 @@ void chooseMenuOptions(uint8_t score){//Tilføj uint8_t score, så den kan modta
     static uint8_t highscores[5] = {5, 4, 3, 2, 1}; //Skal starte med at være tom og derefter fyldes på
     uint8_t k = 1;
     uint8_t q = 0;
-    uint8_t i, j;
+    int8_t i, j;
 
     //Sammenligner scoren med tidligere highscores
-    for (i = 4; i >= 0; i++){
+    for (i = 0; i < 5; i++){
         if (score > highscores[i]){
-            for(j = 1; j <= i; j++){//Rykker tidligere highscores under den nye highscore én ned
+            for(j = 4; j >= i; j--){//Rykker tidligere highscores under den nye highscore én ned
                 highscores[j] = highscores[j-1];
             }
-            score = highscores[i];  //Indsætter den nye highscore
+            highscores[i] = score;  //Indsætter den nye highscore
             break;
         }
     }
@@ -47,7 +47,7 @@ void chooseMenuOptions(uint8_t score){//Tilføj uint8_t score, så den kan modta
         } else if (q == 8) {//Hvis joystick trykkes til højre, så bruges k-værdien og den tilhørende linje vælges
             if (k == 1) {       //Play vælges
                 drawPlayWindow();
-//                chooseLevel();
+                chooseLevel();
             } else if (k == 2) {//Options vælges
                 drawOptionWindow();
                 chooseOptions(MENUX1, MENUY1);
@@ -87,18 +87,18 @@ void chooseLevel(){
                 gotoxy(MENUX1 + INCRX + (k<<1), MENUY1 + INCRY);
                 printf("<<");                   //Laver pilen
             }
-//        } else if (q == 8) { //Right - Select
-//            if (k == 1) {
-//                initLevel(Level1);
-//            } else if (k == 2) {
-//                initLevel(Level2);
-//            } else if (k == 3) {
-//                initLevel(Level3);
-//            } else if (k == 4){
-//                initLevel(Level4);
-//            } else {
-//                initLevel(Level5);
-//            }
+        } else if (q == 8) { //Right - Select
+            if (k == 1) {
+                playGame(k);
+            } else if (k == 2) {
+                playGame(k);
+            } else if (k == 3) {
+                playGame(k);
+            } else if (k == 4){
+                playGame(k);
+            } else {
+                playGame(k);
+            }
         } else if (q == 4) { //Left - Go back
             chooseMenuOptions(0);
         }
@@ -161,8 +161,8 @@ void chooseGameOver(uint8_t score){ //Tilføj uint8_t playerScore og Level-numme
     uint8_t k = 1;
     uint8_t q = 0;
 
-    drawMenuWindow();
-    gotoxy(MENUX1 + INCRX + (k<<1), MENUY1 + 35);
+    drawGameOverWindow();
+    gotoxy(MENUX1 + INCRX + 2 + (k<<1), MENUY1 + 35);
     printf("<<");
     while(1) {
         q = readJoyStick();
@@ -320,6 +320,7 @@ void drawHelpWindow() {
 
 void drawGameOverWindow() {
     char str[] = " Game Over ";
+    fgcolor(15); // White
     //Game over
     window(MENUX1, MENUY1, MENUX2, MENUY2, str, 1);
     gotoxy(MENUX1+INCRX+2,MENUY1+20);
