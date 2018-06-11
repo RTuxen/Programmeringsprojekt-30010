@@ -49,19 +49,11 @@ void lcd_update(uint8_t *buffer){
 
 
  void LCD_Printer(uint16_t Level, uint16_t Lifes, uint16_t Points ){
-    uint16_t val1, val2, val3;
-    struct player_t striker;
-    striker.level = Level;
-    striker.lifes = Lifes;
-    striker.points = Points;
+    uint16_t val1=Level, val2=Lifes, val3=Pionts;
     uint8_t buffer[512];
     char str1[30], str2[30], str3[30];
     initADC();
     initDisplay(buffer);
-    while (1) {
-        val1 = striker.level;
-        val2 = striker.points;
-        val3 = striker.lifes;
         sprintf(str1, "Level  = %4d", val1);
         sprintf(str2, "Points = %4d", val2);
         sprintf(str3, "Lifes  = %4d", val3);
