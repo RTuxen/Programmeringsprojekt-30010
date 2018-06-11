@@ -215,6 +215,7 @@ int main(void)
    }
 */
 
+
 	/***************************/
 	/* Main Loop	           */
 	/***************************/
@@ -235,28 +236,39 @@ int main(void)
 //            //chooseMenuOptions(score);
 //            chooseGameOver(score);
 //        }
+    initTimer100Hz();//Initialisere klokken TIM2
+    initJoystick();
+    init_spi_lcd();
+    playGame(1);
 
+//    struct game_state_t gs;
+//    chooseMenuOptions(&gs);
 
-        struct ball_t bold;
-        struct player_t striker;
-        struct level_t bane;
-        int32_t timerCount=0;
-        int16_t slut=0;
-
-        initTimer100Hz();
-        initLevel(&bold,&striker,&bane);
-
-
-        while(1){
-            if (++timerCount==100000ul){
-                updatePlayerPos(&striker);
-                slut = updateBallPos(&bold,&striker,&bane);
-                if (slut){
-                    chooseGameOver(striker.points);
-                }
-                timerCount=0;
-            }
-        }
+//        struct ball_t bold;
+//        struct player_t striker;
+//        struct level_t bane;
+//        int32_t timerCount=0;
+//        int16_t slut=0;
+//
+//        initTimer100Hz();
+//        initLevel(&bold,&striker,&bane);
+//
+//        static uint8_t buffer[512];
+//        initDisplay(buffer);
+//
+//
+//        while(1){
+//            if (++timerCount==100000ul){
+//                updatePlayerPos(&striker);
+//                slut = updateBallPos(&bold,&striker,&bane);
+//                if (slut){
+//                    chooseGameOver(striker.points);
+//                }
+//                timerCount=0;
+//
+//                LCD_Printer(striker.level,striker.lifes,striker.points, buffer);
+//            }
+//        }
 
 //        while(1){
 //                if (get_game_flag()){
