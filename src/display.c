@@ -48,8 +48,19 @@ void lcd_update(uint8_t *buffer){
 }
 
 
-void LCD_Printer(uint16_t P, uint16_t L, uint16_t ){
-    striker.points=x;
-    
+    void LCD_Printer(uint16_t P, uint16_t L, uint16_t ){
+         uint16_t val1=strikker.point, val2=strikker.level;
+         uint8_t buffer[512];
+         char str1[30], str2[30];
+         initADC();
+         initDisplay(buffer);
+          while (1) {
+            val1 = readADC_pa0();
+            val2 = readADC_pa1();
+            sprintf(str1, "Value 1 = %4d", val1);
+            sprintf(str2, "Value 2 = %4d", val2);
+            lcd_write_string(buffer, str1, 1, 0);
+            lcd_write_string(buffer, str2, 1, 1);
+    }
 }
 
