@@ -87,18 +87,18 @@ void chooseLevel(){
                 gotoxy(MENUX1 + INCRX + (k<<1), MENUY1 + INCRY);
                 printf("<<");                   //Laver pilen
             }
-//        } else if (q == 8) { //Right - Select
-//            if (k == 1) {
-//                initLevel(Level1);
-//            } else if (k == 2) {
-//                initLevel(Level2);
-//            } else if (k == 3) {
-//                initLevel(Level3);
-//            } else if (k == 4){
-//                initLevel(Level4);
-//            } else {
-//                initLevel(Level5);
-//            }
+        } else if (q == 8) { //Right - Select
+            if (k == 1) {
+                playGame(k);
+            } else if (k == 2) {
+                playGame(k);
+            } else if (k == 3) {
+                playGame(k);
+            } else if (k == 4){
+                playGame(k);
+            } else {
+                playGame(k);
+            }
         } else if (q == 4) { //Left - Go back
             chooseMenuOptions(0);
         }
@@ -157,9 +157,19 @@ void chooseHelp() {
     }
 }
 
-void chooseGameOver(uint8_t score){ //Tilføj uint8_t playerScore og Level-nummer senere
+void chooseGameOver(uint8_t score, uint8_t levelNum, uint8_t* buffer){
     uint8_t k = 1;
     uint8_t q = 0;
+
+//    for (i = 0; i < 5; i++){
+//        if (score > highscores[i]){
+//            for(j = 4; j >= i; j--){//Rykker tidligere highscores under den nye highscore én ned
+//                highscores[j] = highscores[j-1];
+//            }
+//            highscores[i] = score;  //Indsætter den nye highscore
+//            break;
+//        }
+//    }
 
     drawGameOverWindow();
     gotoxy(MENUX1 + INCRX + 2 + (k<<1), MENUY1 + 35);
@@ -180,9 +190,10 @@ void chooseGameOver(uint8_t score){ //Tilføj uint8_t playerScore og Level-numme
             printf("<<");                   //Laver pilen
         } else if (q == 8) {
             if (k == 1) {
-//                initLevel(Level); //Skal loade det sidst spillede level
+                playGame(levelNum); //Loader det sidst tabte level
             } else {
-                chooseMenuOptions(score);
+                initDisplay(buffer);
+                chooseMenuOptions(score); //Går til menuen og uploader scoren
             }
         }
     }
