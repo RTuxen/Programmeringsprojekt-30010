@@ -1,7 +1,9 @@
 #include "timer.h"
 
-volatile uint8_t flag;
-volatile uint8_t slide;
+volatile uint8_t flag = 0;      //Flag til LCD update
+volatile uint8_t slide = 0;     //Variabel til LCD update
+volatile uint8_t gameflag = 0;  //Flag til spil update
+volatile uint8_t updateGame = 0;//Variabel til spil update
 
 void initTimer100Hz(){
     RCC->APB1ENR |= RCC_APB1Periph_TIM2; // Enable clock line to timer 2;
@@ -19,22 +21,27 @@ void initTimer100Hz(){
 void TIM2_IRQHandler(void){
     tid.centiseconds++;
     slide++;
-    if (slide >= 5) {
-        flag = 1;
-        slide = 0;
+    updateGame++;
+    if (updateGame >= 6){//Spillet updateres med 25Hz
+        gameflag = 1;
+        updateGame = 0;
     }
-    if (tid.centiseconds >= 100) {
-        tid.seconds++;
-        tid.centiseconds = 0;
-    }
-    if (tid.seconds >= 60) {
-        tid.minutes++;
-        tid.seconds=0;
-    }
-    if (tid.minutes == 60) {
-        tid.hours++;
-        tid.minutes=0;
-    }
+//    if (slide >= 5) {//Bestemmer opdateringshastigheden af LCD
+//        flag = 1;
+//        slide = 0;
+//    }
+//    if (tid.centiseconds >= 100) {
+//        tid.seconds++;
+//        tid.centiseconds = 0;
+//    }
+//    if (tid.seconds >= 60) {
+//        tid.minutes++;
+//        tid.seconds=0;
+//    }
+//    if (tid.minutes == 60) {
+//        tid.hours++;
+//        tid.minutes=0;
+//    }
 
     TIM2->SR &= ~0x0001; //Clear interrupt bit
 }
@@ -93,6 +100,14 @@ void stopWatchControl(int8_t value){
 uint8_t get_flag() {
     if (flag) {
         flag = 0;
+        return 1;
+    }
+    return 0;
+}
+
+uint8_t get_game_flag() {
+    if (gameflag) {
+        gameflag = 0;
         return 1;
     }
     return 0;
