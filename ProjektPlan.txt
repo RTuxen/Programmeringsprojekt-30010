@@ -88,7 +88,9 @@ void drawHelpWindow() {
 //tegner viduet for "Hjælp". 
 }
 
-
+void drawGaOverWindow() {
+//Variable: char str[]
+//Tegner gamovervinduet når man dør.
 
 void drawWalls (){ 
 //Variable: i, j, dx, dy og style   
