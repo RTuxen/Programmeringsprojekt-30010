@@ -5,6 +5,6 @@
 #include "IO.h"
 #include "graphics.h"
 
-extern const struct block_t Level1[32];
+extern const struct block_t Level[2][32];
 
 #endif /* _LEVELS_H_ */
