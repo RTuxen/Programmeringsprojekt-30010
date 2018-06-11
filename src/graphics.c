@@ -266,10 +266,7 @@ void drawWalls (){ // Draws walls
         }
         gotoxy(X1+i,Y1);
     }
-
 }
-
-
 
 void drawball(struct ball_t * ball){
     fgcolor(15);
@@ -280,31 +277,31 @@ void drawball(struct ball_t * ball){
 void drawPlayer(struct player_t *striker){
     fgcolor(1);
     gotoxy(striker->x,striker->y-7);
-    printf("%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c",111,205,205,205,205,205,205,205,205,205,205,205,205,205,111);
+    printf("%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c",219,219,219,219,219,219,219,219,219,219,219,219,219,219,219);
 
 }
 
 void drawBlock(struct block_t block) { // Each block is 15 wide and 2 high
 
-	if (block.lifes >= 0) {
+	if (block.lives >= 0) {
 		gotoxy(block.x, block.y);
 
-		if (block.lifes == 0) { // Delete block if it has no lifes left.
+		if (block.lives == 0) { // Delete block if it has no lives left.
 			fgcolor(0);
 			printf("               ");
 			gotoxy(block.x+1,block.y);
 			printf("               ");
-		} else if (block.lifes == 1) { // Draws block depending on lives.
+		} else if (block.lives == 1) { // Draws block depending on lives.
 			fgcolor(9);
 			printf("%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c", 176, 176, 176, 176, 176, 176, 176, 176, 176, 176, 176, 176, 176, 176, 176);
 			gotoxy(block.x+1,block.y);
 			printf("%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c", 176, 176, 176, 176, 176, 176, 176, 176, 176, 176, 176, 176, 176, 176, 176);
-		} else if (block.lifes == 2) {
+		} else if (block.lives == 2) {
 			fgcolor(10);
 			printf("%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c", 219, 219, 219, 219, 219, 219, 219, 219, 219, 219, 219, 219, 219, 219, 219);
 			gotoxy(block.x+1,block.y);
 			printf("%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c", 219, 219, 219, 219, 219, 219, 219, 219, 219, 219, 219, 219, 219, 219, 219);
-		} else if (block.lifes == 3) {
+		} else if (block.lives == 3) {
 			fgcolor(7);
 			printf("%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c", 219, 219, 219, 219, 219, 219, 219, 219, 219, 219, 219, 219, 219, 219, 219);
 			gotoxy(block.x+1,block.y);
