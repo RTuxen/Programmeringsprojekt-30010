@@ -17,6 +17,16 @@ void bossKey(){
         printf("\e[1t"); //funktion to maximize window
         hidden = 0;
         timerCount=0;
+        } else {
+                    updatePlayerPos(&striker,&joystikKey);//Updatere strikeren
+                    slut = updateBallPos(&ball,&striker,&bane);//Updatere bolden og blokkene
+                    LCD_Printer(striker.level, striker.lives, striker.points, buffer);//Viser level, liv og point på LCD
+                    if (slut){
+                        chooseGameOver(striker.points, levelNum, buffer);//Stopper spillet, hvis liv = 0
+                    }
+                    timerCount=0;
+                }
+            }
         }
  
 }
