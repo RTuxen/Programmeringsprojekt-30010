@@ -1,0 +1,22 @@
+void bossKey(){
+ int8_t hidden=0;
+ int8_joystikKey=0;
+ 
+ if(joystikKey==2){
+        if (hidden==0){
+        //funktion to minimize window
+        printf("\e[2t");
+        hidden = 1;
+        }
+        joystikKey=0;
+        for (int i = 0 ; i < 10000 ; i++){}
+
+            while(joystikKey!=2){
+                joystikKey=readJoyStick();
+            }
+        printf("\e[1t"); //funktion to maximize window
+        hidden = 0;
+        timerCount=0;
+        }
+ 
+}
