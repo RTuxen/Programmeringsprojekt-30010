@@ -8,11 +8,10 @@ volatile uint8_t updateGame = 0;//Variabel til spil update
 void initTimer100Hz(){
     RCC->APB1ENR |= RCC_APB1Periph_TIM2; // Enable clock line to timer 2;
     TIM2->CR1 = 0x0000; // Configure timer 2 - disabled
-    TIM2->ARR = 0x00000F9F; // Set reload value to 39999
+    TIM2->ARR = 0x00000F9F; // Set reload value to 3999
     TIM2->PSC = 0x000F; // Set prescale value to 15
     TIM2->CR1 = 0x0001; // Configure timer 2 - enabled
     TIM2->DIER |= 0x0001; // Enable timer 2 interrupts
-    slide = 0; //FlagEnable
     NVIC_SetPriority(TIM2_IRQn, 0000); // Set interrupt priority
     NVIC_EnableIRQ(TIM2_IRQn); // Enable interrupt
 }
@@ -22,7 +21,7 @@ void TIM2_IRQHandler(void){
     tid.milliseconds++;
     slide++;
     updateGame++;
-    if (updateGame >= 050){//Spillet updateres
+    if (updateGame >= 50){//Spillet updateres
         gameflag = 1;
         updateGame = 0;
     }
@@ -44,6 +43,13 @@ void TIM2_IRQHandler(void){
     }
 
     TIM2->SR &= ~0x0001; //Clear interrupt bit
+}
+
+void setTimer(uint8_t difficulty, uint8_t levelspeed){
+    TIM2->CR1 = 0x0000; // Configure timer 2 - disabled
+    TIM2->ARR = 0x00000F9F/(0.25+difficulty*0.5+levelspeed*0.25); // Set reload value to 3999 - VED GODT MAN IKKE MÅ SKRIVE 0.25 og 0.5
+    TIM2->PSC = 0x000F; // Set prescale value to 15
+    TIM2->CR1 = 0x0001; // Configure timer 2 - enabled
 }
 
 

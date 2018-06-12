@@ -35,23 +35,22 @@ void playGame(struct game_state_t* gs){
     int16_t slut=0;
     int32_t timerCount=0;
 
+    setTimer(gs->speed, gs->currentlevel);
     gs->lives = 1;//Sætter spillerens liv
     initBall(&ball,X2-7,Y2/2,0,0);//Initialisere bolden
     initPlayer(&striker,X2-5,Y2/2);//Initialisere strikeren
     initLevel(&ball,&striker,&bane, gs);//Initialisere blokkene
     initDisplay(gs->buffer);
     while(1){
-            if (++timerCount==100000ul){
+            if (get_game_flag){
                 updatePlayerPos(&striker);//Updatere strikeren
                 slut = updateBallPos(&ball,&striker,&bane, gs);//Updatere bolden og blokkene
                 LCD_Printer(gs);//Viser level, liv og point på LCD
                 if (slut){
                     chooseGameOver(gs);//Stopper spillet, hvis liv = 0
                 }
-                timerCount=0;
             }
         }
-
 }
 
 void initLevel(struct ball_t *ball, struct player_t *striker, struct level_t *level, struct game_state_t* gs){
