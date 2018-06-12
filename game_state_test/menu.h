@@ -14,14 +14,18 @@ void chooseLevel(struct game_state_t* gs);
 void chooseOptions(struct game_state_t* gs);
 void chooseHighscore(struct game_state_t* gs);
 void chooseHelp(struct game_state_t* gs);
-void chooseGameOver(struct game_state_t* gs, uint8_t* buffer);
+void chooseGameOver(struct game_state_t* gs);
+void chooseGameWon(struct game_state_t* gs);
+void toggleMirror(struct game_state_t* gs);
 void changeSpeed(struct game_state_t* gs);
+
 
 void drawMenuWindow();
 void drawPlayWindow();
-void drawOptionWindow(uint8_t speed);
+void drawOptionWindow(struct game_state_t* gs);
 void drawHighscoreWindow(uint8_t* highscores);
 void drawHelpWindow();
 void drawGameOverWindow();
+void drawGameWonWindow();
 
 #endif

@@ -7,7 +7,7 @@
 void initTimer100Hz();
 void printTid();
 void stopWatchControl(int8_t value);
-void printSplit (uint8_t c, uint8_t s, uint8_t m, uint8_t h);
+void printSplit (uint16_t ms, uint8_t s, uint8_t m, uint8_t h);
 uint8_t get_flag();
 uint8_t get_game_flag();
 

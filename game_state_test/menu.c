@@ -36,7 +36,7 @@ void chooseMenuOptions(struct game_state_t* gs){//Tilføj uint8_t score, så den
                 drawPlayWindow();
                 chooseLevel(gs);
             } else if (k == 2) {//Options vælges
-                drawOptionWindow(gs->speed);
+                drawOptionWindow(gs);
                 chooseOptions(gs);
             } else if (k == 3) {//Highscorelisten vælges
                 drawHighscoreWindow(gs->highscores);
@@ -76,16 +76,17 @@ void chooseLevel(struct game_state_t* gs){
             }
         } else if (q == 8) { //Right - Select
             if (k == 1) {
-                gs->level = k;
+                gs->startlevel = k;
             } else if (k == 2) {
-                gs->level = k;
+                gs->startlevel = k;
             } else if (k == 3) {
-                gs->level = k;
+                gs->startlevel = k;
             } else if (k == 4){
-                gs->level = k;
+                gs->startlevel = k;
             } else {
-                gs->level = k;
+                gs->startlevel = k;
             }
+            gs->currentlevel = gs->startlevel;
             playGame(gs);
         } else if (q == 4) { //Left - Go back
             chooseMenuOptions(gs);
@@ -94,9 +95,11 @@ void chooseLevel(struct game_state_t* gs){
 }
 
 void chooseOptions(struct game_state_t* gs) {
-    uint8_t k = 1;
+    static uint8_t k = 1;
     uint8_t q = 0;
 
+    gotoxy(MENUX1 + INCRX + (k<<1), MENUY1 + 38);
+    printf("<<");
     while(1) {
         q = readJoyStick();
         if (q == 1) { //Up
@@ -113,9 +116,9 @@ void chooseOptions(struct game_state_t* gs) {
             printf("<<");                   // Laver pilen
         } else if (q == 8) { //Right - Select
             if (k == 1) {
-                changeSpeed(gs);
+                toggleMirror(gs);
             } else {
- //               toggleMirrorMode(gs);
+                changeSpeed(gs);
             }
         } else if (q == 4) {//Left - Go back
             chooseMenuOptions(gs);
@@ -145,7 +148,7 @@ void chooseHelp(struct game_state_t* gs) {
     }
 }
 
-void chooseGameOver(struct game_state_t* gs, uint8_t* buffer){
+void chooseGameOver(struct game_state_t* gs){
     uint8_t k = 1;
     uint8_t q = 0;
     int8_t i, j;
@@ -183,9 +186,78 @@ void chooseGameOver(struct game_state_t* gs, uint8_t* buffer){
             if (k == 1) {
                 playGame(gs); //Loader det sidst tabte level
             } else {
-                initDisplay(buffer);
+                initDisplay(gs->buffer);
                 chooseMenuOptions(gs); //Går til menuen og uploader scoren
             }
+        }
+    }
+}
+
+void chooseGameWon(struct game_state_t* gs){
+    uint8_t k = 1;
+    uint8_t q = 0;
+    int8_t i, j;
+
+    //Sammenligner scoren med tidligere highscores
+    for (i = 0; i < 5; i++){
+        if (gs->points > gs->highscores[i]){
+            for(j = 4; j >= i; j--){//Rykker tidligere highscores under den nye highscore én ned
+                gs->highscores[j] = gs->highscores[j-1];
+            }
+            gs->highscores[i] = gs->points;  //Indsætter den nye highscore
+            break;
+        }
+    }
+    gs->points = 0;//Resetter scoren efter et tabt spil
+
+    drawGameWonWindow();
+    gotoxy(MENUX1 + INCRX + 2 + (k<<1), MENUY1 + 35);
+    printf("<<");
+    while(1) {
+        q = readJoyStick();
+        if (q == 1) {
+            gotoxy(MENUX1 + INCRX + 2 + (k<<1), MENUY1 + 35);
+            printf("  ");                   //Fjerner pilen
+            k = 1;
+            gotoxy(MENUX1 + INCRX + 2 + (k<<1), MENUY1 + 35);
+            printf("<<");                   //Laver pilen
+        } else if (q == 2) {
+            gotoxy(MENUX1 + INCRX + 2 + (k<<1), MENUY1 + 35);
+            printf("  ");                   //Fjerner pilen
+            k = 2;
+            gotoxy(MENUX1 + INCRX + 2 + (k<<1), MENUY1 + 35);
+            printf("<<");                   //Laver pilen
+        } else if (q == 8) {
+            if (k == 1) {
+                gs->currentlevel = gs->startlevel;
+                playGame(gs); //Loader det level  man startede på
+            } else {
+                initDisplay(gs->buffer);
+                chooseMenuOptions(gs); //Går til menuen og uploader scoren
+            }
+        }
+    }
+}
+
+void toggleMirror(struct game_state_t* gs){
+    static uint8_t k = 0;//Bruges til at sætte hastighed
+    uint8_t q = 0;
+
+    while(1) {
+        q = readJoyStick();
+        if (q == 1) {
+            gotoxy(30+INCRX+2,100+33);
+            printf("   ");
+            k = 1;
+            gotoxy(30+INCRX+2,100+33);
+            printf("On");
+        } else if (q == 2) {
+            k = 0;
+            gotoxy(30+INCRX+2,100+33);
+            printf("Off");
+        } else if (q == 4) {
+            gs->mirror = k;
+            chooseOptions(gs);
         }
     }
 }
@@ -199,13 +271,13 @@ void changeSpeed(struct game_state_t* gs){
         if (q == 1) {
             if (k < 5){
                 k++;
-                gotoxy(30+INCRX+2,100+35);
+                gotoxy(30+INCRX+4,100+34);
                 printf("%d", k);
             }
         } else if (q == 2) {
             if (k > 1) {
                 k--;
-                gotoxy(30+INCRX+2,100+35);
+                gotoxy(30+INCRX+4,100+34);
                 printf("%d", k);
             }
         } else if (q == 4) {
@@ -218,6 +290,7 @@ void changeSpeed(struct game_state_t* gs){
 
 void drawMenuWindow() {
     char str[] = " Menu ";
+    fgcolor(15);
 
     window(MENUX1, MENUY1, MENUX2, MENUY2, str, 1);
     gotoxy(MENUX1+INCRX+2,MENUY1+10);
@@ -249,14 +322,18 @@ void drawPlayWindow() {
 
 
 
-void drawOptionWindow(uint8_t speed) {
+void drawOptionWindow(struct game_state_t* gs) {
     char str[] = " Options ";
 
     window(MENUX1, MENUY1, MENUX2, MENUY2, str, 1);
     gotoxy(MENUX1+INCRX+2,MENUY1+20);
-    printf("Mirrormode: "); //Skal kunne toggles mellem On/Off
+    if (gs->mirror){
+        printf("Mirrormode:  On");
+    } else {
+        printf("Mirrormode:  Off");
+    }
     gotoxy(MENUX1+INCRX+4,MENUY1+20);
-    printf("Speed:        %d", speed);
+    printf("Speed:        %d", gs->speed);
 }
 
 
@@ -322,6 +399,18 @@ void drawGameOverWindow() {
     window(MENUX1, MENUY1, MENUX2, MENUY2, str, 1);
     gotoxy(MENUX1+INCRX+2,MENUY1+20);
     printf("Git gut, skrubbe!");
+    gotoxy(MENUX1+INCRX+4,MENUY1+20);
+    printf("Play again?");
+    gotoxy(MENUX1+INCRX+6,MENUY1+20);
+    printf("Go to Menu");
+}
+
+void drawGameWonWindow(){
+    char str[] = " Game Won ";
+    //Game won
+    window(MENUX1, MENUY1, MENUX2, MENUY2, str, 1);
+    gotoxy(MENUX1+INCRX+2,MENUY1+17);
+    printf("U got gut, skrubbe!");
     gotoxy(MENUX1+INCRX+4,MENUY1+20);
     printf("Play again?");
     gotoxy(MENUX1+INCRX+6,MENUY1+20);

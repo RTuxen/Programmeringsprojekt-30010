@@ -241,6 +241,7 @@ int main(void)
     init_spi_lcd();//Initialisere LCD
     struct game_state_t gs;//Danner et game state struct
     initGameState(&gs);//Initialisere game statet
+    clrscr();
     chooseMenuOptions(&gs);
 
 //    struct game_state_t gs;

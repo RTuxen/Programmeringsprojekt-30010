@@ -227,41 +227,45 @@ int8_t readJoyStickContinous(){
     if (valCenter){
         direction += 16;
     }
-
     return direction;
-
 }
 
 int8_t readJoyStick(){
+    static uint8_t time = 0;
     static uint8_t old_direction;
+    static uint8_t oldold_direction;
     uint8_t direction = 0;
-    uint16_t valRight = GPIOC->IDR & (0x0001 << 0);
-    uint16_t valDown = GPIOB->IDR & (0x0001 << 0);
-    uint16_t valCenter = GPIOB->IDR & (0x0001 << 5);
-    uint16_t valLeft = GPIOC->IDR & (0x0001 << 1);
     uint16_t valUp = GPIOA->IDR & (0x0001 << 4);
+    uint16_t valDown = GPIOB->IDR & (0x0001 << 0);
+    uint16_t valLeft = GPIOC->IDR & (0x0001 << 1);
+    uint16_t valRight = GPIOC->IDR & (0x0001 << 0);
+    uint16_t valCenter = GPIOB->IDR & (0x0001 << 5);
 
     if (valUp){
-        direction += 1;
+        direction = 1;
     }
     if (valDown){
-        direction += 2;
+        direction = 2;
     }
     if (valLeft){
-        direction += 4;
+        direction = 4;
     }
     if (valRight){
-        direction += 8;
+        direction = 8;
     }
     if (valCenter){
-        direction += 16;
+        direction = 16;
     }
-
     if (old_direction != direction) {
-        old_direction = direction;
-        return direction;
+        time = tid.milliseconds;
     }
 
+    if (tid.milliseconds >=  time+30){
+        if (oldold_direction != direction) {
+            oldold_direction = direction;
+            return direction;
+        }
+    }
     old_direction = direction;
     return 32;
 }

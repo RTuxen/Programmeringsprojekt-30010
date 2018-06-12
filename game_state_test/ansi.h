@@ -1,7 +1,6 @@
 #ifndef _ANSI_H_
 #define _ANSI_H_
 
-
 #include <string.h>
 #include "LUT.h"
 #include "struct.h"
@@ -21,6 +20,8 @@ void inverse (int8_t on);
 void saveCursor();
 void getSavedCursor();
 void moveCursor(char dir, unsigned char n);
+void hideCursor();
+void showCursor();
 
 
 #endif /* _ANSI_H_ */

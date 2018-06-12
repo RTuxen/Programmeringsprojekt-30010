@@ -10,8 +10,8 @@
 
 void initGameState(struct game_state_t* gs);
 void initBall (struct ball_t* ball, int32_t x, int32_t y, int32_t dx, int32_t dy);
-void initPlayer(struct player_t * striker, uint16_t x, uint16_t y, uint8_t levelNum);
-void initLevel(struct ball_t *ball, struct player_t *striker, struct level_t *level);
+void initPlayer(struct player_t * striker, uint16_t x, uint16_t y);
+void initLevel(struct ball_t *ball, struct player_t *striker, struct level_t *level, struct game_state_t* gs);
 void playGame(struct game_state_t* gs);
 void restartLevel(struct ball_t *ball, struct player_t *striker, struct level_t *level);
 

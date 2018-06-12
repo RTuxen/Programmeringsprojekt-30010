@@ -8,7 +8,7 @@ volatile uint8_t updateGame = 0;//Variabel til spil update
 void initTimer100Hz(){
     RCC->APB1ENR |= RCC_APB1Periph_TIM2; // Enable clock line to timer 2;
     TIM2->CR1 = 0x0000; // Configure timer 2 - disabled
-    TIM2->ARR = 0x00009C3F; // Set reload value to 39999
+    TIM2->ARR = 0x00000F9F; // Set reload value to 39999
     TIM2->PSC = 0x000F; // Set prescale value to 15
     TIM2->CR1 = 0x0001; // Configure timer 2 - enabled
     TIM2->DIER |= 0x0001; // Enable timer 2 interrupts
@@ -19,29 +19,29 @@ void initTimer100Hz(){
 
 
 void TIM2_IRQHandler(void){
-    tid.centiseconds++;
+    tid.milliseconds++;
     slide++;
     updateGame++;
-    if (updateGame >= 6){//Spillet updateres med 25Hz
+    if (updateGame >= 050){//Spillet updateres
         gameflag = 1;
         updateGame = 0;
     }
-//    if (slide >= 5) {//Bestemmer opdateringshastigheden af LCD
-//        flag = 1;
-//        slide = 0;
-//    }
-//    if (tid.centiseconds >= 100) {
-//        tid.seconds++;
-//        tid.centiseconds = 0;
-//    }
-//    if (tid.seconds >= 60) {
-//        tid.minutes++;
-//        tid.seconds=0;
-//    }
-//    if (tid.minutes == 60) {
-//        tid.hours++;
-//        tid.minutes=0;
-//    }
+    if (slide >= 50) {//Bestemmer opdateringshastigheden af LCD
+        flag = 1;
+        slide = 0;
+    }
+    if (tid.milliseconds >= 1000) {
+        tid.seconds++;
+        tid.milliseconds = 0;
+    }
+    if (tid.seconds >= 60) {
+        tid.minutes++;
+        tid.seconds=0;
+    }
+    if (tid.minutes == 60) {
+        tid.hours++;
+        tid.minutes=0;
+    }
 
     TIM2->SR &= ~0x0001; //Clear interrupt bit
 }
@@ -60,8 +60,8 @@ void printTid(){
 
 }
 
-void printSplit (uint8_t c, uint8_t s, uint8_t m, uint8_t h){
-    printf("%d:%02d:%02d.%02d", h, m, s, c);
+void printSplit (uint16_t ms, uint8_t s, uint8_t m, uint8_t h){
+    printf("%d:%02d:%02d.%02d", h, m, s, ms);
 }
 
 
@@ -74,23 +74,23 @@ void stopWatchControl(int8_t value){
         }
     } else if (value == 4){ // Left - prints split 1
         NVIC_DisableIRQ(TIM2_IRQn);
-        int8_t c = tid.centiseconds;
+        uint16_t ms = tid.milliseconds;
         int8_t s = tid.seconds;
         int8_t m = tid.minutes;
         int8_t h = tid.hours;
         NVIC_EnableIRQ(TIM2_IRQn);
-        printSplit(c,s,m,h);
+        printSplit(ms,s,m,h);
     } else if (value == 8){ // Right - Prints split 2
         NVIC_DisableIRQ(TIM2_IRQn);
-        int8_t c = tid.centiseconds;
+        uint16_t ms = tid.milliseconds;
         int8_t s = tid.seconds;
         int8_t m = tid.minutes;
         int8_t h = tid.hours;
         NVIC_EnableIRQ(TIM2_IRQn);
-        printSplit(c,s,m,h);
+        printSplit(ms,s,m,h);
     } else if (value == 2){ // Down - Resets timer
         TIM2->CR1 = 0x0000;
-        tid.centiseconds = 0;
+        tid.milliseconds = 0;
         tid.seconds = 0;
         tid.minutes = 0;
         tid.hours = 0;

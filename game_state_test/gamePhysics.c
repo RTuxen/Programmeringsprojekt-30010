@@ -13,40 +13,40 @@ void initBall (struct ball_t* ball, int32_t x, int32_t y, int32_t dx, int32_t dy
     ball->vec.y = FIX14_MULT(dy << 14, 5000);
 }
 
-void initPlayer(struct player_t * striker, uint16_t x, uint16_t y, uint8_t levelNum){
+void initPlayer(struct player_t * striker, uint16_t x, uint16_t y){
     striker->x = x;
     striker->y = y;
-    striker->level = levelNum;
 }
 
 void initGameState(struct game_state_t* gs){
     gs->speed = 1;
     gs->mirror = 0;
-    gs->highscores[5] = 0;
+    memset(gs->highscores, 0x00, 5);
     gs->points = 0;
-    gs->level = 0;
+    gs->lives = 0;
+    gs->startlevel = 0;
+    gs->currentlevel = 0;
 }
 
 void playGame(struct game_state_t* gs){
     struct ball_t ball;
     struct player_t striker;
     struct level_t bane;
-    static uint8_t buffer[512];
     int16_t slut=0;
     int32_t timerCount=0;
 
-    //Initialisere LCD
+    gs->lives = 1;//Sætter spillerens liv
     initBall(&ball,X2-7,Y2/2,0,0);//Initialisere bolden
-    initPlayer(&striker,X2-5,Y2/2, gs->level-1);//Initialisere strikeren
-    initLevel(&ball,&striker,&bane);//Initialisere blokkene
-    initDisplay(buffer);
+    initPlayer(&striker,X2-5,Y2/2);//Initialisere strikeren
+    initLevel(&ball,&striker,&bane, gs);//Initialisere blokkene
+    initDisplay(gs->buffer);
     while(1){
             if (++timerCount==100000ul){
                 updatePlayerPos(&striker);//Updatere strikeren
                 slut = updateBallPos(&ball,&striker,&bane, gs);//Updatere bolden og blokkene
-                LCD_Printer(striker.level, striker.lives, gs->points, buffer);//Viser level, liv og point på LCD
+                LCD_Printer(gs);//Viser level, liv og point på LCD
                 if (slut){
-                    chooseGameOver(gs, buffer);//Stopper spillet, hvis liv = 0
+                    chooseGameOver(gs);//Stopper spillet, hvis liv = 0
                 }
                 timerCount=0;
             }
@@ -54,14 +54,14 @@ void playGame(struct game_state_t* gs){
 
 }
 
-void initLevel(struct ball_t *ball, struct player_t *striker, struct level_t *level){
+void initLevel(struct ball_t *ball, struct player_t *striker, struct level_t *level, struct game_state_t* gs){
         clrscr();
         uint8_t i;
 
         level->lives = 0;
 
         for (i = 0; i < 32; i++) {
-            level->blocks[i] = Level[striker->level][i];
+            level->blocks[i] = Level[gs->currentlevel][i];
             if (level->blocks[i].lives > 0) {
                 level->lives += level->blocks[i].lives;
             }
@@ -131,11 +131,11 @@ uint16_t updateBallPos(struct ball_t * ball,struct player_t *striker, struct lev
                 ball->y = Y1+1;
             }
         } else if (wallhit ==2){ // Ball dead
-            if ( striker->lives > 1){
-                    striker->lives -=1;
+            if ( gs->lives > 1){
+                    gs->lives -=1;
                     restartLevel(ball,striker,level);
             } else{
-                striker->lives -=1;
+                gs->lives -=1;
                 return 1;
             }
         }
@@ -186,13 +186,6 @@ void updatePlayerPos(struct player_t *striker){
             striker->y +=1;
         }
     }
-
-
-//    if( oldPlayerx != striker->x || oldPLayery != striker->y){
-//        gotoxy(oldPlayerx,oldPLayery-7);
-//        printf("               ");
-//        drawPlayer(striker);
-//    }
 }
 
 uint16_t checkWallCollision(struct ball_t * ball){

@@ -25,7 +25,8 @@ struct ball_t {
 
 
 struct timepoint {
-    uint8_t hours, minutes, seconds, centiseconds;
+    uint8_t hours, minutes, seconds;
+    uint16_t milliseconds;
 };
 volatile struct timepoint tid; //Global variables
 
@@ -33,8 +34,6 @@ volatile struct timepoint tid; //Global variables
 struct player_t {
 	int32_t x;
 	int32_t y;
-    int8_t level;
-    int8_t lives;
 };
 
 struct block_t {
@@ -53,7 +52,10 @@ struct game_state_t {
  	uint8_t mirror;
  	uint8_t highscores[5];
 	uint8_t points;
-	int8_t level;
+	uint8_t lives;
+	uint8_t startlevel;
+	uint8_t currentlevel;
+	uint8_t buffer[512];
 };
 
 #endif /*_STRUCT_H_*/
