@@ -17,10 +17,12 @@ void clreol ();
 void gotoxy(uint16_t x, uint16_t y);
 void underline (int8_t on);
 void blink (int8_t on);
-void inverse (int8_t on);
+void inverse (int8_t on);   
 void saveCursor();
 void getSavedCursor();
 void moveCursor(char dir, unsigned char n);
+void hideCursor();
+void showCursor();
 
 
 #endif /* _ANSI_H_ */
