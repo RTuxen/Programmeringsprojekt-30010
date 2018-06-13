@@ -11,7 +11,7 @@
 #include "graphics.h"
 
 void initDisplay(uint8_t *buffer);
-void LCD_Printer(uint8_t level, uint8_t lives, uint8_t points, uint8_t* buffer);
+void LCD_Printer(struct game_state_t* gs);
 void lcd_write_string(uint8_t *buffer, char *text, uint8_t slice, uint8_t line);
 void lcd_updateline(uint8_t *buffer, uint8_t line);
 void lcd_update(uint8_t *buffer);
