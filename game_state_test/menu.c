@@ -160,6 +160,7 @@ void chooseGameOver(struct game_state_t* gs){
                 gs->highscores[j] = gs->highscores[j-1];
             }
             gs->highscores[i] = gs->points;  //Indsætter den nye highscore
+            writeFlash(gs);
             break;
         }
     }
@@ -205,10 +206,12 @@ void chooseGameWon(struct game_state_t* gs){
                 gs->highscores[j] = gs->highscores[j-1];
             }
             gs->highscores[i] = gs->points;  //Indsætter den nye highscore
+            writeFlash(gs);
             break;
         }
     }
-    gs->points = 0;//Resetter scoren efter et tabt spil
+    gs->points = 0;//Resetter scoren efter et vundet spil
+
 
     drawGameWonWindow();
     gotoxy(MENUX1 + INCRX + 2 + (k<<1), MENUY1 + 35);
@@ -337,7 +340,7 @@ void drawOptionWindow(struct game_state_t* gs) {
 }
 
 
-void drawHighscoreWindow(uint8_t *highscores) {
+void drawHighscoreWindow(uint16_t *highscores) {
     char str[] = " Highscores ";
 
     window(MENUX1, MENUY1, MENUX2, MENUY2, str, 1);

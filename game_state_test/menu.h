@@ -8,6 +8,7 @@
 #include "ansi.h"
 #include "display.h"
 #include "gamePhysics.h"
+#include "flashmemory.h"
 
 void chooseMenuOptions(struct game_state_t* gs);
 void chooseLevel(struct game_state_t* gs);
@@ -23,7 +24,7 @@ void changeSpeed(struct game_state_t* gs);
 void drawMenuWindow();
 void drawPlayWindow();
 void drawOptionWindow(struct game_state_t* gs);
-void drawHighscoreWindow(uint8_t* highscores);
+void drawHighscoreWindow(uint16_t* highscores);
 void drawHelpWindow();
 void drawGameOverWindow();
 void drawGameWonWindow();
