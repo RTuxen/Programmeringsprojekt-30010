@@ -1,28 +1,31 @@
-#ifndef _ANSI_H_
-#define _ANSI_H_
+#ifndef _MENU_H_
+#define _MENU_H_
+
+#include "stm32f30x_conf.h" // STM32 config
+#include "30010_io.h" // Input/output library for this course
+#include "graphics.h"
+#include "IO.h"
+#include "ansi.h"
+#include "display.h"
+#include "gamePhysics.h"
+
+void chooseMenuOptions(struct game_state_t* gs);
+void chooseLevel(struct game_state_t* gs);
+void chooseOptions(struct game_state_t* gs);
+void chooseHighscore(struct game_state_t* gs);
+void chooseHelp(struct game_state_t* gs);
+void chooseGameOver(struct game_state_t* gs);
+void chooseGameWon(struct game_state_t* gs);
+void toggleMirror(struct game_state_t* gs);
+void changeSpeed(struct game_state_t* gs);
 
 
-#include <string.h>
-#include "LUT.h"
-#include "struct.h"
-#include "timer.h"
-#define ESC 0x1B
+void drawMenuWindow();
+void drawPlayWindow();
+void drawOptionWindow(struct game_state_t* gs);
+void drawHighscoreWindow(uint8_t* highscores);
+void drawHelpWindow();
+void drawGameOverWindow();
+void drawGameWonWindow();
 
-void fgcolor(uint8_t foreground);
-void bgcolor (uint8_t background);
-void color (uint8_t foreground, uint8_t background);
-void resetbgcolor();
-void clrscr();
-void clreol ();
-void gotoxy(uint16_t x, uint16_t y);
-void underline (int8_t on);
-void blink (int8_t on);
-void inverse (int8_t on);
-void saveCursor();
-void getSavedCursor();
-void moveCursor(char dir, unsigned char n);
-void hideCursor();
-void showCursor();
-
-
-#endif /* _ANSI_H_ */
+#endif
