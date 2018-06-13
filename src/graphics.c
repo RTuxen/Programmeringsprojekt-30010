@@ -275,7 +275,7 @@ void drawball(struct ball_t * ball){
 }
 
 void drawPlayer(struct player_t *striker){
-    fgcolor(1);
+    fgcolor(15);
     gotoxy(striker->x,striker->y-7);
     printf("%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c",219,219,219,219,219,219,219,219,219,219,219,219,219,219,219);
 
