@@ -1,374 +1,356 @@
-#include "gamePhysics.h"
+#include "IO.h"
 
-void initBall (struct ball_t* ball, int32_t x, int32_t y, int32_t speed){
-    ball->x = x << 14;
-    ball-> y = y << 14;
-    ball->speed = FIX14_MULT(speed << 14, 7000);
-    ball->angle = (tid.milliseconds &=0x7F)+192; // Angle between 192 and 319
-//    ball->vec.x = FIX14_MULT(dx << 14, 5000);
-//    ball->vec.y = FIX14_MULT(dy << 14, 5000);
+
+
+void initJoystick(){
+    RCC->AHBENR |= RCC_AHBPeriph_GPIOA; // Enable clock for GPIO Port A
+    RCC->AHBENR |= RCC_AHBPeriph_GPIOB; // Enable clock for GPIO Port B
+    RCC->AHBENR |= RCC_AHBPeriph_GPIOC; // Enable clock for GPIO Port C
+
+
+
+	/***************************/
+	/* right joystick	       */
+	/***************************/
+    // Set pin PC0 to input
+    GPIOC->MODER &= ~(0x00000003 << (0 * 2)); // Clear mode register
+    GPIOC->MODER |= (0x00000000 << (0 * 2));
+    // Set mode register (0x00 - Input, 0x01 - Output, 0x02 - Alternate Function, 0x03 - Analog in/out)
+    GPIOC->PUPDR &= ~(0x00000003 << (0 * 2)); // Clear push/pull register
+    GPIOC->PUPDR |= (0x00000002 << (0 * 2));
+    // Set push/pull register (0x00 - No pull, 0x01 - Pull-up, 0x02 - Pull-down)
+
+    GPIOC->ODR |= (0x0001 << 2); //Set pin PC0 to high
+
+
+ // Set pin PC2 to output
+    GPIOC->OSPEEDR &= ~(0x00000003 << (2 * 2)); // Clear speed register
+    GPIOC->OSPEEDR |= (0x00000002 << (2 * 2));
+    // set speed register (0x01 - 10MHz, 0x02 - 2 MHz, 0x03 - 50 MHz)
+    GPIOC->OTYPER &= ~(0x0001 << (2)); // Clear output type register
+    GPIOC->OTYPER |= (0x0000 << (2));
+    // Set output type register (0x00 - Push pull, 0x01 - Open drain)
+    GPIOC->MODER &= ~(0x00000003 << (2 * 2)); // Clear mode register
+    GPIOC->MODER |= (0x00000001 << (2 * 2));
+    // Set mode register (0x00 - Input, 0x01 - Output, 0x02 - Alternate Function, 0x03 - Analog in/out)
+
+	/***************************/
+	/* left joystick	       */
+	/***************************/
+    // Set pin PC1 to input
+    GPIOC->MODER &= ~(0x00000003 << (1 * 2)); // Clear mode register
+    GPIOC->MODER |= (0x00000000 << (1 * 2));
+    // Set mode register (0x00 - Input, 0x01 - Output, 0x02 - Alternate Function, 0x03 - Analog in/out)
+    GPIOC->PUPDR &= ~(0x00000003 << (1 * 2)); // Clear push/pull register
+    GPIOC->PUPDR |= (0x00000002 << (1 * 2));
+    // Set push/pull register (0x00 - No pull, 0x01 - Pull-up, 0x02 - Pull-down)
+
+
+    GPIOC->ODR |= (0x0001 << 3); //Set pin PC1 to high
+
+
+ // Set pin PC3 to output
+    GPIOC->OSPEEDR &= ~(0x00000003 << (3 * 2)); // Clear speed register
+    GPIOC->OSPEEDR |= (0x00000002 << (3 * 2));
+    // set speed register (0x01 - 10MHz, 0x02 - 2 MHz, 0x03 - 50 MHz)
+    GPIOC->OTYPER &= ~(0x0001 << (3)); // Clear output type register
+    GPIOC->OTYPER |= (0x0000 << (3));
+    // Set output type register (0x00 - Push pull, 0x01 - Open drain)
+    GPIOC->MODER &= ~(0x00000003 << (3 * 2)); // Clear mode register
+    GPIOC->MODER |= (0x00000001 << (3 * 2));
+    // Set mode register (0x00 - Input, 0x01 - Output, 0x02 - Alternate Function, 0x03 - Analog in/out)
+
+
+	/***************************/
+	/* up joystick	           */
+	/***************************/
+// Set pin PA4 to input
+    GPIOA->MODER &= ~(0x00000003 << (4 * 2)); // Clear mode register
+    GPIOA->MODER |= (0x00000000 << (4 * 2));
+    // Set mode register (0x00 - Input, 0x01 - Output, 0x02 - Alternate Function, 0x03 - Analog in/out)
+    GPIOA->PUPDR &= ~(0x00000003 << (4 * 2)); // Clear push/pull register
+    GPIOA->PUPDR |= (0x00000002 << (4 * 2));
+    // Set push/pull register (0x00 - No pull, 0x01 - Pull-up, 0x02 - Pull-down)
+
+
+    GPIOA->ODR |= (0x0001 << 5); //Set pin PA4 to high
+
+
+ // Set pin PA5 to output
+    GPIOA->OSPEEDR &= ~(0x00000003 << (5 * 2)); // Clear speed register
+    GPIOA->OSPEEDR |= (0x00000002 << (5 * 2));
+    // set speed register (0x01 - 10MHz, 0x02 - 2 MHz, 0x03 - 50 MHz)
+    GPIOA->OTYPER &= ~(0x0001 << (5)); // Clear output type register
+    GPIOA->OTYPER |= (0x0000 << (5));
+    // Set output type register (0x00 - Push pull, 0x01 - Open drain)
+    GPIOA->MODER &= ~(0x00000003 << (5 * 2)); // Clear mode register
+    GPIOA->MODER |= (0x00000001 << (5 * 2));
+    // Set mode register (0x00 - Input, 0x01 - Output, 0x02 - Alternate Function, 0x03 - Analog in/out)
+
+	/***************************/
+	/* center joystick	       */
+	/***************************/
+// Set pin PB5 to input
+    GPIOB->MODER &= ~(0x00000003 << (5 * 2)); // Clear mode register
+    GPIOB->MODER |= (0x00000000 << (5 * 2));
+    // Set mode register (0x00 - Input, 0x01 - Output, 0x02 - Alternate Function, 0x03 - Analog in/out)
+    GPIOB->PUPDR &= ~(0x00000003 << (5 * 2)); // Clear push/pull register
+    GPIOB->PUPDR |= (0x00000002 << (5 * 2));
+    // Set push/pull register (0x00 - No pull, 0x01 - Pull-up, 0x02 - Pull-down)
+
+
+    GPIOB->ODR |= (0x0001 << 6); //Set pin PB5 to high
+
+
+ // Set pin PB6 to output
+    GPIOB->OSPEEDR &= ~(0x00000003 << (6 * 2)); // Clear speed register
+    GPIOB->OSPEEDR |= (0x00000002 << (6 * 2));
+    // set speed register (0x01 - 10MHz, 0x02 - 2 MHz, 0x03 - 50 MHz)
+    GPIOB->OTYPER &= ~(0x0001 << (6)); // Clear output type register
+    GPIOB->OTYPER |= (0x0000 << (6));
+    // Set output type register (0x00 - Push pull, 0x01 - Open drain)
+    GPIOB->MODER &= ~(0x00000003 << (6 * 2)); // Clear mode register
+    GPIOB->MODER |= (0x00000001 << (6 * 2));
+    // Set mode register (0x00 - Input, 0x01 - Output, 0x02 - Alternate Function, 0x03 - Analog in/out)
+
+ 	/***************************/
+	/* down joystick	       */
+	/***************************/
+ // Set pin PB0 to input
+    GPIOB->MODER &= ~(0x00000003 << (0 * 2)); // Clear mode register
+    GPIOB->MODER |= (0x00000000 << (0 * 2));
+    // Set mode register (0x00 - Input, 0x01 - Output, 0x02 - Alternate Function, 0x03 - Analog in/out)
+    GPIOB->PUPDR &= ~(0x00000003 << (0 * 2)); // Clear push/pull register
+    GPIOB->PUPDR |= (0x00000002 << (0 * 2));
+    // Set push/pull register (0x00 - No pull, 0x01 - Pull-up, 0x02 - Pull-down)
+
+
+
+    GPIOB->ODR |= (0x0001 << 1); //Set pin PB0 to high
+
+
+ // Set pin PB1 to output
+    GPIOB->OSPEEDR &= ~(0x00000003 << (1 * 2)); // Clear speed register
+    GPIOB->OSPEEDR |= (0x00000002 << (1 * 2));
+    // set speed register (0x01 - 10MHz, 0x02 - 2 MHz, 0x03 - 50 MHz)
+    GPIOB->OTYPER &= ~(0x0001 << (1)); // Clear output type register
+    GPIOB->OTYPER |= (0x0000 << (1));
+    // Set output type register (0x00 - Push pull, 0x01 - Open drain)
+    GPIOB->MODER &= ~(0x00000003 << (1 * 2)); // Clear mode register
+    GPIOB->MODER |= (0x00000001 << (1 * 2));
+    // Set mode register (0x00 - Input, 0x01 - Output, 0x02 - Alternate Function, 0x03 - Analog in/out)
 }
 
-void initPlayer(struct player_t * striker, uint16_t x, uint16_t y){
-    striker->x = x;
-    striker->y = y;
-}
+void initLED(){
+    RCC->AHBENR |= RCC_AHBPeriph_GPIOA; // Enable clock for GPIO Port A
+    RCC->AHBENR |= RCC_AHBPeriph_GPIOB; // Enable clock for GPIO Port B
+    RCC->AHBENR |= RCC_AHBPeriph_GPIOC; // Enable clock for GPIO Port C
 
-void initGameState(struct game_state_t* gs){
-    gs->speed = 1;
-    gs->mirror = 0;
-    memset(gs->highscores, 0x00, 5);
-    gs->points = 0;
-    gs->lives = 0;
-    gs->startlevel = 0;
-    gs->currentlevel = 0;
-}
+ 	/***************************/
+	/* Red LED	               */
+	/***************************/
 
-void playGame(struct game_state_t* gs){
-    struct ball_t ball;
-    struct player_t striker;
-    struct level_t bane;
-    int16_t slut=0;
-
-    setTimer(gs->speed, gs->currentlevel);
-    gs->lives = 1;//Sætter spillerens liv
-    initBall(&ball,X2-7,Y2/2,0);//Initialisere bolden
-    initPlayer(&striker,X2-5,Y2/2);//Initialisere strikeren
-    initLevel(&ball,&striker,&bane, gs);//Initialisere blokkene
-    initDisplay(gs->buffer);
-    while(1){
-            if (get_game_flag){
-                updatePlayerPos(&striker);//Updatere strikeren
-                slut = updateBallPos(&ball,&striker,&bane, gs);//Updatere bolden og blokkene
-                LCD_Printer(gs);//Viser level, liv og point på LCD
-                bossKey();
-
-                gotoxy(30,5);
-                printf("%4ld",ball.angle);
-                if (slut){
-                    chooseGameOver(gs);//Stopper spillet, hvis liv = 0
-                }
-            }
-        }
-}
-
-void initLevel(struct ball_t *ball, struct player_t *striker, struct level_t *level, struct game_state_t* gs){
-        clrscr();
-        uint8_t i;
-
-        level->lives = 0;
-
-        for (i = 0; i < 32; i++) {
-            level->blocks[i] = Level[gs->currentlevel-1][i];
-            if (level->blocks[i].lives > 0) {
-                level->lives += level->blocks[i].lives;
-            }
-        }
-        drawWalls();
-        drawBlockMap(level->blocks);
-        drawball(ball);
-        drawPlayer(striker);
-}
+    GPIOB->ODR |= (0x0001 << 4); //Set pin PB0 to high
 
 
-void restartLevel(struct ball_t *ball, struct player_t *striker, struct level_t *level){
-        clrscr();
+ // Set pin PB4 to output
+    GPIOB->OSPEEDR &= ~(0x00000003 << (4 * 2)); // Clear speed register
+    GPIOB->OSPEEDR |= (0x00000002 << (4 * 2));
+    // set speed register (0x01 - 10MHz, 0x02 - 2 MHz, 0x03 - 50 MHz)
+    GPIOB->OTYPER &= ~(0x0001 << (4)); // Clear output type register
+    GPIOB->OTYPER |= (0x0000 << (4));
+    // Set output type register (0x00 - Push pull, 0x01 - Open drain)
+    GPIOB->MODER &= ~(0x00000003 << (4 * 2)); // Clear mode register
+    GPIOB->MODER |= (0x00000001 << (4 * 2));
+    // Set mode register (0x00 - Input, 0x01 - Output, 0x02 - Alternate Function, 0x03 - Analog in/out)
 
-        initBall(ball,X2-7,Y2/2,0);
-        striker->x =X2-5;
-        striker->y = Y2/2;
+ 	/***************************/
+	/* Green LED	           */
+	/***************************/
+
+    GPIOC->ODR |= (0x0001 << 7); //Set pin PB0 to high
 
 
-        drawWalls();
-        drawBlockMap(level->blocks);
-        drawball(ball);
-        drawPlayer(striker);
+ // Set pin PC7 to output
+    GPIOC->OSPEEDR &= ~(0x00000003 << (7 * 2)); // Clear speed register
+    GPIOC->OSPEEDR |= (0x00000002 << (7 * 2));
+    // set speed register (0x01 - 10MHz, 0x02 - 2 MHz, 0x03 - 50 MHz)
+    GPIOC->OTYPER &= ~(0x0001 << (7)); // Clear output type register
+    GPIOC->OTYPER |= (0x0000 << (7));
+    // Set output type register (0x00 - Push pull, 0x01 - Open drain)
+    GPIOC->MODER &= ~(0x00000003 << (7 * 2)); // Clear mode register
+    GPIOC->MODER |= (0x00000001 << (7 * 2));
+    // Set mode register (0x00 - Input, 0x01 - Output, 0x02 - Alternate Function, 0x03 - Analog in/out)
+
+ 	/***************************/
+	/* Blue LED	           */
+	/***************************/
+
+    GPIOA->ODR |= (0x0001 << 9); //Set pin PB0 to high
+
+
+    // Set pin PA9 to output
+    GPIOA->OSPEEDR &= ~(0x00000003 << (9 * 2)); // Clear speed register
+    GPIOA->OSPEEDR |= (0x00000002 << (9 * 2));
+    // set speed register (0x01 - 10MHz, 0x02 - 2 MHz, 0x03 - 50 MHz)
+    GPIOA->OTYPER &= ~(0x0001 << (9)); // Clear output type register
+    GPIOA->OTYPER |= (0x0000 << (9));
+    // Set output type register (0x00 - Push pull, 0x01 - Open drain)
+    GPIOA->MODER &= ~(0x00000003 << (9 * 2)); // Clear mode register
+    GPIOA->MODER |= (0x00000001 << (9 * 2));
+    // Set mode register (0x00 - Input, 0x01 - Output, 0x02 - Alternate Function, 0x03 - Analog in/out)
 }
 
 
 
 
-uint16_t updateBallPos(struct ball_t * ball,struct player_t *striker, struct level_t *level, struct game_state_t * gs){
-        uint16_t playerhit = checkPlayerCollision(ball,striker);
-        uint16_t wallhit = checkWallCollision(ball);
-        checkBlockCollision(ball, level, gs);
+int8_t readJoyStickContinous(){
+    int8_t direction = 0;
+    uint16_t valRight = GPIOC->IDR & (0x0001 << 0);
+    uint16_t valDown = GPIOB->IDR & (0x0001 << 0);
+    uint16_t valCenter = GPIOB->IDR & (0x0001 << 5);
+    uint16_t valLeft = GPIOC->IDR & (0x0001 << 1);
+    uint16_t valUp = GPIOA->IDR & (0x0001 << 4);
 
-        if (ball->angle < 0){
-            ball->angle &= 511; // Makes angle positive
-        }
-        static int32_t oldx, oldy;
-        oldx= ball->x;
-        oldy = ball->y;
-
-
-        if ( ball->speed == 0){
-            ball->x = (striker->x-2) << 14;
-            ball->y = (striker->y) << 14;
-            if ( readJoyStickContinous() == 16){
-                ball->speed = FIX14_MULT(1 << 14, 8000);
-//                ball->vec.x = -FIX14_MULT(1 << 14, 10000);
-//                ball->vec.y = FIX14_MULT(1 << 14, 10000);
-            }
-
-        }
-
-
-
-        ball->x += FIX14_MULT(ball->speed,cosinus(ball->angle));
-        ball->y += FIX14_MULT(ball->speed,sinus(ball->angle));
-
-
-        // Makes sure ball doesn't exceed bounds with larger vectors
-        if (wallhit == 1){
-            if ( (ball->x >> 14) >= X2){
-                ball->x = (X2-1) << 14;
-            }
-            if ( (ball->x >> 14) <= X1){
-                ball->x = (X1+1) << 14;
-            }
-            if ( (ball->y >> 14) >= Y2){
-                ball->y = (Y2-1) << 14;
-            }
-            if ( (ball->y >> 14) <= Y1){
-                ball->y = (Y1+1) << 14;
-            }
-        } else if (wallhit ==2){ // Ball dead
-            if ( gs->lives > 1){
-                    gs->lives -=1;
-                    restartLevel(ball,striker,level);
-            } else{
-                gs->lives -=1;
-                return 1;
-            }
-        }
-
-        if (playerhit){ // If ball hits player
-            ball->x = (striker->x-1) << 14;
-        }
-        if ( oldx != ball->x || oldy != ball->y){
-            gotoxy(oldx >> 14,oldy >> 14);
-            printf(" ");
-            drawball(ball);
-        }
-        return 0;
+    if (valUp){
+        direction += 1;
+    }
+    if (valDown){
+        direction += 2;
+    }
+    if (valLeft){
+        direction += 4;
+    }
+    if (valRight){
+        direction += 8;
+    }
+    if (valCenter){
+        direction += 16;
+    }
+    return direction;
 }
 
-void updatePlayerPos(struct player_t *striker){
-    fgcolor(15);
-    static uint16_t oldPlayerx,oldPLayery;
-    oldPlayerx = striker->x;
-    oldPLayery = striker->y;
+int8_t readJoyStick(){
+    static uint8_t time = 0;
+    static uint8_t old_direction;
+    static uint8_t oldold_direction;
+    uint8_t direction = 0;
+    uint16_t valUp = GPIOA->IDR & (0x0001 << 4);
+    uint16_t valDown = GPIOB->IDR & (0x0001 << 0);
+    uint16_t valLeft = GPIOC->IDR & (0x0001 << 1);
+    uint16_t valRight = GPIOC->IDR & (0x0001 << 0);
+    uint16_t valCenter = GPIOB->IDR & (0x0001 << 5);
 
-    if (readJoyStickContinous() == 4){ //Left
-//        if(oldPLayery-3 >= Y1+8){
-//            gotoxy(oldPlayerx,oldPLayery+7-2);
-//            printf("   ");
-//            moveCursor('D',15+3);
-//            printf("%c%c%c",219,219,219);
-//            striker->y -= 3;
-//        } else
-        if(oldPLayery-1 >= Y1+8){
-            gotoxy(oldPlayerx,oldPLayery+7);
-            printf(" ");
-            moveCursor('D',15+1);
-            printf("%c",219);
-            striker->y -=1;
-        }
-    } else if (readJoyStickContinous() == 8){ // Right
-//        if (oldPLayery+3 <= Y2-7){
-//            gotoxy(oldPlayerx,oldPLayery-7);
-//            printf("   ");
-//            moveCursor('C',15-3);
-//            printf("%c%c%c",219,219,219);
-//            striker->y += 3;
-//        } else
-        if (oldPLayery+1 <= Y2-7){
-            gotoxy(oldPlayerx,oldPLayery-7);
-            printf(" ");
-            moveCursor('C',15-1);
-            printf("%c",219);
-            striker->y +=1;
-        }
+    if (valUp){
+        direction = 1;
+    }
+    if (valDown){
+        direction = 2;
+    }
+    if (valLeft){
+        direction = 4;
+    }
+    if (valRight){
+        direction = 8;
+    }
+    if (valCenter){
+        direction = 16;
+    }
+    if (old_direction != direction) {
+        time = tid.milliseconds;
     }
 
-
-//    if( oldPlayerx != striker->x || oldPLayery != striker->y){
-//        gotoxy(oldPlayerx,oldPLayery-7);
-//        printf("               ");
-//        drawPlayer(striker);
-//    }
-}
-
-uint16_t checkWallCollision(struct ball_t * ball){
-    int8_t i = 0;
-
-    if ( (ball->x+FIX14_MULT(ball->speed,cosinus(ball->angle))) >> 14 <= X1){ // Top wall
-        ball->angle = 256-ball->angle;
-        i = 1;
-    } else if ((ball->x+FIX14_MULT(ball->speed,cosinus(ball->angle))) >>14 >= X2){  // Die condition
-        i = 2;
+    if (tid.milliseconds >=  time+30){
+        if (oldold_direction != direction) {
+            oldold_direction = direction;
+            return direction;
+        }
     }
-    if ( (ball->y+FIX14_MULT(ball->speed,sinus(ball->angle))) >> 14 <= Y1 || (ball->y+FIX14_MULT(ball->speed,sinus(ball->angle))) >> 14 >= Y2 ){  // Left or right wall
-        ball->angle = 512 - ball->angle;
-        i= 1;
+    old_direction = direction;
+    return 32;
+}
+
+void setLed(int8_t value){ // LED turns on at low
+
+    if (value == 0){ //white
+        GPIOB->ODR &= ~RED;
+        GPIOC->ODR &= ~GREEN;
+        GPIOA->ODR &= ~BLUE;
+    } else if(value == 1){ //Red
+        GPIOB->ODR &= ~RED;
+        GPIOC->ODR |= GREEN;
+        GPIOA->ODR |= BLUE;
+    } else if(value == 2){ // GREEN
+        GPIOB->ODR |= RED;
+        GPIOC->ODR &= ~GREEN;
+        GPIOA->ODR |= BLUE;
+    } else if(value == 4){ // BLUE
+        GPIOB->ODR |= RED;
+        GPIOC->ODR |= GREEN;
+        GPIOA->ODR &= ~BLUE;
+    } else if(value == 8){ // Yellow
+        GPIOB->ODR &= ~RED;
+        GPIOC->ODR &= ~GREEN;
+        GPIOA->ODR |= BLUE;
+    } else if(value == 16){ // Magenta
+        GPIOB->ODR &= ~RED;
+        GPIOC->ODR |= GREEN;
+        GPIOA->ODR &= ~BLUE;
+    } else if(value == 5 || value == 6 || value == 9 || value == 10 || value == 24 || value == 17 || value == 18 || value == 19 || value == 20 || value == 21 || value == 22 || value == 25){ // Cyan
+        GPIOB->ODR |= RED;
+        GPIOC->ODR &= ~GREEN;
+        GPIOA->ODR &= ~BLUE;
     }
 
-    return i;
 }
 
-uint16_t checkPlayerCollision(struct ball_t * ball, struct player_t * striker){
-    uint16_t hit = 0;
+void initADC() {
 
-    // Player is divided into 5 sections
-    if((ball->x >> 14) == striker->x || (ball->x+FIX14_MULT(ball->speed,cosinus(ball->angle))) >> 14 == striker->x){
-        if(((ball->y >> 14) >= striker->y-1 && (ball->y >> 14) <= striker->y+1)  || ((ball->y+FIX14_MULT(ball->speed,sinus(ball->angle))) >> 14 >= striker->y-1 && (ball->y+FIX14_MULT(ball->speed,sinus(ball->angle))) >> 14 <= striker->y-1)){
-//Middle
-            ball->angle = 256-ball->angle;
-            hit = 1;
+    RCC->AHBENR |= RCC_AHBPeriph_GPIOA; // Enable clock for GPIO Port A
 
-        } else if(((ball->y >> 14) >= striker->y-4 && (ball->y >> 14) <= striker->y-2) || ((ball->y+FIX14_MULT(ball->speed,sinus(ball->angle))) >> 14 >= striker->y-4 && (ball->y+FIX14_MULT(ball->speed,sinus(ball->angle))) >> 14 <= striker->y-2)){
-//Left medium
+    // Set pin PA0 to input
+    GPIOA->MODER &= ~(0x00000003 << (0 * 2)); // Clear mode register
+    GPIOA->MODER |= (0x00000000 << (0 * 2));
+    // Set mode register (0x00 - Input, 0x01 - Output, 0x02 - Alternate Function, 0x03 - Analog in/out)
+    GPIOA->PUPDR &= ~(0x00000003 << (0 * 2)); // Clear push/pull register
 
+   // Set pin PA1 to input
+    GPIOA->MODER &= ~(0x00000003 << (1 * 2)); // Clear mode register
+    GPIOA->MODER |= (0x00000000 << (1 * 2));
+    // Set mode register (0x00 - Input, 0x01 - Output, 0x02 - Alternate Function, 0x03 - Analog in/out)
+    GPIOA->PUPDR &= ~(0x00000003 << (1 * 2)); // Clear push/pull register
 
-            ball->angle = ball->angle < 128 ? 256-(ball->angle*2)/3 : 256-(ball->angle*3)/2;
+    RCC->CFGR2 &= ~RCC_CFGR2_ADCPRE12;     // Clear ADC12 prescaler bits
+    RCC->CFGR2 |= RCC_CFGR2_ADCPRE12_DIV6; // Set ADC12 prescaler to 6
+    RCC->AHBENR |= RCC_AHBPeriph_ADC12;    // Enable clock for ADC12
 
+    ADC1->CR = 0x00000000;          // Clear CR register
+    ADC1->CFGR &= 0xFDFFC007;       // Clear ADC1 config register
+    ADC1->SQR1 &= ~ADC_SQR1_L;      // Clear regular sequence register 1
 
-            hit = 1;
-        } else if(((ball->y >> 14) >= striker->y+2 && (ball->y >> 14) <= striker->y+4) || ((ball->y+FIX14_MULT(ball->speed,sinus(ball->angle))) >> 14 >= striker->y+2 && (ball->y+FIX14_MULT(ball->speed,sinus(ball->angle))) >> 14 <= striker->y+4)){
-//Right medium
+    ADC1->CR |= 0x10000000;             // Enable internal ADC voltage regulator
+    for (int i = 0 ; i < 1000 ; i++) {} // Wait for about 16 microseconds
 
+    ADC1->CR |= 0x80000000;             // Start ADC1 calibration
+    while (!(ADC1->CR & 0x80000000));   // Wait for calibration to finish
+    for (int i = 0 ; i < 100 ; i++) {}  // Wait for a little while
 
-
-            ball->angle = ball->angle < 128 ? 256-(ball->angle*3)/2 : 256-(ball->angle*2)/3;
-
-            hit = 1;
-        } else if(((ball->y >> 14) >= striker->y-7 && (ball->y >> 14) <= striker->y-5) || ((ball->y+FIX14_MULT(ball->speed,sinus(ball->angle))) >> 14 >= striker->y-7 && (ball->y+FIX14_MULT(ball->speed,sinus(ball->angle))) >> 14 <= striker->y-5)){
-//Left end
-
-            if (ball->angle < 128){ // Ball hits from left
-                ball->angle = 256-ball->angle/3;
-            } else if( ball->angle > 384){ // Ball hits from right
-                ball->angle = 256-ball->angle*3;
-                if (ball->angle < 128){
-                    ball->angle = -ball->angle;
-                }
-            }
-
-            //ball->angle = ball->angle < 128 ? 256-ball->angle/3 : 256-ball->angle*3;
-
-            hit = 1;
-        } else if(((ball->y >> 14) >= striker->y+5 && (ball->y >> 14) <= striker->y+7) || ((ball->y+FIX14_MULT(ball->speed,sinus(ball->angle))) >> 14 >= striker->y+5 && (ball->y+FIX14_MULT(ball->speed,sinus(ball->angle))) >> 14 <= striker->y+7)){
-//Right end
-
-            if (ball->angle < 128){ // Ball hits from left
-                ball->angle = 256-ball->angle*3;
-                if (ball->angle > 384){
-                    ball->angle = -ball->angle;
-                }
-            } else if( ball->angle > 384){ // Ball hits from right
-                ball->angle = 256-ball->angle/3;
-            }
-            //ball->angle = ball->angle < 128 ? 256-ball->angle*3 : 256-ball->angle/3;
-
-            hit = 1;
-        }
-
-        if (hit){
-            ball->angle &= 511; // Sets angle within interval [0;511]
-            if (ball->angle > 364){
-                ball->angle = 364; // Corrects balls with wrong angle to the left
-            } else if (ball->angle < 148){
-                ball->angle = 148; // Corrects ball with wrong angle to the right
-            }
-        }
-
-    }
-    return hit;
-
+    ADC1->CR |= 0x00000001;             // Enable ADC1 (0x01 - Enable, 0x02 - Disable)
+    while (!(ADC1->ISR & 0x00000001));  // Wait until ready
 }
 
-uint16_t checkBlockCollision(struct ball_t* ball, struct level_t* level, struct game_state_t * gs) {
-	uint8_t i;
-	uint8_t hit;
-	struct block_t * blocks = level->blocks;
-
-	for (i = 0; i < 32; i++) {
-		if (blocks[i].lives > 0) {
-			hit = 0;
-
-            // Check if ball hits from top or bottom
-			if((ball->x+FIX14_MULT(ball->speed,cosinus(ball->angle))) >> 14 == blocks[i].x || (ball->x+FIX14_MULT(ball->speed,cosinus(ball->angle))) >> 14 == blocks[i].x+1 ){
-                    if((ball->y+FIX14_MULT(ball->speed,sinus(ball->angle))) >> 14 >=blocks[i].y+1 && (ball->y+FIX14_MULT(ball->speed,sinus(ball->angle))) >> 14 <=blocks[i].y+13){
-                        ball->angle = 256-ball->angle;
-                        hit = 1;
-                    }
-			} else if ((ball->x+FIX14_MULT(ball->speed,cosinus(ball->angle))) >> 14 == blocks[i].x && (ball->y+FIX14_MULT(ball->speed,sinus(ball->angle))) >> 14 == blocks[i].y){ // Top Left Corner
-                if(ball->angle == 320){
-                    ball->angle = 64;
-                } else if(ball->angle > 320){
-                    ball->angle = 512-ball->angle;
-                } else if (ball->angle < 320){
-                    ball->angle = 256-ball->angle;
-                }
-			} else if ((ball->x+FIX14_MULT(ball->speed,cosinus(ball->angle))) >> 14 == blocks[i].x+1 && (ball->y+FIX14_MULT(ball->speed,sinus(ball->angle))) >> 14 == blocks[i].y){ // Bottom Left Corner
-                if(ball->angle == 448){
-                    ball->angle = 192;
-                } else if(ball->angle > 448){
-                    ball->angle = 256-ball->angle;
-                } else if (ball->angle < 448){
-                    ball->angle = 512-ball->angle;
-                }
-			} else if ((ball->x+FIX14_MULT(ball->speed,cosinus(ball->angle))) >> 14 == blocks[i].x && (ball->y+FIX14_MULT(ball->speed,sinus(ball->angle))) >> 14 == blocks[i].y+14){ // Top Right COrner
-                if(ball->angle == 64){
-                    ball->angle = 320;
-                } else if(ball->angle > 64){
-                    ball->angle = 512-ball->angle;
-                } else if (ball->angle < 64){
-                    ball->angle = 256-ball->angle;
-                }
-			} else if ((ball->x+FIX14_MULT(ball->speed,cosinus(ball->angle))) >> 14 == blocks[i].x+1 && (ball->y+FIX14_MULT(ball->speed,sinus(ball->angle))) >> 14 == blocks[i].y+14){ // Bottom Right Corner
-                if(ball->angle == 192){
-                    ball->angle = 448;
-                } else if(ball->angle > 192){
-                    ball->angle = 256-ball->angle;
-                } else if (ball->angle < 192){
-                    ball->angle = 512-ball->angle;
-                }
-			}
-
-			if (hit == 1) {
-
-				blocks[i].lives--;
-				drawBlock(blocks[i]);
-				level->lives--;
-				gs->points++;
-			}
-
-		}
-	}
-	return hit;
+uint16_t readADC_pa0() { //Channel 1
+    ADC_RegularChannelConfig(ADC1, ADC_Channel_1, 1, ADC_SampleTime_1Cycles5);
+    ADC_StartConversion(ADC1);                          // Start ADC read
+    while (ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC) == 0); // Wait for ADC read
+    uint16_t x = ADC_GetConversionValue(ADC1);          // Read the ADC value
+    return x;
 }
 
-void bossKey(){
- int8_t hidden=0;
- int8_t joystikKey=readJoyStick();
-
- if(joystikKey==2){
-        if (hidden==0){
-        //funktion to minimize window
-        printf("\e[2t");
-        hidden = 1;
-        }
-        joystikKey=0;
-        for (int i = 0 ; i < 10000 ; i++){}
-
-            while(joystikKey!=2){
-                joystikKey=readJoyStick();
-            }
-        printf("\e[1t"); //funktion to maximize window
-        hidden = 0;
-
-        }
-
+uint16_t readADC_pa1() { //Channel 2
+    ADC_RegularChannelConfig(ADC1, ADC_Channel_2, 1, ADC_SampleTime_1Cycles5);
+    ADC_StartConversion(ADC1);                          // Start ADC read
+    while (ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC) == 0); // Wait for ADC read
+    uint16_t x = ADC_GetConversionValue(ADC1);          // Read the ADC value
+    return x;
 }
-
