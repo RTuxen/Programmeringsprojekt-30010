@@ -237,9 +237,13 @@ int main(void)
 //            chooseGameOver(score);
 //        }
     initTimer100Hz();//Initialisere klokken TIM2
-    initJoystick();
-    init_spi_lcd();
-    playGame(1);
+    initJoystick();//Initialisere joystick
+    init_spi_lcd();//Initialisere LCD
+    struct game_state_t gs;//Danner et game state struct
+    initGameState(&gs);//Initialisere game statet
+    clrscr();
+    hideCursor();
+    chooseMenuOptions(&gs);
 
 //    struct game_state_t gs;
 //    chooseMenuOptions(&gs);
