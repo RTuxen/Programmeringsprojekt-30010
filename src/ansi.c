@@ -122,3 +122,10 @@ void moveCursor(char dir, unsigned char n) { // Move cursor in some direction
 	printf("%c[%d%c", ESC, n, dir);
 }
 
+void hideCursor(){
+    printf("%c[?25l", ESC);
+}
+
+void showCursor(){
+    printf("%c[?25h", ESC);
+}
