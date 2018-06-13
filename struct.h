@@ -20,16 +20,18 @@ struct vector_t {
 struct ball_t {
     int32_t x;
     int32_t y;
-    struct vector_t vec;
+    int32_t speed;
+    int32_t angle;
 };
 
 
 struct timepoint {
-    uint8_t hours, minutes, seconds, centiseconds;
+    uint8_t hours, minutes, seconds;
+    uint16_t milliseconds;
 };
 volatile struct timepoint tid; //Global variables
 
-// theoretical structs
+
 struct player_t {
 	int32_t x;
 	int32_t y;
@@ -50,14 +52,15 @@ struct level_t {
 	uint8_t lives;
 };
 
-//struct game_state_t {
-//  uint8_t speed;
-//  uint8_t mirror;
-//  uint8_t highscores[5];
-//  uint8_t score;
-//	int8_t points;
-//	int8_t lives;
-//	int8_t level;
-//};
+struct game_state_t {
+ 	uint8_t speed;
+ 	uint8_t mirror;
+ 	uint8_t highscores[5];
+	uint8_t points;
+	uint8_t lives;
+	uint8_t startlevel;
+	uint8_t currentlevel;
+	uint8_t buffer[512];
+};
 
 #endif /*_STRUCT_H_*/
