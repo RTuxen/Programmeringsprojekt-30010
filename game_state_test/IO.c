@@ -213,19 +213,19 @@ int8_t readJoyStickContinous(){
     uint16_t valUp = GPIOA->IDR & (0x0001 << 4);
 
     if (valUp){
-        direction += 1;
+        direction = 1;
     }
     if (valDown){
-        direction += 2;
+        direction = 2;
     }
     if (valLeft){
-        direction += 4;
+        direction = 4;
     }
     if (valRight){
-        direction += 8;
+        direction = 8;
     }
     if (valCenter){
-        direction += 16;
+        direction = 16;
     }
     return direction;
 }
@@ -260,7 +260,7 @@ int8_t readJoyStick(){
         time = tid.milliseconds;
     }
 
-    if (tid.milliseconds >=  time+30){
+    if (tid.milliseconds >=  time+15){
         if (oldold_direction != direction) {
             oldold_direction = direction;
             return direction;
@@ -354,3 +354,17 @@ uint16_t readADC_pa1() { //Channel 2
     uint16_t x = ADC_GetConversionValue(ADC1);          // Read the ADC value
     return x;
 }
+
+void initBuzzer(){
+    RCC->AHBENR |= RCC_AHBENR_GPIOBEN; // Enable clock line for GPIO bank B
+    GPIOB->MODER &= ~(0x00000003 << (10 * 2)); // Clear mode register
+    GPIOB->MODER |= (0x00000002 << (10 * 2)); // Set mode register
+    GPIO_PinAFConfig(GPIOB, GPIO_PinSource10, GPIO_AF_1);// Set alternate function 1 - PWM Output
+}
+
+void setFreq(uint16_t freq) {
+ uint32_t reload = (4000000 / freq / 16) - 1;
+ TIM2->ARR = reload; // Set auto reload value
+ TIM2->CCR3 = reload/2; // Set compare register
+ TIM2->EGR |= 0x01;
+ }

@@ -5,6 +5,8 @@
 #include "struct.h"
 
 void initTimer100Hz();
+void initTimerPWM();
+void setTimer(uint8_t difficulty, uint8_t levelspeed);
 void printTid();
 void stopWatchControl(int8_t value);
 void printSplit (uint16_t ms, uint8_t s, uint8_t m, uint8_t h);

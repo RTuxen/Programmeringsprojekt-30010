@@ -12,6 +12,8 @@
 void initJoystick();
 int8_t readJoyStick();
 int8_t readJoyStickContinous();
+void initBuzzer();
+void setFreq(uint16_t freq);
 void initLED();
 void setLed(int8_t value);
 void initADC();
