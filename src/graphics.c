@@ -1,6 +1,3 @@
-#include "stm32f30x_conf.h" // STM32 config
-#include "30010_io.h" // Input/output library for this course
-
 #include "graphics.h"
 
 uint8_t strlens(char* text) { // Calculate the length of a string
@@ -171,56 +168,56 @@ void stopWatchWindow(int8_t x1, int8_t y1, char str[], int8_t style) {
     printf("Split time 2:      ");
 }
 
-void textReturn(int8_t len){
- char text[len];
- int8_t i = 1;
- int j;
-    for (j = 0; j <= len; j++){
-            text[j] = 0x00;
-    }
- //   text[len] = '\0';
-    text[0] = uart_getc();
-    while(i<len-1 && text[i-1] != 0x0D){
-    text[i]=uart_getc();
-    i++;
-    }
-    text[i-1] = 0x00;
+//void textReturn(int8_t len){
+// char text[len];
+// int8_t i = 1;
+// int j;
+//    for (j = 0; j <= len; j++){
+//            text[j] = 0x00;
+//    }
+// //   text[len] = '\0';
+//    text[0] = uart_getc();
+//    while(i<len-1 && text[i-1] != 0x0D){
+//    text[i]=uart_getc();
+//    i++;
+//    }
+//    text[i-1] = 0x00;
+//
+// //   gotoxy(16,30);
+// //   printf("%s",text);
+//    compareString(text);
+//}
 
- //   gotoxy(16,30);
- //   printf("%s",text);
-    compareString(text);
-}
 
-
-void compareString(char * text){ // Controls stopwatch using strings
-char start[] = "start";
-char split1[] = "split1";
-char split2[] = "split2";
-char reset[] = "reset";
-char help[] = "help";
-    if (strcmp(text,start) == 0){
-        printf("\nstarting");
-        stopWatchControl(16);
-
-    } else if(strcmp(text,split1) == 0){
-        gotoxy(12,30);
-        stopWatchControl(4);
-        getSavedCursor();
-    } else if(strcmp(text,split2) == 0){
-        gotoxy(13,30);
-        stopWatchControl(8);
-        getSavedCursor();
-    } else if(strcmp(text,reset) == 0){
-        printf("\nresetting");
-        stopWatchControl(2);
-
-    } else if(strcmp(text,help) == 0){
-        userGuide();
-    } else{
-        commandList();
-    }
-
-}
+//void compareString(char * text){ // Controls stopwatch using strings
+//char start[] = "start";
+//char split1[] = "split1";
+//char split2[] = "split2";
+//char reset[] = "reset";
+//char help[] = "help";
+//    if (strcmp(text,start) == 0){
+//        printf("\nstarting");
+//        stopWatchControl(16);
+//
+//    } else if(strcmp(text,split1) == 0){
+//        gotoxy(12,30);
+//        stopWatchControl(4);
+//        getSavedCursor();
+//    } else if(strcmp(text,split2) == 0){
+//        gotoxy(13,30);
+//        stopWatchControl(8);
+//        getSavedCursor();
+//    } else if(strcmp(text,reset) == 0){
+//        printf("\nresetting");
+//        stopWatchControl(2);
+//
+//    } else if(strcmp(text,help) == 0){
+//        userGuide();
+//    } else{
+//        commandList();
+//    }
+//
+//}
 
 void commandList(){
     printf("\nList of Proper Commands:\n1:start\n2:split1\n3:split2\n4:reset\n5:help");
@@ -235,36 +232,39 @@ void drawWalls (){ // Draws walls
     uint16_t dx = X2-X1+1;
     uint16_t dy = Y2-Y1;
 
-    uint16_t style = 1; // Determines the style with which the walls are drawn
-
-    fgcolor(15);
+    fgcolor(6); // Sets color
 
 
     if (X1 >= X2 || Y1 >= Y2){
         return;
     }
 
-    gotoxy(X1,Y1);
+    gotoxy(X1,Y1-1);
+
 
     for (i=1; i<=dx; i++){
         if (i==1) {
-            printf("%c",style? 201:218);
+            printf("%c",219);
+            printf("%c",219);
         } else{
-            printf("%c",style? 186:179);
+            printf("%c",219);
+            printf("%c",219);
         }
         for ( j=1; j<=dy; j++){
             if (i==1){
-                printf("%c",style? 205:196);
+                printf("%c",219);
             } else {
                 printf(" ");
             }
         }
         if (i==1) {
-            printf("%c",style? 187:191);
+            printf("%c",219);
+            printf("%c",219);
         } else{
-            printf("%c",style? 186:179);
+            printf("%c",219);
+            printf("%c",219);
         }
-        gotoxy(X1+i,Y1);
+        gotoxy(X1+i,Y1-1);
     }
 }
 
@@ -322,4 +322,102 @@ void drawBlockMap(struct block_t *bricks){
     for (i = 0; i < 32; i++) {
             drawBlock(bricks[i]); // Draw blocks
         }
+}
+
+void printfallObject(struct fallingObject_t *fallObject){
+    if (fallObject->type){
+        gotoxy(fallObject->x, fallObject->y);
+        if (fallObject->type==1){
+            fgcolor(1);
+            printf("%c", 219);
+        } else if(fallObject->type==2){
+            fgcolor(2);
+            printf("%c", 219);
+        } else if(fallObject->type==3){
+            fgcolor(3);
+            printf("%c", 219);
+        } else if(fallObject->type == 4){
+            fgcolor(4);
+            printf("%c",219);
+        }
+    }
+}
+
+void drawWelcomeMessage(){
+    gotoxy(21,85);
+    printf(" _    _      _                            _           ___       _                     _     _ ");
+    gotoxy(22,85);
+    printf("| |  | |    | |                          | |         / _ \\     | |                   (_)   | |");
+    gotoxy(23,85);
+    printf("| |  | | ___| | ___ ___  _ __ ___   ___  | |_ ___   / /_\\ \\_ __| | ____ _ _ __   ___  _  __| |");
+    gotoxy(24,85);
+    printf("| |/\\| |/ _ \\ |/ __/ _ \\| '_ ` _ \\ / _ \\ | __/ _ \\  |  _  | '__| |/ / _` | '_ \\ / _ \\| |/ _` |");
+    gotoxy(25,85);
+    printf("\\  /\\  /  __/ | (_| (_) | | | | | |  __/ | || (_) | | | | | |  |   < (_| | | | | (_) | | (_| |");
+    gotoxy(26,85);
+    printf(" \\/  \\/ \\___|_|\\___\\___/|_| |_| |_|\\___|  \\__\\___/  \\_| |_/_|  |_|\\_\\__,_|_| |_|\\___/|_|\\__,_|");
+
+}
+
+void drawHighscoreMessage(){
+    gotoxy(21,100);
+    printf(" _   _ _       _                                 ");
+    gotoxy(22,100);
+    printf("| | | (_)     | |                                ");
+    gotoxy(23,100);
+    printf("| |_| |_  __ _| |__  ___  ___ ___  _ __ ___  ___ ");
+    gotoxy(24,100);
+    printf("|  _  | |/ _` | '_ \\/ __|/ __/ _ \\| '__/ _ \\/ __|");
+    gotoxy(25,100);
+    printf("| | | | | (_| | | | \\__ \\ (_| (_) | | |  __/\\__ \\");
+    gotoxy(26,100);
+    printf("\\_| |_/_|\\__, |_| |_|___/\\___\\___/|_|  \\___||___/");
+    gotoxy(27,100);
+    printf("          __/ |                                  ");
+    gotoxy(28,100);
+    printf("         |___/                                   ");
+
+}
+
+
+
+void drawOptionMessage(){
+    gotoxy(21,100);
+    printf(" _____       _   _                 ");
+    gotoxy(22,100);
+    printf("|  _  |     | | (_)                ");
+    gotoxy(23,100);
+    printf("| | | |_ __ | |_ _  ___  _ __  ___ ");
+    gotoxy(24,100);
+    printf("| | | | '_ \\| __| |/ _ \\| '_ \\/ __|");
+    gotoxy(25,100);
+    printf("\\ \\_/ / |_) | |_| | (_) | | | \\__ \\");
+    gotoxy(26,100);
+    printf(" \\___/| .__/ \\__|_|\\___/|_| |_|___/");
+    gotoxy(27,100);
+    printf("      | |                          ");
+    gotoxy(28,100);
+    printf("      |_|                          ");
+
+}
+
+
+void drawHelpMessage(){
+    gotoxy(21,100);
+    printf(" _   _      _       ");
+    gotoxy(22,100);
+    printf("| | | |    | |      ");
+    gotoxy(23,100);
+    printf("| |_| | ___| |_ __  ");
+    gotoxy(24,100);
+    printf("|  _  |/ _ \\ | '_ \\ ");
+    gotoxy(25,100);
+    printf("| | | |  __/ | |_) |");
+    gotoxy(26,100);
+    printf("\\_| |_/\\___|_| .__/ ");
+    gotoxy(27,100);
+    printf("             | |    ");
+    gotoxy(28,100);
+    printf("             |_|    ");
+
 }
