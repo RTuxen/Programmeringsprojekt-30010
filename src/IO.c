@@ -150,7 +150,7 @@ void initLED(){
 	/* Red LED	               */
 	/***************************/
 
-    GPIOB->ODR |= (0x0001 << 4); //Set pin PB0 to high
+    GPIOB->ODR |= (0x0001 << 4); //Set pin PB4 to high
 
 
  // Set pin PB4 to output
@@ -168,7 +168,7 @@ void initLED(){
 	/* Green LED	           */
 	/***************************/
 
-    GPIOC->ODR |= (0x0001 << 7); //Set pin PB0 to high
+    GPIOC->ODR |= (0x0001 << 7); //Set pin PC7 to high
 
 
  // Set pin PC7 to output
@@ -186,7 +186,7 @@ void initLED(){
 	/* Blue LED	           */
 	/***************************/
 
-    GPIOA->ODR |= (0x0001 << 9); //Set pin PB0 to high
+    GPIOA->ODR |= (0x0001 << 9); //Set pin PA9 to high
 
 
     // Set pin PA9 to output
@@ -200,9 +200,6 @@ void initLED(){
     GPIOA->MODER |= (0x00000001 << (9 * 2));
     // Set mode register (0x00 - Input, 0x01 - Output, 0x02 - Alternate Function, 0x03 - Analog in/out)
 }
-
-
-
 
 int8_t readJoyStickContinous(){
     int8_t direction = 0;
@@ -231,7 +228,7 @@ int8_t readJoyStickContinous(){
 }
 
 int8_t readJoyStick(){
-    static uint8_t time = 0;
+    static uint16_t time = 0;
     static uint8_t old_direction;
     static uint8_t oldold_direction;
     uint8_t direction = 0;
@@ -257,10 +254,10 @@ int8_t readJoyStick(){
         direction = 16;
     }
     if (old_direction != direction) {
-        time = tid.milliseconds;
+        time = tid.joystickdebouncer;
     }
 
-    if (tid.milliseconds >=  time+30){
+    if (tid.joystickdebouncer >=  time+25){
         if (oldold_direction != direction) {
             oldold_direction = direction;
             return direction;
@@ -270,38 +267,46 @@ int8_t readJoyStick(){
     return 32;
 }
 
-void setLed(int8_t value){ // LED turns on at low
+void turnOffLED(){
+    GPIOB->ODR |= RED; //Set pin PB4 to low
+    GPIOC->ODR |= GREEN; //Set pin PC7 to low
+    GPIOA->ODR |= BLUE; //Set pin PA9 to low
+}
 
-    if (value == 0){ //white
-        GPIOB->ODR &= ~RED;
-        GPIOC->ODR &= ~GREEN;
-        GPIOA->ODR &= ~BLUE;
-    } else if(value == 1){ //Red
+void setLed(struct game_state_t* gs){ // LED turns on at low
+    static uint8_t oldlives;
+//    if (value == 0){ //white
+//        GPIOB->ODR &= ~RED;
+//        GPIOC->ODR &= ~GREEN;
+//        GPIOA->ODR &= ~BLUE;
+//    } else
+    if (oldlives > gs->lives){ // Red
         GPIOB->ODR &= ~RED;
         GPIOC->ODR |= GREEN;
         GPIOA->ODR |= BLUE;
-    } else if(value == 2){ // GREEN
+    } else if(oldlives < gs->lives){ // GREEN
         GPIOB->ODR |= RED;
         GPIOC->ODR &= ~GREEN;
         GPIOA->ODR |= BLUE;
-    } else if(value == 4){ // BLUE
+    } else if(gs->randomAnglePowerup){ // BLUE
         GPIOB->ODR |= RED;
         GPIOC->ODR |= GREEN;
         GPIOA->ODR &= ~BLUE;
-    } else if(value == 8){ // Yellow
+    } else if(gs->mirror != gs->startmirror){ // Yellow
         GPIOB->ODR &= ~RED;
         GPIOC->ODR &= ~GREEN;
         GPIOA->ODR |= BLUE;
-    } else if(value == 16){ // Magenta
-        GPIOB->ODR &= ~RED;
-        GPIOC->ODR |= GREEN;
-        GPIOA->ODR &= ~BLUE;
-    } else if(value == 5 || value == 6 || value == 9 || value == 10 || value == 24 || value == 17 || value == 18 || value == 19 || value == 20 || value == 21 || value == 22 || value == 25){ // Cyan
+    } else if (oldlives == gs->lives && !gs->randomAnglePowerup && gs->mirror==gs->startmirror){// No light
         GPIOB->ODR |= RED;
-        GPIOC->ODR &= ~GREEN;
-        GPIOA->ODR &= ~BLUE;
+        GPIOC->ODR |= GREEN;
+        GPIOA->ODR |= BLUE;
     }
-
+    oldlives = gs->lives;
+//    } else if(){ // Cyan
+//        GPIOB->ODR |= RED;
+//        GPIOC->ODR &= ~GREEN;
+//        GPIOA->ODR &= ~BLUE;
+//    }
 }
 
 void initADC() {
@@ -353,4 +358,13 @@ uint16_t readADC_pa1() { //Channel 2
     while (ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC) == 0); // Wait for ADC read
     uint16_t x = ADC_GetConversionValue(ADC1);          // Read the ADC value
     return x;
+}
+
+uint8_t readKeyboard() {
+
+    if(USART_GetFlagStatus(USART2, USART_FLAG_RXNE) == SET){
+        return (uint8_t)USART_ReceiveData(USART2);
+    } else{
+        return 0;
+    }
 }
