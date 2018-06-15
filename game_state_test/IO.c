@@ -201,9 +201,6 @@ void initLED(){
     // Set mode register (0x00 - Input, 0x01 - Output, 0x02 - Alternate Function, 0x03 - Analog in/out)
 }
 
-
-
-
 int8_t readJoyStickContinous(){
     int8_t direction = 0;
     uint16_t valRight = GPIOC->IDR & (0x0001 << 0);
@@ -256,16 +253,18 @@ int8_t readJoyStick(){
     if (valCenter){
         direction = 16;
     }
+
     if (old_direction != direction) {
-        time = tid.milliseconds;
+        time = tid.centiseconds;
     }
 
-    if (tid.milliseconds >=  time+15){
+    if (tid.centiseconds >=  time+15){
         if (oldold_direction != direction) {
             oldold_direction = direction;
             return direction;
         }
     }
+
     old_direction = direction;
     return 32;
 }
@@ -362,9 +361,16 @@ void initBuzzer(){
     GPIO_PinAFConfig(GPIOB, GPIO_PinSource10, GPIO_AF_1);// Set alternate function 1 - PWM Output
 }
 
-void setFreq(uint16_t freq) {
- uint32_t reload = (4000000 / freq / 16) - 1;
- TIM2->ARR = reload; // Set auto reload value
- TIM2->CCR3 = reload/2; // Set compare register
- TIM2->EGR |= 0x01;
+ void load_sound(uint16_t* sound, uint8_t* duration){
+    int8_t i;
+    uint16_t s, t;
+
+    for (i = 0; i < 80; i++){
+        t = tid.soundtime;
+        s = tid.soundtime;
+        setFreq(sound[i]);
+        while(t <= s+duration[i]){
+            t = tid.soundtime;
+        }
+    }
  }
