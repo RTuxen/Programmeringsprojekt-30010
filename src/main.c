@@ -1,18 +1,7 @@
 #include "stm32f30x_conf.h" // STM32 config
 #include "30010_io.h" // Input/output library for this course
-#include <string.h>
 
-#include "ansi.h"
-#include "LUT.h"
-#include "struct.h"
-#include "gamePhysics.h"
-#include "IO.h"
-#include "timer.h"
-#include "display.h"
-#include "charset.h"
-#include "graphics.h"
 #include "menu.h"
-#include "levels.h"
 
 
 
@@ -49,26 +38,6 @@ int main(void)
         }
 */
 
-
-
-
-    /***************************/
-	/* LCD - Dreje håndtag     */
-	/***************************/
- /*   uint16_t val1, val2;
-    uint8_t buffer[512];
-    char str1[30], str2[30];
-    initADC();
-    initDisplay(buffer);
-    while (0) {
-        val1 = readADC_pa0();
-        val2 = readADC_pa1();
-        sprintf(str1, "Value 1 = %4d", val1);
-        sprintf(str2, "Value 2 = %4d", val2);
-        lcd_write_string(buffer, str1, 1, 0);
-        lcd_write_string(buffer, str2, 1, 1);
-    }
-*/
 
 
 	/***************************/
@@ -151,42 +120,6 @@ int main(void)
         }
 */
 
-    /***************************/
-	/* Full Box Loop	       */
-	/***************************/
-/*
-        struct ball_t bold;
-        struct player_t striker;
-        int32_t timerCount=0;
-        int16_t hitcounter=0;
-        clrscr();
-
-        initbold(&bold,12,10,1,1);
-        initPlayer(&striker,37,58);
-        initJoystick();
-        box(X1,Y1,X2,Y2,1);
-        minibox(X1,Y1,X2,Y2,0, hitcounter);
-        drawball(&bold);
-        drawPlayer(&striker);
-        gotoxy(50,0);
-
-        while(1){
-        if (++timerCount==130000ul){
-            hitcounter += checkWallCollision(&bold,X1,Y1,X2,Y2);
-            minibox(X1 ,Y1 ,X2 ,Y2 ,0, hitcounter);
-            updatePlayerPos(&striker);
-            updateBallPos(&bold,&striker,X1,Y1,X2,Y2);
-            timerCount=0;
-        }
-
-        // Stops loop
-        if(hitcounter > 255){
-            break;
-        }
-
-
-        }
-*/
 
     /***************************/
     /* LCD - Striker Points    */
@@ -220,73 +153,37 @@ int main(void)
 	/* Main Loop	           */
 	/***************************/
 
-
-//        initJoystick();
-//        fgcolor(15);
-//        clrscr();
-//        while(1){
-//            chooseMenuOptions();
+//    clrscr();
+//    gotoxy(10,10);
+//
+//    while(1){
+//
+//        if(readKeyboard() == 32){
+//            printf("HEJ\n");
+//
 //        }
+//    }
 
-//        uint8_t score = 8;
-//        initJoystick();
-//        fgcolor(15);
-//        clrscr();
-//        while(1){
-//            //chooseMenuOptions(score);
-//            chooseGameOver(score);
-//        }
-    initTimer100Hz();//Initialisere klokken TIM2
-    initJoystick();//Initialisere joystick
-    init_spi_lcd();//Initialisere LCD
+
+
+    initTimer100Hz();//Initialiserer klokken TIM2
+    initJoystick();//Initialiserer joystick
+    init_spi_lcd();//Initialiserer LCD
+    initADC(); // Initialiserer Potentiometrene
     struct game_state_t gs;//Danner et game state struct
     initGameState(&gs);//Initialisere game statet
     clrscr();
     hideCursor();
     chooseMenuOptions(&gs);
 
-//    struct game_state_t gs;
-//    chooseMenuOptions(&gs);
-
-//        struct ball_t bold;
-//        struct player_t striker;
-//        struct level_t bane;
-//        int32_t timerCount=0;
-//        int16_t slut=0;
-//
-//        initTimer100Hz();
-//        initLevel(&bold,&striker,&bane);
-//
-//        static uint8_t buffer[512];
-//        initDisplay(buffer);
-//
-//
-//        while(1){
-//            if (++timerCount==100000ul){
-//                updatePlayerPos(&striker);
-//                slut = updateBallPos(&bold,&striker,&bane);
-//                if (slut){
-//                    chooseGameOver(striker.points);
-//                }
-//                timerCount=0;
-//
-//                LCD_Printer(striker.level,striker.lifes,striker.points, buffer);
-//            }
-//        }
-
-//        while(1){
-//                if (get_game_flag()){
-//                    updatePlayerPos(&striker);
-//                    slut = updateBallPos(&bold,&striker,&bane);
-//                    if (slut){
-//                        chooseGameOver(striker.points);
-//                    }
-//                }
-//        }
 
 
         while(1){
         }
 }
+
+
+
+
 
 
