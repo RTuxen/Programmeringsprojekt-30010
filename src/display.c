@@ -17,7 +17,7 @@ void LCD_Printer(struct game_state_t* gs){
 }
 
 void lcd_write_string(uint8_t *buffer, char *text, uint8_t slice, uint8_t line){ //Antager slice [0,128] og line[0,3]
-    uint8_t textlenght = strlens(text);
+    uint8_t textlenght = strlen(text);
     int8_t i,j;
     int16_t k =slice+line*128-1;
 
