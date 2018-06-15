@@ -1,13 +1,13 @@
+#include "stm32f30x_conf.h" // STM32 config
+#include "30010_io.h" // Input/output library for this course
+
 #ifndef _MENU_H_
 #define _MENU_H_
 
-#include "stm32f30x_conf.h" // STM32 config
-#include "30010_io.h" // Input/output library for this course
 #include "graphics.h"
-#include "IO.h"
-#include "ansi.h"
 #include "display.h"
 #include "gamePhysics.h"
+#include "flashmemory.h"
 
 void chooseMenuOptions(struct game_state_t* gs);
 void chooseLevel(struct game_state_t* gs);
@@ -18,12 +18,12 @@ void chooseGameOver(struct game_state_t* gs);
 void chooseGameWon(struct game_state_t* gs);
 void toggleMirror(struct game_state_t* gs);
 void changeSpeed(struct game_state_t* gs);
-
+void changeNumberOfPlayers(struct game_state_t* gs);
 
 void drawMenuWindow();
 void drawPlayWindow();
 void drawOptionWindow(struct game_state_t* gs);
-void drawHighscoreWindow(uint8_t* highscores);
+void drawHighscoreWindow(uint16_t* highscores);
 void drawHelpWindow();
 void drawGameOverWindow();
 void drawGameWonWindow();
