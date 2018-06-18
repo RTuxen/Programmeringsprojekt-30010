@@ -1,8 +1,9 @@
 #include "stm32f30x_conf.h" // STM32 config
 #include "30010_io.h" // Input/output library for this course
 
-#include "menu.h"
+//#include "menu.h"
 
+#include "game.h"
 
 
 int main(void)
@@ -25,7 +26,7 @@ int main(void)
 	/***************************/
 /*
         uint8_t buffer[512];
-        initTimer100Hz();
+        initTimer1000Hz();
         initDisplay(buffer);
         lcd_write_string(buffer,"HEJ MED oasd k ei jfj ud ke jd", 2, 0);
         lcd_write_string(buffer,"HEJ MED oasd k ei jfj ud ke jd", 2, 1);
@@ -46,7 +47,7 @@ int main(void)
 /*
         uint8_t k = 0;
         initJoystick();
-        initTimer100Hz();
+        initTimer1000Hz();
         clrscr();
         stopWatchWindow(10, 10, "Stop Watch", 1);
         int s = 0;
@@ -153,28 +154,29 @@ int main(void)
 	/* Main Loop	           */
 	/***************************/
 
+
 //    clrscr();
-//    gotoxy(10,10);
-//
 //    while(1){
-//
-//        if(readKeyboard() == 32){
-//            printf("HEJ\n");
-//
+//        uint8_t k=readKeyboard();
+//        if(k!= 0){
+//            printf("%d\n",k);
 //        }
+//
 //    }
 
 
-
-    initTimer100Hz();//Initialiserer klokken TIM2
+    initTimer1000Hz();//Initialiserer klokken TIM2
     initJoystick();//Initialiserer joystick
     init_spi_lcd();//Initialiserer LCD
     initADC(); // Initialiserer Potentiometrene
+    initTimerPWM();
+    initBuzzer();
     struct game_state_t gs;//Danner et game state struct
     initGameState(&gs);//Initialisere game statet
     clrscr();
     hideCursor();
     chooseMenuOptions(&gs);
+
 
 
 
