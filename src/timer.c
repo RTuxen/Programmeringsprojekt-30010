@@ -4,8 +4,9 @@ volatile uint8_t flag = 0;       //Flag til LCD update
 volatile uint8_t slide = 0;      //Variabel til LCD update
 volatile uint8_t gameflag = 0;   //Flag til spil update
 volatile uint8_t updateGame = 0; //Variabel til spil update
+volatile uint8_t gametime = 0;   // Variabel til
 
-void initTimer100Hz(){
+void initTimer1000Hz(){
     RCC->APB2ENR |= RCC_APB2Periph_TIM15; // Enable clock line to timer 15;
     TIM15->CR1 = 0x0000; // Configure timer 15 - disabled
     //TIM15->ARR = 0x9C3F; // Set reload value to 39999
@@ -22,10 +23,11 @@ void initTimer100Hz(){
 void TIM1_BRK_TIM15_IRQHandler(void){
 
     tid.randomAngle++;
-    tid.gametime++;
+    gametime++;
     tid.joystickdebouncer++;
     slide++;
     updateGame++;
+    tid.soundtime++;
     if (updateGame >= 5){//Spillet updateres
         gameflag = 1;
         updateGame = 0;
@@ -34,14 +36,13 @@ void TIM1_BRK_TIM15_IRQHandler(void){
         flag = 1;
         slide = 0;
     }
-    if (tid.gametime >= 100) {
+    if (gametime >= 100) {
         tid.seconds++;
-        tid.gametime = 0;
+        gametime = 0;
     }
     if (tid.randomAngle >= 1000){
         tid.randomAngle = 0;
     }
-
     TIM15->SR &= ~0x0001; //Clear interrupt bit
 }
 
@@ -51,7 +52,7 @@ void initTimerPWM(){
     TIM2->ARR = 0x000003E7; // Set reload value to 999
     TIM2->PSC = 0x000F; // Set prescale value to 15
     TIM2->CR1 = 0x0001; // Configure timer 2 - enabled
-
+    TIM2->DIER |= 0x0001; // Enable timer 2 interrupts
 
     TIM2->CCER &= ~TIM_CCER_CC3P; // Clear CCER register
     TIM2->CCER |= 0x00000001 << 8; // Enable OC3 output
@@ -61,7 +62,17 @@ void initTimerPWM(){
     TIM2->CCMR2 &= ~TIM_CCMR2_OC3PE;
     TIM2->CCMR2 |= TIM_OCPreload_Enable;
     TIM2->CCR3 = 500; // Set duty cycle to 50 %
+
+    NVIC_SetPriority(TIM2_IRQn, 0001); // Set interrupt priority
+    NVIC_EnableIRQ(TIM2_IRQn); // Enable interrupt
 }
+
+void setFreq(uint16_t freq) {
+ uint32_t reload = (64e6 / freq / 16) - 1;
+ TIM2->ARR = reload; // Set auto reload value
+ TIM2->CCR3 = reload/2; // Set compare register
+ TIM2->EGR |= 0x01;
+ }
 
 
 void TIM2_IRQHandler(void){
@@ -71,6 +82,14 @@ void TIM2_IRQHandler(void){
 void setTimer(uint8_t difficulty, uint8_t levelspeed){
     TIM15->CR1 = 0x0000; // Configure timer 2 - disabled
     TIM15->ARR = 0x00009C3F/(1+2*difficulty+levelspeed); // Set reload value depending on difficulty and speed
+    TIM15->PSC = 0x000F; // Set prescale value to 15
+    TIM15->CR1 = 0x0001; // Configure timer 2 - enabled
+    TIM15->EGR |= 0x0001;
+}
+
+void setTimerDefault(){
+    TIM15->CR1 = 0x0000; // Configure timer 2 - disabled
+    TIM15->ARR = 0x00000F9F; // Set reload value to 3999
     TIM15->PSC = 0x000F; // Set prescale value to 15
     TIM15->CR1 = 0x0001; // Configure timer 2 - enabled
     TIM15->EGR |= 0x0001;
