@@ -5,6 +5,7 @@
 #define IO66_H
 
 #include "struct.h"
+#include "timer.h"
 
 #define RED (0x0001 << 4)
 #define GREEN (0x0001 << 7)
@@ -20,5 +21,7 @@ void initADC();
 uint16_t readADC_pa0();
 uint16_t readADC_pa1();
 uint8_t readKeyboard();
+void initBuzzer();
+void load_sound(const uint16_t* sound, const uint8_t* duration);
 
 #endif	// IO66_H
