@@ -229,8 +229,8 @@ int8_t readJoyStickContinous(){
 
 int8_t readJoyStick(){
     static uint16_t time = 0;
-    static uint8_t old_direction;
-    static uint8_t oldold_direction;
+    static uint8_t old1_direction;
+    static uint8_t old2_direction;
     uint8_t direction = 0;
     uint16_t valUp = GPIOA->IDR & (0x0001 << 4);
     uint16_t valDown = GPIOB->IDR & (0x0001 << 0);
@@ -253,17 +253,17 @@ int8_t readJoyStick(){
     if (valCenter){
         direction = 16;
     }
-    if (old_direction != direction) {
+    if (old1_direction != direction) {
         time = tid.joystickdebouncer;
     }
 
     if (tid.joystickdebouncer >=  time+25){
-        if (oldold_direction != direction) {
-            oldold_direction = direction;
+        if (old2_direction != direction) {
+            old2_direction = direction;
             return direction;
         }
     }
-    old_direction = direction;
+    old1_direction = direction;
     return 32;
 }
 
@@ -360,7 +360,7 @@ uint16_t readADC_pa1() { //Channel 2
     return x;
 }
 
-uint8_t readKeyboard() {
+uint8_t readKeyboard() { // Reads keyboard input
 
     if(USART_GetFlagStatus(USART2, USART_FLAG_RXNE) == SET){
         return (uint8_t)USART_ReceiveData(USART2);
@@ -368,3 +368,24 @@ uint8_t readKeyboard() {
         return 0;
     }
 }
+
+void initBuzzer(){
+    RCC->AHBENR |= RCC_AHBENR_GPIOBEN; // Enable clock line for GPIO bank B
+    GPIOB->MODER &= ~(0x00000003 << (10 * 2)); // Clear mode register
+    GPIOB->MODER |= (0x00000002 << (10 * 2)); // Set mode register
+    GPIO_PinAFConfig(GPIOB, GPIO_PinSource10, GPIO_AF_1);// Set alternate function 1 - PWM Output
+}
+
+ void load_sound(const uint16_t* sound, const uint8_t* duration){
+    int8_t i;
+    uint16_t s, t;
+
+    for (i = 0; i < 80; i++){
+        t = tid.soundtime;
+        s = tid.soundtime;
+        setFreq(sound[i]);
+        while(t <= s+duration[i]){
+            t = tid.soundtime;
+        }
+    }
+ }
