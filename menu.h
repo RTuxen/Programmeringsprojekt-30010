@@ -4,10 +4,12 @@
 #ifndef _MENU_H_
 #define _MENU_H_
 
+#include "game.h"
 #include "graphics.h"
-#include "display.h"
-#include "gamePhysics.h"
 #include "flashmemory.h"
+#include "display.h"
+#include "IO.h"
+#include "sound.h"
 
 void chooseMenuOptions(struct game_state_t* gs);
 void chooseLevel(struct game_state_t* gs);
@@ -19,13 +21,4 @@ void chooseGameWon(struct game_state_t* gs);
 void toggleMirror(struct game_state_t* gs);
 void changeSpeed(struct game_state_t* gs);
 void changeNumberOfPlayers(struct game_state_t* gs);
-
-void drawMenuWindow();
-void drawPlayWindow();
-void drawOptionWindow(struct game_state_t* gs);
-void drawHighscoreWindow(uint16_t* highscores);
-void drawHelpWindow();
-void drawGameOverWindow();
-void drawGameWonWindow();
-
 #endif
