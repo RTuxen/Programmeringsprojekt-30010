@@ -27,39 +27,50 @@ void initGameState(struct game_state_t* gs){
     gs->startlevel = 0;
     gs->currentlevel = 0;
     gs->players = 1;
+
+    gs->randomAnglePowerup = 0;
+
+    // Include to reset highscorelist
+//    memset(gs->highscores, 0x00, 10);
+//    memset(gs->highscoreDate, 0x00, 10);
+//    memset(gs->highscoreMonth, 0x00, 10);
+//    memset(gs->highscoreMinutes, 0x00, 10);
+//    memset(gs->highscoreHours, 0x00, 10);
+//    memset(gs->highscorenames, 0x00, 70);
+//    writeFlash(gs);
 }
 
 void playGame(struct game_state_t* gs){
 
+    // Makes the structs needed for 1 player
     struct ball_t ball;
     struct player_t striker;
     struct level_t level;
-    struct fallingObject_t fallObject;
+    struct fallingObjectsType_t fallingObjects;
 
     int8_t delay = 0;
     int8_t oldlives, i, j;
 
-    struct fallingObjectsType_t fallingObjects;
     initFallObject(&fallingObjects); // Initializes powerups
 
-
     setTimer(gs->speed, gs->currentlevel); // Sets game speed
-    gs->mirror = gs->startmirror;//Sets mirror to the chosen option
+    gs->mirror = gs->startmirror; // Sets mirror to the chosen option
     if (gs->currentlevel == gs->startlevel){
-        gs->lives = 1; //Sætter spillerens liv
+        gs->lives = 2; // Sets the players lives
     }
     oldlives = gs->lives;// Sets oldlives to startlives at the start of the game
     initLED();
 
-    if (gs->players == 2){
+    if (gs->players == 2){// 2-player
 
+        // Makes the structs needed for the 2nd player
         struct ball_t ball2;
         struct player_t striker2;
 
         initBall(&ball,X2-7,Y1+50,0); //Initialiserer bold1
-        initBall(&ball2,X2-5,Y2-50,0);//Initialiserer bold2
+        initBall(&ball2,X2-5,Y2-50,0); //Initialiserer bold2
         initPlayer(&striker,X2-5,Y1+50); //Initialiserer striker1
-        initPlayer(&striker2,X2-5,Y2-50); //Initialiserer striker1
+        initPlayer(&striker2,X2-5,Y2-50); //Initialiserer striker2
         initLevel2Players(&ball,&ball2,&striker,&striker2,&level, gs); //Initialiserer blokkene
         initDisplay(gs->buffer);
 
@@ -70,11 +81,7 @@ void playGame(struct game_state_t* gs){
                     j = fallingObjects.numberOfObjects;
                     for (i = 0; i < j; i++){
                         if (fallingObjects.fallingObjectArray[i].type != 0){
-
-                            fallObject=fallingObjects.fallingObjectArray[i];
-                            updateFallingObject(&fallObject,&striker,gs);// check if collision with player
-                            printfallObject(&fallObject);// Prints the powerup
-                            fallingObjects.fallingObjectArray[i]=fallObject;
+                            updateFallingObject2Players(&fallingObjects.fallingObjectArray[i],&striker,&striker2,gs); // check if collision with players
                         }
 
                     }
@@ -89,50 +96,51 @@ void playGame(struct game_state_t* gs){
                     gs->randomAnglePowerup = 0;
                 }
 
-                updatePlayerPosPotentiometer(&striker,gs,0);// Updates striker
-                updatePlayerPosPotentiometer(&striker2,gs,1);// Updates striker2
-                updateBallPos2Players(&ball,&striker,&striker2,&level, gs,&fallingObjects);// Updates the ball and the blocks
-                updateBallPos2Players(&ball2,&striker2,&striker,&level, gs,&fallingObjects);// Updates the ball and the blocks
-                LCD_Printer(gs);// Shows level, lives and points on the LCD
+                updatePlayerPosPotentiometer(&striker, gs, 0); // Updates striker
+                updatePlayerPosPotentiometer(&striker2, gs, 1); // Updates striker2
+                updateBallPos2Players(&ball, &striker, &striker2, &level, gs, &fallingObjects); // Updates the ball and the blocks
+                updateBallPos2Players(&ball2, &striker2, &striker, &level, gs, &fallingObjects); // Updates the ball and the blocks
+                LCD_Printer(gs); // Shows level, lives and points on the LCD
                 bossKey();
-                setLed(gs);
+                setLed(gs); // Sets the RGB LED to the appropriate color
 
                 if (!gs->lives){// Checks for gameover
                     chooseGameOver(gs);
-                } else if (gs->lives == oldlives-1){// Checks if any lives have been lost - Can happen through a powerup or a lost ball
+                } else if (gs->lives == oldlives-1){ // Checks if any lives have been lost - Can happen through a powerup or a lost ball
                     gs->mirror = gs->startmirror;
-                    restartLevel(&ball,&striker,&level);
+                    restartLevel2Players(&ball, &ball2, &striker, &striker2, &level, &fallingObjects);
                 } else if (!(level.lives) && gs->currentlevel == 5){
                     chooseGameWon(gs);
-                } else if (!(level.lives)){
+                } else if (!(level.lives)){ // Checks if all blocks are destroyed
                     gs->currentlevel++;
                     playGame(gs);
                 }
-                oldlives = gs->lives;// Sets oldlives to the new amount of lives
+                oldlives = gs->lives; // Sets oldlives to the new amount of lives
             }
         }
 
-    } else {
+    } else {// 1-player
+
         initBall(&ball,X2-7,Y2/2,0); //Initialiserer bolden
         initPlayer(&striker,X2-5,Y2/2); //Initialiserer strikeren
         initLevel(&ball,&striker,&level, gs); //Initialiserer blokkene
         initDisplay(gs->buffer);
 
-        while(1){//Spil-loopet startes
+        while(1){ //Spil-loopet startes
+
             if (get_game_flag()){
+
+                // Checks powerups with a small delay in between
                 if(delay++ > 3){
                     delay = 0;
-                    j=fallingObjects.numberOfObjects;
-                    for (i=0; i<j;i++){
+                    j = fallingObjects.numberOfObjects;
+                    for (i = 0; i < j; i++){
                         if (fallingObjects.fallingObjectArray[i].type!=0){
-                            fallObject=fallingObjects.fallingObjectArray[i];
-
-                            updateFallingObject(&fallObject, &striker, gs);// check if collision with player
-                            printfallObject(&fallObject);
-                            fallingObjects.fallingObjectArray[i]=fallObject;
+                            updateFallingObject(&fallingObjects.fallingObjectArray[i], &striker, gs); // check if collision with player
                         }
                     }
                 }
+
                 // Checks if poweruptime has been reached
                 if (tid.seconds >= (gs->mirroruptime+5) && gs->mirror != gs->startmirror){
                     gs->mirror = gs->startmirror;
@@ -140,26 +148,25 @@ void playGame(struct game_state_t* gs){
                 if (tid.seconds >= gs->randomAnglePoweruptime+25 && gs->randomAnglePowerup){
                     gs->randomAnglePowerup = 0;
                 }
-                updatePlayerPos(&striker,gs);// Updates the striker
-                updateBallPos(&ball,&striker,&level, gs,&fallingObjects);// Updates the ball and the blocks
-                LCD_Printer(gs);// Shows level, lives and points on the LCD
+                updatePlayerPos(&striker, gs); // Updates the striker
+                updateBallPos(&ball, &striker, &level, gs, &fallingObjects); // Updates the ball and the blocks
+                LCD_Printer(gs); // Shows level, lives and points on the LCD
                 bossKey();
-                setLed(gs);// Sets the RGB LED to the appropriate color
+                setLed(gs); // Sets the RGB LED to the appropriate color
 
-                if (gs->lives < 1){// Checks for gameover
+                if (gs->lives < 1){ // Checks for gameover
                     turnOffLED();
                     chooseGameOver(gs);
-                } else if (gs->lives < oldlives){// Checks if any lives have been lost - Can happen through a powerup or a lost ball
+                } else if (gs->lives < oldlives){ // Checks if any lives have been lost - Can happen through a powerup or a lost ball
                     gs->mirror = gs->startmirror;
-                    restartLevel(&ball,&striker,&level);
+                    restartLevel(&ball, &striker, &level, &fallingObjects);
                 } else if (!(level.lives) && gs->currentlevel == 5){
                     chooseGameWon(gs);
-                } else if (!(level.lives)){
+                } else if (!(level.lives)){ // Checks if all blocks are destroyed
                     gs->currentlevel++;
                     playGame(gs);
                 }
-
-                oldlives = gs->lives;// Sets oldlives to the new amount of lives
+                oldlives = gs->lives; // Sets oldlives to the new amount of lives
             }
         }
     }
@@ -204,10 +211,11 @@ void initLevel2Players(struct ball_t *ball,struct ball_t * ball2, struct player_
 }
 
 
-void restartLevel(struct ball_t *ball, struct player_t *striker, struct level_t *level){
+void restartLevel(struct ball_t *ball, struct player_t *striker, struct level_t *level,struct fallingObjectsType_t * fallObjectArray){
         clrscr();
 
         initBall(ball,X2-7,Y2/2,0);
+        initFallObject(fallObjectArray);
         striker->x =X2-5;
         striker->y = Y2/2;
 
@@ -216,6 +224,31 @@ void restartLevel(struct ball_t *ball, struct player_t *striker, struct level_t 
         drawBlockMap(level->blocks);
         drawball(ball);
         drawPlayer(striker);
+}
+
+void restartLevel2Players(struct ball_t *ball, struct ball_t * ball2, struct player_t *striker, struct player_t * striker2, struct level_t *level,struct fallingObjectsType_t * fallObjectArray){
+        clrscr();
+
+        initBall(ball,X2-7,Y2/2,0);
+        initFallObject(fallObjectArray);
+        striker->x =X2-5;
+        striker->y = Y2/2;
+
+        initBall(ball,X2-7,Y1+50,0); //Initialiserer bold1
+        initBall(ball2,X2-5,Y2-50,0);//Initialiserer bold2
+        striker->x = X2-5;
+        striker->y = Y1+50;
+        striker2->x = X2-5;
+        striker2->y = Y2-50;
+
+
+
+        drawWalls();
+        drawBlockMap(level->blocks);
+        drawball(ball);
+        drawball(ball2);
+        drawPlayer(striker);
+        drawPlayer(striker2);
 }
 
 void updatePlayerPosPotentiometer(struct player_t * striker, struct game_state_t * gs, int8_t playerNo){

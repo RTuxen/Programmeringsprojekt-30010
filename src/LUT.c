@@ -14,22 +14,6 @@
 // SIN: a 512 long LUT of 16bit values in 2.14 format
 // sin(x*pi/256)
 
-int32_t expand(int32_t i){
-// Converts an 18.14 fixed point number to 16.16
-    return i << 2;
-}
-
-void printFix (int32_t i){
-    // Prints a signed 16.16 fixed point number
-    if((i & 0x80000000) != 0){
-        printf("-");
-        i = ~i+1;
-    }
-    printf("%ld.%04ld",i >> 16, 10000 * (uint32_t) (i & 0xFFFF) >> 16);
-    // Print a maximum of 4 decimal digits to avoid overflow
-}
-
-
 int32_t sinus(int32_t vinkel){
     vinkel &= 511;
     return SIN[vinkel];
@@ -38,20 +22,6 @@ int32_t sinus(int32_t vinkel){
 int32_t cosinus(int32_t vinkel){
     vinkel +=128;
     return sinus(vinkel);
-}
-
-
-void initVector(struct vector_t *v, int32_t a,int32_t b){
-    //Omdanner fra 32.0 til 18.14
-    v->x = a << 14;
-    v->y = b << 14;
-}
-
-void rotat(struct vector_t *vec, int32_t vinkel){
-    int32_t tempx = vec->x;
-    int32_t tempy = vec->y;
-    vec->x = FIX14_MULT(tempx,cosinus(vinkel))-FIX14_MULT(tempy,sinus(vinkel));
-    vec->y = FIX14_MULT(tempx,sinus(vinkel))+FIX14_MULT(tempy,cosinus(vinkel));
 }
 
 const signed short SIN[512]=
@@ -128,6 +98,3 @@ const signed short SIN[512]=
 	0xF384,0xF449,0xF50F,0xF5D5,0xF69C,0xF763,0xF82A,0xF8F2,
 	0xF9BA,0xFA82,0xFB4B,0xFC13,0xFCDC,0xFDA5,0xFE6E,0xFF37,
 };
-
-
-

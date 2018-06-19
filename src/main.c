@@ -165,6 +165,18 @@ int main(void)
 //    }
 
 
+//    initTimer1000Hz();//Initialiserer klokken TIM2
+//    initJoystick();//Initialiserer joystick
+//    init_spi_lcd();//Initialiserer LCD
+//    initADC(); // Initialiserer Potentiometrene
+//    initTimerPWM();
+//    initBuzzer();
+//    struct game_state_t gs;//Danner et game state struct
+//    initGameState(&gs);//Initialisere game statet
+//    clrscr();
+//    hideCursor();
+//    chooseMenuOptions(&gs);
+
     initTimer1000Hz();//Initialiserer klokken TIM2
     initJoystick();//Initialiserer joystick
     init_spi_lcd();//Initialiserer LCD
@@ -172,7 +184,11 @@ int main(void)
     initTimerPWM();
     initBuzzer();
     struct game_state_t gs;//Danner et game state struct
-    initGameState(&gs);//Initialisere game statet
+    initGameState(&gs);//Initialisere game state_t
+    backupDomainAccess();
+    initRTC24(&gs.RTC_InitStruct);
+    initTime(0x00, 0x10, 0x58, 0x45, &gs.RTC_TimeStruct);
+    initDate(0x02, 0x19, 0x06, 0x18, &gs.RTC_DateStruct);
     clrscr();
     hideCursor();
     chooseMenuOptions(&gs);

@@ -15,19 +15,45 @@ void updateFallingObject(struct fallingObject_t *fallObject, struct player_t * s
         printf(" ");
 
         if(fallObject->type==1){
-            printf("Dead");
             gs->lives--;
         }else if (fallObject->type==2){
-            printf("wuhuu");
             gs->lives++;
         }else if (fallObject->type==3){
             gs->mirror = !gs->startmirror;
             gs->mirroruptime = tid.seconds;
-            printf("Mirror-Mode!");
         }else if (fallObject->type==4){
             gs->randomAnglePowerup = 1;
             gs->randomAnglePoweruptime = tid.seconds;
-            printf("Random angle");
+        }
+        fallObject->type=0;
+    } else if (fallObject->x < X2 && fallObject->type){// If no collision, keep on moving
+        gotoxy(fallObject->x, fallObject->y);
+        printf(" ");
+        fallObject->x++;
+        printfallObject(fallObject);
+    } else if (fallObject->x >= X2){
+        gotoxy(fallObject->x, fallObject->y);
+        printf(" ");
+        fallObject->type = 0;
+    }
+}
+
+void updateFallingObject2Players(struct fallingObject_t *fallObject, struct player_t * striker, struct player_t * striker2, struct game_state_t* gs){
+
+    if((fallObject->y <= striker->y+7 && fallObject->x+1 == striker->x && fallObject->y >= striker->y-7) || (fallObject->y <= striker2->y+7 && fallObject->x+1 == striker2->x && fallObject->y >= striker2->y-7)){
+        gotoxy(fallObject->x, fallObject->y);
+        printf(" ");
+
+        if(fallObject->type==1){
+            gs->lives--;
+        }else if (fallObject->type==2){
+            gs->lives++;
+        }else if (fallObject->type==3){
+            gs->mirror = !gs->startmirror;
+            gs->mirroruptime = tid.seconds;
+        }else if (fallObject->type==4){
+            gs->randomAnglePowerup = 1;
+            gs->randomAnglePoweruptime = tid.seconds;
         }
         fallObject->type=0;
     } else if (fallObject->x < X2 && fallObject->type){// If no collision, keep on moving
@@ -82,6 +108,7 @@ void updateBallPos(struct ball_t * ball,struct player_t *striker, struct level_t
 
 void updateBallPos2Players(struct ball_t * ball,struct player_t *striker,struct player_t * striker2, struct level_t *level, struct game_state_t * gs, struct fallingObjectsType_t * fallObject_ptr){
         uint16_t bottomHit;
+        setFreq(0); // Kills sound
 
         checkPlayerCollision(ball,striker,gs);
         checkPlayerCollision(ball,striker2,gs);
@@ -125,6 +152,7 @@ uint16_t checkWallCollision(struct ball_t * ball, struct game_state_t *gs){
     int8_t bottomHit = 0;
 
     if ( ballMoveX(ball) >> 14 <= X1){ // Top wall
+        setFreq(500); // Hit Sound
         ball->angle = 256-ball->angle;
         ball->x = (X1+1) << 14;
         if (gs->randomAnglePowerup){
@@ -134,12 +162,14 @@ uint16_t checkWallCollision(struct ball_t * ball, struct game_state_t *gs){
         bottomHit = 1;
     }
     if ( ballMoveY(ball) >> 14 <= Y1){  // Left  Wall
+        setFreq(500); // Hit Sound
         ball->angle = 512 - ball->angle;
         ball->y = (Y1+1) << 14;
         if (gs->randomAnglePowerup){
         ball->angle = (tid.randomAngle &=0xD4)+20; // Random angle between 20 and 232
         }
     } else if (ballMoveY(ball) >> 14 >= Y2){ // Right wall
+        setFreq(500); // Hit Sound
         ball->angle = 512 - ball->angle;
         ball->y = (Y2-1) << 14;
         if (gs->randomAnglePowerup){
@@ -156,61 +186,9 @@ uint16_t checkWallCollision(struct ball_t * ball, struct game_state_t *gs){
 
 void checkPlayerCollision(struct ball_t * ball, struct player_t * striker, struct game_state_t * gs){
     uint16_t hit = 0;
+    setFreq(0);
 
     // Striker is divided into 5 sections
-
-//    if(ballMoveX(ball) >> 14 == striker->x || ball->x >> 14 == striker->x){
-//        if(((ball->y >> 14) >= striker->y-1 && (ball->y >> 14) <= striker->y+1) || (ballMoveY(ball) >> 14 >= striker->y-1 && ballMoveY(ball) >> 14 <= striker->y+1) ){ //Middle
-//
-//            ball->angle = 256-ball->angle;
-//            hit = 1;
-//
-//        } else if(((ball->y >> 14) >= striker->y-4 && (ball->y >> 14) <= striker->y-2) || (ballMoveY(ball) >> 14 >= striker->y-4 && ballMoveY(ball) >> 14 <= striker->y-2) ){ //Left medium
-//
-//            ball->angle = ball->angle < 128 ? 256-(ball->angle*2)/3 : 256-(ball->angle*3)/2;
-//            hit = 1;
-//
-//        } else if(((ball->y >> 14) >= striker->y+2 && (ball->y >> 14) <= striker->y+4) || (ballMoveY(ball) >> 14 >= striker->y+2 && ballMoveY(ball) >> 14 <= striker->y+4) ){ //Right medium
-//
-//            ball->angle = ball->angle < 128 ? 256-(ball->angle*3)/2 : 256-(ball->angle*2)/3;
-//            hit = 1;
-//
-//        } else if(((ball->y >> 14) >= striker->y-7 && (ball->y >> 14) <= striker->y-5) || (ballMoveY(ball) >> 14 >= striker->y-7 && ballMoveY(ball) >> 14 <= striker->y-5) ){ //Left end
-//
-//            if (ball->angle < 128){ // Ball hits from left
-//                ball->angle = 256-ball->angle/3;
-//            } else if( ball->angle > 384){ // Ball hits from right
-//                ball->angle = 256-ball->angle*3;
-//                if (ball->angle < 128){
-//                    ball->angle = -ball->angle;
-//                }
-//            }
-//            hit = 1;
-//
-//        } else if(((ball->y >> 14) >= striker->y+5 && (ball->y >> 14) <= striker->y+7) || (ballMoveY(ball) >> 14 >= striker->y+5 && ballMoveY(ball) >> 14 <= striker->y+7) ){ //Right end
-//
-//            if (ball->angle < 128){ // Ball hits from left
-//                ball->angle = 256-ball->angle*3;
-//                if (ball->angle > 384){
-//                    ball->angle = -ball->angle;
-//                }
-//            } else if( ball->angle > 384){ // Ball hits from right
-//                ball->angle = 256-ball->angle/3;
-//            }
-//            hit = 1;
-//        }
-//
-//        if (hit){
-//            ball->angle &= 511; // Sets angle within interval [0;511]
-//            ball->x = (striker->x-1) << 14;
-//            if (ball->angle > 364){
-//                ball->angle = 364; // Corrects balls with wrong angle to the left
-//            } else if (ball->angle < 148){
-//                ball->angle = 148; // Corrects ball with wrong angle to the right
-//            }
-//        }
-//
-//    }
 
     if(ballMoveX(ball) >> 14 == striker->x){
         if(((ball->y >> 14) >= striker->y-1 && (ball->y >> 14) <= striker->y+1)){ //Middle
@@ -220,12 +198,12 @@ void checkPlayerCollision(struct ball_t * ball, struct player_t * striker, struc
 
         } else if(((ball->y >> 14) >= striker->y-4 && (ball->y >> 14) <= striker->y-2)){ //Left medium
 
-            ball->angle = ball->angle < 128 ? 256-(ball->angle*2)/3 : 256-(ball->angle*3)/2;
+            ball->angle = ball->angle < 128 ? 256-(ball->angle*2)/3 : 256+((ball->angle-384)*3)/2;
             hit = 1;
 
         } else if(((ball->y >> 14) >= striker->y+2 && (ball->y >> 14) <= striker->y+4)){ //Right medium
 
-            ball->angle = ball->angle < 128 ? 256-(ball->angle*3)/2 : 256-(ball->angle*2)/3;
+            ball->angle = ball->angle < 128 ? 256-(ball->angle*3)/2 : 256+((ball->angle-384)*2)/3;
             hit = 1;
 
         } else if(((ball->y >> 14) >= striker->y-7 && (ball->y >> 14) <= striker->y-5)){ //Left end
@@ -233,8 +211,8 @@ void checkPlayerCollision(struct ball_t * ball, struct player_t * striker, struc
             if (ball->angle < 128){ // Ball hits from left
                 ball->angle = 256-ball->angle/3;
             } else if( ball->angle > 384){ // Ball hits from right
-                ball->angle = 256-ball->angle*3;
-                if (ball->angle < 128){
+                ball->angle = 256+(ball->angle-384)*3;
+                if (ball->angle > 512){
                     ball->angle = -ball->angle;
                 }
             }
@@ -244,16 +222,17 @@ void checkPlayerCollision(struct ball_t * ball, struct player_t * striker, struc
 
             if (ball->angle < 128){ // Ball hits from left
                 ball->angle = 256-ball->angle*3;
-                if (ball->angle > 384){
+                if (ball->angle < 0){
                     ball->angle = -ball->angle;
                 }
             } else if( ball->angle > 384){ // Ball hits from right
-                ball->angle = 256-ball->angle/3;
+                ball->angle = 256+(ball->angle-384)/3;
             }
             hit = 1;
         }
 
         if (hit){
+            setFreq(1000);
             ball->angle &= 511; // Sets angle within interval [0;511]
             ball->x = (striker->x-1) << 14;
             if (ball->angle > 364){
@@ -261,11 +240,12 @@ void checkPlayerCollision(struct ball_t * ball, struct player_t * striker, struc
             } else if (ball->angle < 148){
                 ball->angle = 148; // Corrects ball with wrong angle to the right
             }
+            if (gs->randomAnglePowerup){ // If Randomangle powerup is active
+            ball->angle = (tid.randomAngle &=0xD4)+148; // Random angle between 148 and 360
+            }
         }
 
-        if (gs->randomAnglePowerup){
-            ball->angle = (tid.randomAngle &=0xD4)+148; // Random angle between 148 and 360
-        }
+
 
     }
 
@@ -289,11 +269,11 @@ void checkBlockCollision(struct ball_t* ball, struct level_t* level, struct game
                        hit = 1;
                    } else if( (ballMoveX(ball) >> 14 == blocks[i].x && ballMoveY(ball) >> 14 ==blocks[i].y)  ){ // Top Left Corner
                        hit = 1;
-                       if(ball->angle == 320){ // Checks angle and determines exit angle
+                       if(ball->angle == 64){ // Checks angle and determines exit angle
                            ball->angle = 64;
-                       } else if(ball->angle > 320){
-                            ball->angle = 512-ball->angle;
-                       } else if (ball->angle < 320){
+                       } else if(ball->angle < 64 || ball->angle > 384){
+                            ball->angle = -ball->angle;
+                       } else if (ball->angle > 64){
                            ball->angle = 256-ball->angle;
                        }
                    } else if( (ballMoveX(ball) >> 14 == blocks[i].x+1 && ballMoveY(ball) >> 14 ==blocks[i].y) ){ // Bottom Left Corner
@@ -303,74 +283,30 @@ void checkBlockCollision(struct ball_t* ball, struct level_t* level, struct game
                        } else if(ball->angle > 192){
                            ball->angle = 256-ball->angle;
                        } else if (ball->angle < 192){
-                           ball->angle = 512-ball->angle;
+                           ball->angle = -ball->angle;
                        }
                    } else if( (ballMoveX(ball) >> 14 == blocks[i].x && ballMoveY(ball) >> 14 ==blocks[i].y+14) ){ // Top right Corner
                        hit = 1;
-                       if(ball->angle == 64){ // Checks angle and determines exit angle
-                           ball->angle = 320;
-                       } else if(ball->angle > 64){
-                           ball->angle = 512-ball->angle;
-                       } else if (ball->angle < 64){
+                       if(ball->angle == 448){ // Checks angle and determines exit angle
+                           ball->angle = 192;
+                       } else if(ball->angle > 448 || ball->angle < 128){
                            ball->angle = 256-ball->angle;
+                       } else if (ball->angle < 448){
+                           ball->angle = -ball->angle;
                        }
                    } else if((ballMoveX(ball) >> 14 == blocks[i].x+1 && ballMoveY(ball) >> 14 ==blocks[i].y+14) ){ // Bottom right Corner
                        hit = 1;
-                       if(ball->angle == 448){ // Checks angle and determines exit angle
-                           ball->angle = 192;
-                       } else if(ball->angle > 448){
+                       if(ball->angle == 320){ // Checks angle and determines exit angle
+                           ball->angle = 64;
+                       } else if(ball->angle > 320){
+                           ball->angle = -ball->angle;
+                       } else if (ball->angle < 320){
                            ball->angle = 256-ball->angle;
-                       } else if (ball->angle < 448){
-                           ball->angle = 512-ball->angle;
                        }
                 }
 			}
-
-//            if(ball->x >> 14 == blocks[i].x || ball->x >> 14 == blocks[i].x+1  || ballMoveX(ball) >> 14 == blocks[i].x || ballMoveX(ball) >> 14 == blocks[i].x+1 ){ // Check if ball hits from top or bottom
-//                if((ball->y >> 14 >= blocks[i].y+1 && ball->y >> 14 <= blocks[i].y+13) || (ballMoveY(ball) >> 14 >= blocks[i].y+1 && ballMoveY(ball) >> 14 <= blocks[i].y+13) ){ // Top and bottom sides
-//                       ball->angle = 256-ball->angle;
-//                       hit = 1;
-//                   } else if( (ball->x >> 14 == blocks[i].x && ball->y >> 14 == blocks[i].y) || (ballMoveX(ball) >> 14 == blocks[i].x && ballMoveY(ball) >> 14 ==blocks[i].y)  ){ // Top Left Corner
-//                       hit = 1;
-//                       if(ball->angle == 320){ // Checks angle and determines exit angle
-//                           ball->angle = 64;
-//                       } else if(ball->angle > 320){
-//                            ball->angle = 512-ball->angle;
-//                       } else if (ball->angle < 320){
-//                           ball->angle = 256-ball->angle;
-//                       }
-//                   } else if( (ball->x >> 14 == blocks[i].x+1 && ball->y >> 14 == blocks[i].y) || (ballMoveX(ball) >> 14 == blocks[i].x+1 && ballMoveY(ball) >> 14 ==blocks[i].y) ){ // Bottom Left Corner
-//                       hit = 1;
-//                       if(ball->angle == 192){ // Checks angle and determines exit angle
-//                           ball->angle = 448;
-//                       } else if(ball->angle > 192){
-//                           ball->angle = 256-ball->angle;
-//                       } else if (ball->angle < 192){
-//                           ball->angle = 512-ball->angle;
-//                       }
-//                   } else if( (ball->x >> 14 == blocks[i].x && ball->y >> 14 == blocks[i].y+14) || (ballMoveX(ball) >> 14 == blocks[i].x && ballMoveY(ball) >> 14 ==blocks[i].y+14) ){ // Top right Corner
-//                       hit = 1;
-//                       if(ball->angle == 64){ // Checks angle and determines exit angle
-//                           ball->angle = 320;
-//                       } else if(ball->angle > 64){
-//                           ball->angle = 512-ball->angle;
-//                       } else if (ball->angle < 64){
-//                           ball->angle = 256-ball->angle;
-//                       }
-//                   } else if( (ball->x >> 14 == blocks[i].x+1 && ball->y >> 14 == blocks[i].y+14) || (ballMoveX(ball) >> 14 == blocks[i].x+1 && ballMoveY(ball) >> 14 ==blocks[i].y+14) ){ // Bottom right Corner
-//                       hit = 1;
-//                       if(ball->angle == 448){ // Checks angle and determines exit angle
-//                           ball->angle = 192;
-//                       } else if(ball->angle > 448){
-//                           ball->angle = 256-ball->angle;
-//                       } else if (ball->angle < 448){
-//                           ball->angle = 512-ball->angle;
-//                       }
-//                }
-//			}
-
-			if (hit == 1) { // If ball hits a block
-
+			if (hit == 1) { // If the ball hits a block
+                setFreq(500); // Hit Sound
 				blocks[i].lives--;
 				drawBlock(blocks[i]);
 				level->lives--;
