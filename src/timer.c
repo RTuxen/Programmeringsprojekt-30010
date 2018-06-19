@@ -81,7 +81,7 @@ void TIM2_IRQHandler(void){
 
 void setTimer(uint8_t difficulty, uint8_t levelspeed){
     TIM15->CR1 = 0x0000; // Configure timer 2 - disabled
-    TIM15->ARR = 0x00009C3F/(1+2*difficulty+levelspeed); // Set reload value depending on difficulty and speed
+    TIM15->ARR = 0x00009C3F/(2*difficulty+levelspeed); // Set reload value depending on difficulty and speed
     TIM15->PSC = 0x000F; // Set prescale value to 15
     TIM15->CR1 = 0x0001; // Configure timer 2 - enabled
     TIM15->EGR |= 0x0001;
@@ -111,52 +111,4 @@ uint8_t get_game_flag() {
     return 0;
 }
 
-//void printTid(){
-//    uint8_t s,m,h;
-//
-//        NVIC_DisableIRQ(TIM2_IRQn);
-//        s = tid.seconds;
-//        m = tid.minutes;
-//        h = tid.hours;
-//        NVIC_EnableIRQ(TIM2_IRQn); // Enable interrupt
-//        printf("%d:%02d:%02d", h, m, s);
-//
-//
-//}
 
-//void printSplit (uint16_t ms, uint8_t s, uint8_t m, uint8_t h){
-//    printf("%d:%02d:%02d.%02d", h, m, s, ms);
-//}
-
-
-//void stopWatchControl(int8_t value){
-//    if (value == 16){ // Center - Stop/Start (enable and disable of clock)
-//        if (TIM2->CR1 & 0x0001){
-//            TIM2->CR1 = 0x0000;
-//        } else{
-//            TIM2->CR1 = 0x0001;
-//        }
-//    } else if (value == 4){ // Left - prints split 1
-//        NVIC_DisableIRQ(TIM2_IRQn);
-//        uint16_t ms = tid.centiseconds;
-//        int8_t s = tid.seconds;
-//        int8_t m = tid.minutes;
-//        int8_t h = tid.hours;
-//        NVIC_EnableIRQ(TIM2_IRQn);
-//        printSplit(ms,s,m,h);
-//    } else if (value == 8){ // Right - Prints split 2
-//        NVIC_DisableIRQ(TIM2_IRQn);
-//        uint16_t ms = tid.centiseconds;
-//        int8_t s = tid.seconds;
-//        int8_t m = tid.minutes;
-//        int8_t h = tid.hours;
-//        NVIC_EnableIRQ(TIM2_IRQn);
-//        printSplit(ms,s,m,h);
-//    } else if (value == 2){ // Down - Resets timer
-//        TIM2->CR1 = 0x0000;
-//        tid.centiseconds = 0;
-//        tid.seconds = 0;
-//        tid.minutes = 0;
-//        tid.hours = 0;
-//    }
-//}
