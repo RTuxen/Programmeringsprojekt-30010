@@ -7,14 +7,18 @@ void chooseMenuOptions(struct game_state_t* gs){
     uint16_t t = tid.soundtime;
     static uint16_t i = 0;
 
+    // Clears screen and makes sure the right settings are on, in case of a restart in the middle of writing a highscore name
     clrscr();
     inverse(0);
     underline(0);
-    drawWelcomeMessage();
     setTimerDefault();
-    drawMenuWindow();       // Draws Menu Window
+
+    // Draws Menu
+    drawWelcomeMessage();
+    drawMenuWindow();
     gotoxy(MENUX1 + INCRX + (arrow<<1), MENUY1 + INCRY);
     printf("<<");
+
     while(1) {
         /** Gets the input values */
         joystickValue = readJoyStick();

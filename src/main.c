@@ -45,11 +45,8 @@ int main(void)
     hideCursor(); // Hides cursor
     chooseMenuOptions(&gs); // Enters main menu
 
-
-
-
-        while(1){
-        }
+    while(1){
+    }
 }
 
 

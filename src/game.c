@@ -13,7 +13,7 @@ void initPlayer(struct player_t * striker, uint16_t x, uint16_t y){
 }
 
 void initFallObject(struct fallingObjectsType_t * fallObjectArray){
-    memset(fallObjectArray->fallingObjectArray,0,10);
+    memset(fallObjectArray->fallingObjectArray, 0, 10);
     fallObjectArray->numberOfObjects = 0;
 }
 
@@ -189,53 +189,60 @@ void playGame(struct game_state_t* gs){
 }
 
 void initLevel(struct ball_t *ball, struct player_t *striker, struct level_t *level, struct game_state_t* gs){
-        clrscr();
-        uint8_t i;
+    uint8_t i;
 
-        level->lives = 0;
+    clrscr();
+    level->lives = 0;
 
-        for (i = 0; i < 32; i++) {
-            level->blocks[i] = Level[gs->currentlevel-1][i];
-            if (level->blocks[i].lives > 0) {
-                level->lives += level->blocks[i].lives;
-            }
+    // Loads blocks
+    for (i = 0; i < 32; i++) {
+        level->blocks[i] = Level[gs->currentlevel-1][i];
+        if (level->blocks[i].lives > 0) {
+            level->lives += level->blocks[i].lives;
         }
-        drawWalls();
-        drawBlockMap(level->blocks);
-        drawball(ball);
-        drawPlayer(striker);
+    }
+
+    // Draws level
+    drawWalls();
+    drawBlockMap(level->blocks);
+    drawball(ball);
+    drawPlayer(striker);
 }
 
 void initLevel2Players(struct ball_t *ball,struct ball_t * ball2, struct player_t *striker, struct player_t *striker2, struct level_t *level, struct game_state_t* gs){
-        clrscr();
-        uint8_t i;
+    uint8_t i;
 
-        level->lives = 0;
+    clrscr();
+    level->lives = 0;
 
-        for (i = 0; i < 32; i++) {
-            level->blocks[i] = Level[gs->currentlevel-1][i];
-            if (level->blocks[i].lives > 0) {
-                level->lives += level->blocks[i].lives;
-            }
+    // Loads blocks
+    for (i = 0; i < 32; i++) {
+        level->blocks[i] = Level[gs->currentlevel-1][i];
+        if (level->blocks[i].lives > 0) {
+            level->lives += level->blocks[i].lives;
         }
-        drawWalls();
-        drawBlockMap(level->blocks);
-        drawball(ball);
-        drawball(ball2);
-        drawPlayer(striker);
-        drawPlayer(striker2);
+    }
+
+    // Draws level
+    drawWalls();
+    drawBlockMap(level->blocks);
+    drawball(ball);
+    drawball(ball2);
+    drawPlayer(striker);
+    drawPlayer(striker2);
 }
 
-
 void restartLevel(struct ball_t *ball, struct player_t *striker, struct level_t *level,struct fallingObjectsType_t * fallObjectArray){
+
         clrscr();
 
-        initBall(ball,X2-7,Y2/2,0);
+        // Initializes the ball, powerups and striker
+        initBall(ball, X2-7, Y2/2, 0);
         initFallObject(fallObjectArray);
-        striker->x =X2-5;
+        striker->x = X2-5;
         striker->y = Y2/2;
 
-
+        // Draws the level
         drawWalls();
         drawBlockMap(level->blocks);
         drawball(ball);

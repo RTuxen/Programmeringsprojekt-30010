@@ -7,7 +7,6 @@ uint8_t strlens(char* text) { // Calculate the length of a string
 	return length;
 }
 
-
 void window (uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2, char str[]){ // Draws window with text in the middle
     uint8_t len = strlens(str);
     uint8_t i, j;
@@ -25,7 +24,7 @@ void window (uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2, char str[]){ // Dra
     for (i = 1; i <= dx; i++){
         if (i == 1) {       // Draws the upper left corner
             printf("%c", 201);
-        } else if(i==dx){   // Draws the lower left corner
+        } else if(i == dx){   // Draws the lower left corner
             printf("%c", 200);
         } else{             // Draws the line on the right
             printf("%c", 186);
@@ -37,22 +36,22 @@ void window (uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2, char str[]){ // Dra
     				printf("%c", 205);
     			} else if (j == incre) {
                     printf("%c", 185);
-                } else if ( j-1-incre < len){ // Draws the string
+                } else if ( j - 1 - incre < len){ // Draws the string
                     inverse(1);
-                    printf("%c",str[j-1-incre]);
+                    printf("%c",str[j - 1 - incre]);
                     inverse(0);
                 } else if (j - 1 - incre == len){
                     printf("%c", 204);
                 } else {
                     printf("%c", 205);
                 }
-            } else if (i==dx) { // Draws the last line
+            } else if (i == dx) { // Draws the last line
                 printf("%c", 205);
             }
         }
-        if (i==1) {         // Draws the upper right corner
+        if (i == 1) {         // Draws the upper right corner
             printf("%c", 187);
-        } else if(i==dx){   // Draws the lower right corner
+        } else if(i == dx){   // Draws the lower right corner
             printf("%c", 188);
         } else{             // Draws the line on the right
             printf("%c", 186);
@@ -180,7 +179,6 @@ void drawMenuWindow() { /**MAIN MENU WINDOW */
     printf("Help");
 }
 
-
 void drawPlayWindow() { /**PLAY MENU WINDOW */
     char str[] = " Level ";
 
@@ -196,8 +194,6 @@ void drawPlayWindow() { /**PLAY MENU WINDOW */
     gotoxy(MENUX1+INCRX+10,MENUY1+10);
     printf("Level 5");
 }
-
-
 
 void drawOptionWindow(struct game_state_t* gs) { /**OPTIONS MENU WINDOW */
     char str[] = " Options ";
@@ -271,7 +267,7 @@ void drawGameOverWindow() { /**GAME OVER WINDOW */
 
 void drawGameWonWindow(){ /**GAME WON WINDOW */
     char str[] = " Game Won ";
-    //Game won
+
     drawTrophy();
     window(MENUX1, MENUY1, MENUX2, MENUY2, str);
     gotoxy(MENUX1+INCRX+2,MENUY1+17);
@@ -286,7 +282,7 @@ void drawHighscoreWindow(struct game_state_t* gs) { /**Draws list of highscores 
     char str[] = " Highscores ";
 
     window(MENUX1, MENUY1, MENUX2, MENUY2, str);
-    //Highscorelist
+    //Highscorelist - Writes place, score, name, date, month, hours and minutes
     gotoxy(MENUX1+INCRX+2,MENUY1+10);
     underline(1);
     printf("Highscores");
@@ -317,8 +313,7 @@ void drawHighscoreWindow(struct game_state_t* gs) { /**Draws list of highscores 
     printf(" %02d/%02d %02d:%02d", gs->highscoreDate[4], gs->highscoreMonth[4], gs->highscoreHours[4], gs->highscoreMinutes[4]);
 }
 
-/** Writes the highscore name of the n+1 place. */
-void writeScoreName(struct game_state_t* gs, uint8_t n){
+void writeScoreName(struct game_state_t* gs, uint8_t n){ /** Writes the highscore name of the n+1 place. **/
     uint8_t i;
     underline(1);
     for (i = 0; i < 6; i++){

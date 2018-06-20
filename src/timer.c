@@ -4,7 +4,7 @@ volatile uint8_t flag = 0;       //Flag til LCD update
 volatile uint8_t slide = 0;      //Variabel til LCD update
 volatile uint8_t gameflag = 0;   //Flag til spil update
 volatile uint8_t updateGame = 0; //Variabel til spil update
-volatile uint8_t gametime = 0;   // Variabel til
+volatile uint8_t gametime = 0;   // Variabel til powerups
 
 void initTimer1000Hz(){
     RCC->APB2ENR |= RCC_APB2Periph_TIM15; // Enable clock line to timer 15;
@@ -73,7 +73,6 @@ void setFreq(uint16_t freq) {
  TIM2->CCR3 = reload/2; // Set compare register
  TIM2->EGR |= 0x01;
  }
-
 
 void TIM2_IRQHandler(void){
     TIM2->SR &= ~0x0001; //Clear interrupt bit

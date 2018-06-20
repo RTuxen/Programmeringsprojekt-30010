@@ -21,7 +21,6 @@ void lcd_write_string(uint8_t *buffer, char *text, uint8_t slice, uint8_t line){
     int8_t i,j;
     int16_t k =slice+line*128-1;
 
-
     for (i = 0; i< textlenght; i++){
             for (j=0; j <= 4; j++){
                 if (7*i+k+j >= 128*line+128) {

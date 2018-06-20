@@ -1,7 +1,6 @@
 #include "IO.h"
 
 
-
 void initJoystick(){
     RCC->AHBENR |= RCC_AHBPeriph_GPIOA; // Enable clock for GPIO Port A
     RCC->AHBENR |= RCC_AHBPeriph_GPIOB; // Enable clock for GPIO Port B
@@ -209,35 +208,7 @@ int8_t readJoyStickContinous(){
     uint16_t valLeft = GPIOC->IDR & (0x0001 << 1);
     uint16_t valUp = GPIOA->IDR & (0x0001 << 4);
 
-    if (valUp){
-        direction += 1;
-    }
-    if (valDown){
-        direction += 2;
-    }
-    if (valLeft){
-        direction += 4;
-    }
-    if (valRight){
-        direction += 8;
-    }
-    if (valCenter){
-        direction += 16;
-    }
-    return direction;
-}
-
-int8_t readJoyStick(){
-    static uint16_t time = 0;
-    static uint8_t old1_direction;
-    static uint8_t old2_direction;
-    uint8_t direction = 0;
-    uint16_t valUp = GPIOA->IDR & (0x0001 << 4);
-    uint16_t valDown = GPIOB->IDR & (0x0001 << 0);
-    uint16_t valLeft = GPIOC->IDR & (0x0001 << 1);
-    uint16_t valRight = GPIOC->IDR & (0x0001 << 0);
-    uint16_t valCenter = GPIOB->IDR & (0x0001 << 5);
-
+    // Gives direction a value according to the input
     if (valUp){
         direction = 1;
     }
@@ -253,10 +224,43 @@ int8_t readJoyStick(){
     if (valCenter){
         direction = 16;
     }
+    return direction;
+}
+
+int8_t readJoyStick(){
+    static uint16_t time = 0;
+    static uint8_t old1_direction;
+    static uint8_t old2_direction;
+    uint8_t direction = 0;
+    uint16_t valUp = GPIOA->IDR & (0x0001 << 4);
+    uint16_t valDown = GPIOB->IDR & (0x0001 << 0);
+    uint16_t valLeft = GPIOC->IDR & (0x0001 << 1);
+    uint16_t valRight = GPIOC->IDR & (0x0001 << 0);
+    uint16_t valCenter = GPIOB->IDR & (0x0001 << 5);
+
+     // Gives direction a value according to the input
+    if (valUp){
+        direction = 1;
+    }
+    if (valDown){
+        direction = 2;
+    }
+    if (valLeft){
+        direction = 4;
+    }
+    if (valRight){
+        direction = 8;
+    }
+    if (valCenter){
+        direction = 16;
+    }
+
+    // Records the change in direction
     if (old1_direction != direction) {
         time = tid.joystickdebouncer;
     }
 
+    // Returns direction if it's been pressed in the same direction for some time
     if (tid.joystickdebouncer >=  time+25){
         if (old2_direction != direction) {
             old2_direction = direction;
@@ -276,6 +280,7 @@ void turnOffLED(){
 void setLed(struct game_state_t* gs){ // LED turns on at low
     static uint8_t oldlives;
 
+    // Sets LED according to different occurrences during the game
     if (oldlives > gs->lives){ // Red
         GPIOB->ODR &= ~RED;
         GPIOC->ODR |= GREEN;
@@ -408,8 +413,6 @@ void I2C_init(){
     I2C1->CR1  |= 0x00000000;  // Set mode (0x00000000 - I2C, 0x00200000 - SMBus Device, 0x00100000 - SMBus Host)
     I2C1->CR2  &= 0x07FF7FFF;  // Clear config 2
     I2C1->CR2  |= 0x00000000;  // Configure acknowledgment (0x00000000 - Enabled, 0x00008000 - Disabled)
-
-//    I2C1->CR1 |= 0x00200000;
 }
 
 uint8_t I2C_Read(uint16_t address, uint8_t reg) {

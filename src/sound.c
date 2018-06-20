@@ -54,8 +54,7 @@ const uint8_t TEMPO[] = {
   120, 120, 120, 120,
   120, 120, 120, 120,
 };
-
-//Underworld melody
+// Underworld melody
 const uint16_t UNDERWORLD_MELODY[] = {
   0,NOTE_C4, NOTE_C5, NOTE_A3, NOTE_A4,
   NOTE_AS3, NOTE_AS4, 0,
@@ -77,7 +76,7 @@ const uint16_t UNDERWORLD_MELODY[] = {
   NOTE_AS3, NOTE_A3, NOTE_GS3,
   0, 0, 0
 };
-//Underwolrd tempo
+// Underworld tempo
 const uint8_t UNDERWORLD_TEMPO[] = {
   0,120, 120, 120, 120,
   120, 120, 60,
@@ -99,7 +98,7 @@ const uint8_t UNDERWORLD_TEMPO[] = {
   100, 100, 100,
   30, 30, 30
 };
-
+// Tetris melody
 const uint16_t TETRIS_MELODY[] = {
   0,NOTE_E5, 0, NOTE_E3, 0, NOTE_B4, 0, NOTE_C5, 0, NOTE_D5, 0,NOTE_E5, 0, NOTE_D5, 0, NOTE_C5,
   0, NOTE_B4, 0, NOTE_A4, 0, NOTE_A3, 0, NOTE_A4, 0, NOTE_C5, 0, NOTE_E5, 0, NOTE_A3, 0, NOTE_D5,
@@ -150,8 +149,7 @@ const uint16_t TETRIS_MELODY[] = {
   0, NOTE_C4, 0, NOTE_E3, 0, NOTE_E4, 0, NOTE_E3, 0, NOTE_A4, 0, NOTE_E3, 0, NOTE_A2, 0, NOTE_E3,
   0, NOTE_GS4, 0, NOTE_E3, 0, NOTE_GS2, 0, NOTE_E3, 0, NOTE_GS2, 0, NOTE_E3, 0, NOTE_GS2, 0, NOTE_E3,
 };
-
-//note durations: 4 = quarter note, 8 = eighth note, etc
+// Tetris tempo
 const uint8_t TETRIS_TEMPO[] = {
   40, 125, 40, 125, 40, 125, 40, 125, 40, 125, 40, 63, 20, 63, 20, 125, 40, 125, 40, 125, 40, 125, 40, 125, 40, 125, 40, 125, 40, 125, 40, 125, 40, 125, 40, 125, 40, 125, 40, 125, 40, 125, 40, 125, 40, 125, 40, 125, 40, 125, 40, 125, 40, 125, 40, 125, 40, 125, 40, 125, 40, 125, 40, 125, 40, 125, 40,
   125, 40, 250, 80, 125, 40, 125, 40, 63, 20, 63, 20, 125, 40, 125, 40, 125, 40, 125, 40, 125, 40, 125, 40, 125, 40, 63, 20, 63, 20, 125, 40, 125, 40, 125, 40, 125, 40, 125, 40, 125, 40, 125, 40, 125, 40, 125, 40, 125, 40, 125, 40, 125, 40, 125, 40, 125, 40, 250, 80, 250, 80,
