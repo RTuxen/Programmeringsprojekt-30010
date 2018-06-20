@@ -19,6 +19,7 @@ void restartLevel(struct ball_t *ball, struct player_t *striker, struct level_t 
 void restartLevel2Players(struct ball_t *ball, struct ball_t * ball2, struct player_t *striker, struct player_t * striker2, struct level_t *level,struct fallingObjectsType_t * fallObjectArray);
 void updatePlayerPosPotentiometer(struct player_t * striker, struct game_state_t * gs, int8_t playerNo);
 void updatePlayerPos(struct player_t *striker, struct game_state_t* gs);
+void updatePlayerPosI2C(struct player_t * striker, struct game_state_t * gs);
 void bossKey();
 
 

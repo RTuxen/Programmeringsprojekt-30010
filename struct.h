@@ -152,6 +152,7 @@ struct game_state_t {
  	uint8_t startmirror;
  	uint8_t mirror;
  	uint8_t randomAnglePowerup;
+ 	uint8_t I2C_Active;
 	uint16_t points;
 	uint8_t startlevel;
 	uint8_t currentlevel;

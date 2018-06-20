@@ -22,4 +22,5 @@ void chooseGameWon(struct game_state_t* gs);
 void toggleMirror(struct game_state_t* gs);
 void changeSpeed(struct game_state_t* gs);
 void changeNumberOfPlayers(struct game_state_t* gs);
+void changeController(struct game_state_t* gs);
 #endif

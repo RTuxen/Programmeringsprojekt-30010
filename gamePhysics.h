@@ -13,8 +13,11 @@
 
 int32_t moveBallX(struct ball_t * ball);
 int32_t moveBallY(struct ball_t * ball);
-void updateFallingObject(struct fallingObject_t *fallObject, struct player_t * striker, struct game_state_t* gs);
+
+void updateFallingObject(struct fallingObject_t *fallObject,struct level_t * level, struct player_t * striker, struct game_state_t* gs);
+
 void updateFallingObject2Players(struct fallingObject_t *fallObject, struct player_t * striker, struct player_t * striker2, struct game_state_t* gs);
+
 void updateBallPos(struct ball_t * ball,struct player_t *striker, struct level_t *level, struct game_state_t * gs,struct fallingObjectsType_t * fallObject_ptr);
 void updateBallPos2Players(struct ball_t * ball,struct player_t *striker,struct player_t * striker2, struct level_t *level, struct game_state_t * gs, struct fallingObjectsType_t * fallObject_ptr);
 uint16_t checkWallCollision(struct ball_t * ball,struct game_state_t *gs);

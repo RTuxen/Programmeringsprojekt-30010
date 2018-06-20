@@ -23,4 +23,8 @@ uint16_t readADC_pa1();
 uint8_t readKeyboard();
 void initBuzzer();
 
+void I2C_init();
+uint8_t I2C_Read(uint16_t address, uint8_t reg);
+void I2C_Write(uint16_t address, uint8_t reg, uint8_t val);
+
 #endif	// IO66_H
