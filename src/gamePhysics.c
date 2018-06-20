@@ -11,7 +11,7 @@ int32_t ballMoveY(struct ball_t * ball){ // Moves ball one step in X direction
 void updateFallingObject(struct fallingObject_t *fallObject, struct level_t * Level, struct player_t * striker, struct game_state_t* gs){ // Check for collision with powerup
     static uint8_t i, hit;
 
-    if(fallObject->y <= striker->y+7 && fallObject->x+1 == striker->x && fallObject->y >= striker->y-7){ // If hit with striker
+    if(fallObject->y <= striker->y+7 && (fallObject->x+1 == striker->x || fallObject->x == striker->x)  && fallObject->y >= striker->y-7){ // If hit with striker
         gotoxy(fallObject->x, fallObject->y);
         printf(" ");
 
@@ -80,8 +80,6 @@ void updateFallingObject2Players(struct fallingObject_t *fallObject, struct play
         fallObject->type = 0;
     }
 }
-
-
 
 void updateBallPos(struct ball_t * ball,struct player_t *striker, struct level_t *level, struct game_state_t * gs,struct fallingObjectsType_t * fallObject_ptr){ // Updates position of ball
         uint16_t bottomHit;
@@ -288,7 +286,7 @@ void checkBlockCollision(struct ball_t* ball, struct level_t* level, struct game
                    } else if( (ballMoveX(ball) >> 14 == blocks[i].x && ballMoveY(ball) >> 14 ==blocks[i].y)  ){ // Top Left Corner
                        hit = 1;
                        if(ball->angle == 64){ // Checks angle and determines exit angle
-                           ball->angle = 64;
+                           ball->angle = 320;
                        } else if(ball->angle < 64 || ball->angle > 384){
                             ball->angle = -ball->angle;
                        } else if (ball->angle > 64){
