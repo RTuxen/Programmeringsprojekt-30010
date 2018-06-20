@@ -8,37 +8,6 @@ int32_t ballMoveY(struct ball_t * ball){ // Moves ball one step in X direction
     return ball->y+ FIX14_MULT(ball->speed,sinus(ball->angle));
 }
 
-//void updateFallingObject(struct fallingObject_t *fallObject, struct player_t * striker, struct game_state_t* gs){ // Check for collision with powerup
-//
-//    if(fallObject->y <= striker->y+7 && fallObject->x+1 == striker->x && fallObject->y >= striker->y-7){ // If hit with striker
-//        gotoxy(fallObject->x, fallObject->y);
-//        printf(" ");
-//
-//        // Powerups have different types
-//        if(fallObject->type==1){
-//            gs->lives--;
-//        }else if (fallObject->type==2){
-//            gs->lives++;
-//        }else if (fallObject->type==3){
-//            gs->mirror = !gs->startmirror;
-//            gs->mirroruptime = tid.seconds;
-//        }else if (fallObject->type==4){
-//            gs->randomAnglePowerup = 1;
-//            gs->randomAnglePoweruptime = tid.seconds;
-//        }
-//        fallObject->type=0;
-//    } else if (fallObject->x < X2 && fallObject->type){// If no collision, keep on moving
-//        gotoxy(fallObject->x, fallObject->y);
-//        printf(" ");
-//        fallObject->x++;
-//        printfallObject(fallObject);
-//    } else if (fallObject->x >= X2){
-//        gotoxy(fallObject->x, fallObject->y);
-//        printf(" ");
-//        fallObject->type = 0;
-//    }
-//}
-
 void updateFallingObject(struct fallingObject_t *fallObject, struct level_t * Level, struct player_t * striker, struct game_state_t* gs){ // Check for collision with powerup
     static uint8_t i, hit;
 
