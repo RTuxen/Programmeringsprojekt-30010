@@ -5,7 +5,7 @@ void initDisplay(uint8_t *buffer){
     lcd_push_buffer(buffer);
 }
 
-void LCD_Printer(struct game_state_t* gs){ // Prints game information
+void LCD_Printer(struct game_state_t* gs){ // Prints game information on LCD
     uint16_t val1 = gs->currentlevel, val2 = gs->lives, val3 = gs->points;
     char str1[30], str2[30], str3[30];
     sprintf(str1, "Level   = %4d", val1);

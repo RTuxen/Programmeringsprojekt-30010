@@ -149,26 +149,23 @@ void drawBlockMap(struct block_t *bricks){
         }
 }
 
-void printfallObject(struct fallingObject_t *fallObject){
+void printfallObject(struct fallingObject_t *fallObject){ // Draws powerup
     if (fallObject->type){
-        gotoxy(fallObject->x, fallObject->y);
         if (fallObject->type==1){
             fgcolor(1);
-            printf("%c", 219);
         } else if(fallObject->type==2){
             fgcolor(2);
-            printf("%c", 219);
         } else if(fallObject->type==3){
             fgcolor(3);
-            printf("%c", 219);
         } else if(fallObject->type == 4){
             fgcolor(4);
-            printf("%c",219);
         }
+        gotoxy(fallObject->x, fallObject->y);
+        printf("%c",219);
     }
 }
 
-void drawMenuWindow() {
+void drawMenuWindow() { /**MAIN MENU WINDOW */
     char str[] = " Menu ";
     fgcolor(15);
 
@@ -184,7 +181,7 @@ void drawMenuWindow() {
 }
 
 
-void drawPlayWindow() {
+void drawPlayWindow() { /**PLAY MENU WINDOW */
     char str[] = " Level ";
 
     window(MENUX1, MENUY1, MENUX2, MENUY2, str);
@@ -202,7 +199,7 @@ void drawPlayWindow() {
 
 
 
-void drawOptionWindow(struct game_state_t* gs) {
+void drawOptionWindow(struct game_state_t* gs) { /**OPTIONS MENU WINDOW */
     char str[] = " Options ";
 
     window(MENUX1, MENUY1, MENUX2, MENUY2, str);
@@ -216,13 +213,20 @@ void drawOptionWindow(struct game_state_t* gs) {
     printf("Speed:        %d", gs->speed);
     gotoxy(MENUX1+INCRX+6,MENUY1+20);
     printf("Players:      %d",gs->players);
+    gotoxy(MENUX1+INCRX+8,MENUY1+20);
+    if (gs->I2C_Active){
+        printf("AccMeter:    On");
+    } else {
+        printf("AccMeter:    Off");
+    }
 }
 
-void drawHelpWindow() {
+void drawHelpWindow() { /**HELP MENU WINDOW */
     char str[] = " Help ";
 
     window(MENUX1, MENUY1, MENUX2, MENUY2, str);
-    //Game controls
+
+    /**Game controls */
     gotoxy(MENUX1+INCRX+2, MENUY1+10);
     underline(1);
     printf("Game Controls:");
@@ -252,33 +256,33 @@ void drawHelpWindow() {
     printf("- Push down to go down.");
 }
 
-void drawGameOverWindow() {
+void drawGameOverWindow() { /**GAME OVER WINDOW */
     char str[] = " Game Over ";
     fgcolor(15); // White
-    //Game over
+
     window(MENUX1, MENUY1, MENUX2, MENUY2, str);
     gotoxy(MENUX1+INCRX+2,MENUY1+20);
-    printf("Git gut, skrubbe!");
+    printf("YOU DIED !");
     gotoxy(MENUX1+INCRX+4,MENUY1+20);
     printf("Play again?");
     gotoxy(MENUX1+INCRX+6,MENUY1+20);
     printf("Go to Menu");
 }
 
-void drawGameWonWindow(){
+void drawGameWonWindow(){ /**GAME WON WINDOW */
     char str[] = " Game Won ";
     //Game won
     drawTrophy();
     window(MENUX1, MENUY1, MENUX2, MENUY2, str);
     gotoxy(MENUX1+INCRX+2,MENUY1+17);
-    printf("U got gut, skrubbe!");
+    printf("YOU WON... THIS TIME");
     gotoxy(MENUX1+INCRX+4,MENUY1+20);
     printf("Play again?");
     gotoxy(MENUX1+INCRX+6,MENUY1+20);
     printf("Go to Menu");
 }
 
-void drawHighscoreWindow(struct game_state_t* gs) { // Draws list of highscores with all required information
+void drawHighscoreWindow(struct game_state_t* gs) { /**Draws list of highscores with all required information */
     char str[] = " Highscores ";
 
     window(MENUX1, MENUY1, MENUX2, MENUY2, str);
@@ -313,7 +317,7 @@ void drawHighscoreWindow(struct game_state_t* gs) { // Draws list of highscores 
     printf(" %02d/%02d %02d:%02d", gs->highscoreDate[4], gs->highscoreMonth[4], gs->highscoreHours[4], gs->highscoreMinutes[4]);
 }
 
-// Writes the highscore name of the n+1 place.
+/** Writes the highscore name of the n+1 place. */
 void writeScoreName(struct game_state_t* gs, uint8_t n){
     uint8_t i;
     underline(1);

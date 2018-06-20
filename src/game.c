@@ -27,10 +27,15 @@ void initGameState(struct game_state_t* gs){
     gs->startlevel = 0;
     gs->currentlevel = 0;
     gs->players = 1;
-
     gs->randomAnglePowerup = 0;
+    gs->I2C_Active = 0;
 
-    // Include to reset highscorelist
+    I2C_Write(152,0x07,1);
+    I2C_Write(152,0x01,0);
+
+
+/** Include to reset highscore list   **/
+
 //    memset(gs->highscores, 0x00, 10);
 //    memset(gs->highscoreDate, 0x00, 10);
 //    memset(gs->highscoreMonth, 0x00, 10);
@@ -55,28 +60,31 @@ void playGame(struct game_state_t* gs){
 
     setTimer(gs->speed, gs->currentlevel); // Sets game speed
     gs->mirror = gs->startmirror; // Sets mirror to the chosen option
+
     if (gs->currentlevel == gs->startlevel){
         gs->lives = 2; // Sets the players lives
     }
+
     oldlives = gs->lives;// Sets oldlives to startlives at the start of the game
     initLED();
 
-    if (gs->players == 2){// 2-player
+    if (gs->players == 2){ // 2-players
 
         // Makes the structs needed for the 2nd player
         struct ball_t ball2;
         struct player_t striker2;
 
-        initBall(&ball,X2-7,Y1+50,0); //Initialiserer bold1
-        initBall(&ball2,X2-5,Y2-50,0); //Initialiserer bold2
-        initPlayer(&striker,X2-5,Y1+50); //Initialiserer striker1
-        initPlayer(&striker2,X2-5,Y2-50); //Initialiserer striker2
-        initLevel2Players(&ball,&ball2,&striker,&striker2,&level, gs); //Initialiserer blokkene
+        initBall(&ball,X2-7,Y1+50,0); // Initializes ball 1
+        initBall(&ball2,X2-5,Y2-50,0); // Initializes ball 2
+        initPlayer(&striker,X2-5,Y1+50); // Initializes striker1
+        initPlayer(&striker2,X2-5,Y2-50); // Initializes striker2
+        initLevel2Players(&ball,&ball2,&striker,&striker2,&level, gs); // Initializes level
         initDisplay(gs->buffer);
 
         while(1){
-            if (get_game_flag()){
-                if(delay++ > 3){
+            if (get_game_flag()){ // updates game iterations
+
+                if(delay++ > 3){ // Updates powerups
                     delay = 0;
                     j = fallingObjects.numberOfObjects;
                     for (i = 0; i < j; i++){
@@ -88,8 +96,8 @@ void playGame(struct game_state_t* gs){
 
                 }
 
-                // Checks if poweruptime has been reached
-                if (tid.seconds >= (gs->mirroruptime+5)){
+                /** Checks if poweruptime has been reached */
+                if (tid.seconds >= (gs->mirroruptime+15)){
                     gs->mirror = gs->startmirror;
                 }
                 if (tid.seconds >= gs->randomAnglePoweruptime+25){
@@ -104,9 +112,9 @@ void playGame(struct game_state_t* gs){
                 bossKey();
                 setLed(gs); // Sets the RGB LED to the appropriate color
 
-                if (!gs->lives){// Checks for gameover
+                if (!gs->lives){ // Checks for gameover
                     chooseGameOver(gs);
-                } else if (gs->lives == oldlives-1){ // Checks if any lives have been lost - Can happen through a powerup or a lost ball
+                } else if (gs->lives == oldlives-1){ // Checks if any lives have been lost - Can be caused by a powerup or a lost ball
                     gs->mirror = gs->startmirror;
                     restartLevel2Players(&ball, &ball2, &striker, &striker2, &level, &fallingObjects);
                 } else if (!(level.lives) && gs->currentlevel == 5){
@@ -121,14 +129,14 @@ void playGame(struct game_state_t* gs){
 
     } else {// 1-player
 
-        initBall(&ball,X2-7,Y2/2,0); //Initialiserer bolden
-        initPlayer(&striker,X2-5,Y2/2); //Initialiserer strikeren
-        initLevel(&ball,&striker,&level, gs); //Initialiserer blokkene
+        initBall(&ball,X2-7,Y2/2,0); // Initializes ball
+        initPlayer(&striker,X2-5,Y2/2); // Initializes strikeren
+        initLevel(&ball,&striker,&level, gs); // Initializes level
         initDisplay(gs->buffer);
 
-        while(1){ //Spil-loopet startes
+        while(1){
 
-            if (get_game_flag()){
+            if (get_game_flag()){ // Updates gamer iterations
 
                 // Checks powerups with a small delay in between
                 if(delay++ > 3){
@@ -136,19 +144,26 @@ void playGame(struct game_state_t* gs){
                     j = fallingObjects.numberOfObjects;
                     for (i = 0; i < j; i++){
                         if (fallingObjects.fallingObjectArray[i].type!=0){
-                            updateFallingObject(&fallingObjects.fallingObjectArray[i], &striker, gs); // check if collision with player
+                            updateFallingObject(&fallingObjects.fallingObjectArray[i],&level, &striker, gs); // check if collision with player
                         }
                     }
                 }
 
-                // Checks if poweruptime has been reached
+                /** Checks if poweruptime has been reached */
                 if (tid.seconds >= (gs->mirroruptime+5) && gs->mirror != gs->startmirror){
                     gs->mirror = gs->startmirror;
                 }
                 if (tid.seconds >= gs->randomAnglePoweruptime+25 && gs->randomAnglePowerup){
                     gs->randomAnglePowerup = 0;
                 }
-                updatePlayerPos(&striker, gs); // Updates the striker
+
+                if (gs->I2C_Active){
+                    updatePlayerPosI2C(&striker,gs); // Updates the striker with I2C
+                } else{
+                    updatePlayerPos(&striker, gs); // Updates the striker with joystick
+                }
+
+
                 updateBallPos(&ball, &striker, &level, gs, &fallingObjects); // Updates the ball and the blocks
                 LCD_Printer(gs); // Shows level, lives and points on the LCD
                 bossKey();
@@ -160,7 +175,8 @@ void playGame(struct game_state_t* gs){
                 } else if (gs->lives < oldlives){ // Checks if any lives have been lost - Can happen through a powerup or a lost ball
                     gs->mirror = gs->startmirror;
                     restartLevel(&ball, &striker, &level, &fallingObjects);
-                } else if (!(level.lives) && gs->currentlevel == 5){
+                } else if (!(level.lives) && gs->currentlevel == 5){ // Checks for last level cleared
+                    turnOffLED();
                     chooseGameWon(gs);
                 } else if (!(level.lives)){ // Checks if all blocks are destroyed
                     gs->currentlevel++;
@@ -234,14 +250,12 @@ void restartLevel2Players(struct ball_t *ball, struct ball_t * ball2, struct pla
         striker->x =X2-5;
         striker->y = Y2/2;
 
-        initBall(ball,X2-7,Y1+50,0); //Initialiserer bold1
-        initBall(ball2,X2-5,Y2-50,0);//Initialiserer bold2
+        initBall(ball,X2-7,Y1+50,0); // Initializes ball 1
+        initBall(ball2,X2-5,Y2-50,0); // Initializes ball 2
         striker->x = X2-5;
         striker->y = Y1+50;
         striker2->x = X2-5;
         striker2->y = Y2-50;
-
-
 
         drawWalls();
         drawBlockMap(level->blocks);
@@ -251,7 +265,7 @@ void restartLevel2Players(struct ball_t *ball, struct ball_t * ball2, struct pla
         drawPlayer(striker2);
 }
 
-void updatePlayerPosPotentiometer(struct player_t * striker, struct game_state_t * gs, int8_t playerNo){
+void updatePlayerPosPotentiometer(struct player_t * striker, struct game_state_t * gs, int8_t playerNo){ // Updates player position using potentiometer
     fgcolor(15);
     static uint16_t oldPlayerx, oldPLayery;
     oldPlayerx = striker->x;
@@ -339,64 +353,133 @@ void updatePlayerPosPotentiometer(struct player_t * striker, struct game_state_t
 
 }
 
-void updatePlayerPos(struct player_t *striker, struct game_state_t* gs){
+void updatePlayerPos(struct player_t *striker, struct game_state_t* gs){ // Updates player position using joystick
     fgcolor(15);
     static uint16_t oldPlayerx,oldPLayery;
     oldPlayerx = striker->x;
     oldPLayery = striker->y;
 
 
-if (gs->mirror) {
-        if (readJoyStickContinous() == 8)  //Left
-    {
-
-        if(oldPLayery-1 >= Y1+8)
-        {
-            gotoxy(oldPlayerx,oldPLayery+7);
-            printf(" ");
-            moveCursor('D',15+1);
-            printf("%c",219);
-            striker->y--;
-        }
-    }
-    else if (readJoyStickContinous() == 4)    // Right
-    {
-
-        if (oldPLayery+1 <= Y2-7)
-        {
-            gotoxy(oldPlayerx,oldPLayery-7);
-            printf(" ");
-            moveCursor('C',15-1);
-            printf("%c",219);
-            striker->y++;
-        }
-    }
-} else {
-        if (readJoyStickContinous() == 4)  //Left
-    {
-
-        if(oldPLayery-1 >= Y1+8)
-        {
-            gotoxy(oldPlayerx,oldPLayery+7);
-            printf(" ");
-            moveCursor('D',15+1);
-            printf("%c",219);
-            striker->y--;
-        }
-    }
-    else if (readJoyStickContinous() == 8)    // Right
-    {
-
-        if (oldPLayery+1 <= Y2-7)
-        {
-            gotoxy(oldPlayerx,oldPLayery-7);
-            printf(" ");
-            moveCursor('C',15-1);
-            printf("%c",219);
-            striker->y++;
-        }
+    if (gs->mirror) { // With mirror mode
+            if (readJoyStickContinous() == 8){  //Left
+                if(oldPLayery-1 >= Y1+8){
+                    gotoxy(oldPlayerx,oldPLayery+7);
+                    printf(" ");
+                    moveCursor('D',15+1);
+                    printf("%c",219);
+                    striker->y--;
+                }
+            } else if (readJoyStickContinous() == 4){    // Right
+                if (oldPLayery+1 <= Y2-7){
+                    gotoxy(oldPlayerx,oldPLayery-7);
+                    printf(" ");
+                    moveCursor('C',15-1);
+                    printf("%c",219);
+                    striker->y++;
+                }
+            }
+    } else { // Without mirror mode
+            if (readJoyStickContinous() == 4){  //Left
+                if(oldPLayery-1 >= Y1+8){
+                    gotoxy(oldPlayerx,oldPLayery+7);
+                    printf(" ");
+                    moveCursor('D',15+1);
+                    printf("%c",219);
+                    striker->y--;
+                }
+            } else if (readJoyStickContinous() == 8){    // Right
+                if (oldPLayery+1 <= Y2-7){
+                    gotoxy(oldPlayerx,oldPLayery-7);
+                    printf(" ");
+                    moveCursor('C',15-1);
+                    printf("%c",219);
+                    striker->y++;
+                }
+            }
     }
 }
+
+void updatePlayerPosI2C(struct player_t * striker, struct game_state_t * gs){ // Updates player position using accelerometer
+    fgcolor(15);
+    static uint16_t oldPlayerx,oldPLayery;
+    oldPlayerx = striker->x;
+    oldPLayery = striker->y;
+
+    uint8_t j = I2C_Read(152,0x01);
+
+    int8_t value = (int8_t)(j<<2)/4;
+
+
+    if (gs->mirror) { // With mirror mode
+        if (value >= 2 && value <= 11){  //Left
+            if (oldPLayery+1 <= Y2-7){
+                gotoxy(oldPlayerx,oldPLayery-7);
+                printf(" ");
+                moveCursor('C',15-1);
+                printf("%c",219);
+                striker->y++;
+            }
+        } else if (value <= -2 && value >= -11){    // Right
+            if(oldPLayery-1 >= Y1+8){
+                gotoxy(oldPlayerx,oldPLayery+7);
+                printf(" ");
+                moveCursor('D',15+1);
+                printf("%c",219);
+                striker->y--;
+            }
+        } else if (value >= 11){    // Far Left
+            if (oldPLayery+2 <= Y2-7){
+                gotoxy(oldPlayerx,oldPLayery-7);
+                printf("  ");
+                moveCursor('C',15-2);
+                printf("%c%c",219,219);
+                striker->y +=2;
+            }
+        } else if (value <= -11){    // Far Right
+            if(oldPLayery-2 >= Y1+8){
+                gotoxy(oldPlayerx,oldPLayery+6);
+                printf("  ");
+                moveCursor('D',15+2);
+                printf("%c%c",219,219);
+                striker->y -= 2;
+            }
+        }
+    } else { // Without mirror mode
+        if (value >= 2 && value <= 11){  //Left
+            if(oldPLayery-1 >= Y1+8){
+                gotoxy(oldPlayerx,oldPLayery+7);
+                printf(" ");
+                moveCursor('D',15+1);
+                printf("%c",219);
+                striker->y--;
+            }
+        } else if (value <= -2 && value >= -11){    // Right
+            if (oldPLayery+1 <= Y2-7){
+                gotoxy(oldPlayerx,oldPLayery-7);
+                printf(" ");
+                moveCursor('C',15-1);
+                printf("%c",219);
+                striker->y++;
+            }
+        } else if (value >= 11){    // Far Left
+            if(oldPLayery-2 >= Y1+8){
+                gotoxy(oldPlayerx,oldPLayery+6);
+                printf("  ");
+                moveCursor('D',15+2);
+                printf("%c%c",219,219);
+                striker->y -= 2;
+            }
+        } else if (value <= -11){    // Far Right
+            if (oldPLayery+2 <= Y2-7){
+                gotoxy(oldPlayerx,oldPLayery-7);
+                printf("  ");
+                moveCursor('C',15-2);
+                printf("%c%c",219,219);
+                striker->y +=2;
+            }
+        }
+
+    }
 }
 
 void bossKey(){
@@ -405,7 +488,7 @@ void bossKey(){
 
  if(joystickKey==2){
         if (hidden==0){
-        //funktion to minimize window
+        // Function to minimize window
         printf("\e[2t");
         hidden = 1;
         }
@@ -415,7 +498,7 @@ void bossKey(){
             while(joystickKey!=2){
                 joystickKey=readJoyStick();
             }
-        printf("\e[1t"); //funktion to maximize window
+        printf("\e[1t"); // Function to maximize window
         hidden = 0;
 
         }

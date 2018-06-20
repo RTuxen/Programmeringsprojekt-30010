@@ -1,23 +1,26 @@
 #include "menu.h"
 
-void chooseMenuOptions(struct game_state_t* gs){//Tilføj uint8_t score, så den kan modtage en score, hvis den går videre fra chooseGameOver()
+void chooseMenuOptions(struct game_state_t* gs){
     uint8_t arrow = 1;
     uint8_t joystickValue = 0;
     uint8_t keyboardValue = 0;
     uint16_t t = tid.soundtime;
-    static uint8_t i = 0;
+    static uint16_t i = 0;
 
     clrscr();
+    inverse(0);
+    underline(0);
     drawWelcomeMessage();
     setTimerDefault();
-    drawMenuWindow();       //Tegner Menu vinduet
+    drawMenuWindow();       // Draws Menu Window
     gotoxy(MENUX1 + INCRX + (arrow<<1), MENUY1 + INCRY);
     printf("<<");
     while(1) {
+        /** Gets the input values */
         joystickValue = readJoyStick();
         keyboardValue = readKeyboard();
 
-        if(tid.soundtime >= t+TETRIS_TEMPO[i]){
+        if(tid.soundtime >= t+TETRIS_TEMPO[i]){ /** Plays tetris music */
                 setFreq(TETRIS_MELODY[i]);
                 t=tid.soundtime;
                 i++;
@@ -48,17 +51,17 @@ void chooseMenuOptions(struct game_state_t* gs){//Tilføj uint8_t score, så den k
                 clrscr();
                 drawPlayWindow();
                 chooseLevel(gs);
-            } else if (arrow == 2) {//Options is chosen
+            } else if (arrow == 2) { //Options is chosen
                 clrscr();
                 drawOptionMessage();
                 drawOptionWindow(gs);
                 chooseOptions(gs);
-            } else if (arrow == 3) {//Highscorelist is chosen
+            } else if (arrow == 3) { //Highscorelist is chosen
                 clrscr();
                 drawHighscoreMessage();
                 drawHighscoreWindow(gs);
                 chooseHighscore(gs);
-            } else {                //Help is chosen
+            } else {                // Help is chosen
                 clrscr();
                 drawHelpMessage();
                 drawHelpWindow();
@@ -73,16 +76,16 @@ void chooseLevel(struct game_state_t* gs){
     uint8_t joystickValue = 0;
     uint8_t keyboardValue = 0;
     uint16_t t = tid.soundtime;
-    uint8_t i = 0;
+    static uint8_t i = 0;
 
     gotoxy(MENUX1 + 2 + (levelNum<<1), MENUY1 + INCRY);
     printf("<<");
     while(1) {
-        // Gets the input values
+        /** Gets the input values */
         joystickValue = readJoyStick();
         keyboardValue = readKeyboard();
 
-        if(tid.soundtime >= t+UNDERWORLD_TEMPO[i]){ // Plays Mario Underworld Theme
+        if(tid.soundtime >= t+UNDERWORLD_TEMPO[i]){ /** Plays Mario Underworld Theme */
             setFreq(UNDERWORLD_MELODY[i]);
             t=tid.soundtime;
             i++;
@@ -138,11 +141,11 @@ void chooseOptions(struct game_state_t* gs) {
     gotoxy(MENUX1 + INCRX + (arrow<<1), MENUY1 + 38);
     printf("<<");
     while(1) {
-        // Gets the input values
+        /** Gets the input values */
         joystickValue = readJoyStick();
         keyboardValue = readKeyboard();
 
-        if(tid.soundtime >= t+TEMPO[i]){ // Plays Main mario theme
+        if(tid.soundtime >= t+TEMPO[i]){ /** Plays Main Mario theme */
             setFreq(MELODY[i]);
             t=tid.soundtime;
             i++;
@@ -160,7 +163,7 @@ void chooseOptions(struct game_state_t* gs) {
                 printf("<<");                   // Draws the arrow
             }
         } else if (joystickValue == 2 || keyboardValue == S) { //Down
-            if (arrow < 3){
+            if (arrow < 4){
                 gotoxy(MENUX1 + INCRX + (arrow<<1), MENUY1 + 38);
                 printf("  ");                   // Removes the arrow
                 arrow++;
@@ -173,8 +176,10 @@ void chooseOptions(struct game_state_t* gs) {
                 toggleMirror(gs);
             } else if (arrow == 2) {
                 changeSpeed(gs);
-            } else {
+            } else if (arrow == 3) {
                 changeNumberOfPlayers(gs);
+            } else {
+                changeController(gs);
             }
         } else if (joystickValue == 4 || keyboardValue == A) {// Left - Go back
             chooseMenuOptions(gs);
@@ -187,7 +192,7 @@ void chooseHighscore(struct game_state_t* gs) {
     uint8_t keyboardValue = 0;
 
     while(1) {
-        // Gets the input values
+        /** Gets the input values */
         joystickValue = readJoyStick();
         keyboardValue = readKeyboard();
         if (joystickValue == 4 || keyboardValue == A) {// Left - Go back
@@ -201,7 +206,7 @@ void chooseHelp(struct game_state_t* gs) {
     uint8_t keyboardValue = 0;
 
     while(1) {
-        // Gets the input values
+        /** Gets the input values */
         joystickValue = readJoyStick();
         keyboardValue = readKeyboard();
         if (joystickValue == 4 || keyboardValue == A) {// Left - Go back
@@ -216,13 +221,15 @@ void chooseGameOver(struct game_state_t* gs){
     uint8_t keyboardValue = 0;
     int8_t i, j, k = 0;
 
+    clrscr();
     drawGameOverWindow();
 
     // Compares the score with the previous highscores
     for (i = 0; i < 5; i++){
         if (gs->points > gs->highscores[i]){
-            for(j = 4; j >= i; j--){// Moves previous highscores, under the new highscore, one row down
-                gs->highscores[j] = gs->highscores[j-1];
+            for(j = 4; j >= i; j--){ // Moves previous highscores, under the new highscore, one row down
+                gs->highscores[j] = gs->highscores[j-1]; // Shifts the scores once
+                memset(gs->highscorenames[j], 0x00, 14); // Makes sure there's no left overs of the previous name
                 for (k = 0; k < 7; k++){
                     gs->highscorenames[j][k] = gs->highscorenames[j-1][k];
                 }
@@ -236,8 +243,9 @@ void chooseGameOver(struct game_state_t* gs){
             //Inserts new highscore
             gs->highscores[i] = gs->points;
 
-            gotoxy(MENUX1+14, MENUY1+14);
-            printf("Write your 6 chars: ");
+            inverse(1);
+            gotoxy(MENUX1+14, MENUY1+7);
+            printf("Write your name (6 characters): ");
 
             // Gets the player name
             k = 0;
@@ -251,6 +259,7 @@ void chooseGameOver(struct game_state_t* gs){
                 k++;
             }
             underline(0);
+            inverse(0);
             gs->highscorenames[i][k] = 0x00; // Ends with a \0
 
             // Gets the time and date
@@ -269,11 +278,10 @@ void chooseGameOver(struct game_state_t* gs){
     }
     gs->points = 0;//Resets the score after a lost game
 
-    // Now you can go up, down and select your next option
     gotoxy(MENUX1 + INCRX + 2 + (arrow<<1), MENUY1 + 35);
     printf("<<");
     while(1) {
-        // Gets the input values
+        /** Gets the input values */
         joystickValue = readJoyStick();
         keyboardValue = readKeyboard();
         if (joystickValue == 1 || keyboardValue == W) {
@@ -305,6 +313,8 @@ void chooseGameWon(struct game_state_t* gs){
     uint8_t keyboardValue = 0;
     int8_t i, j, k = 0;
 
+    clrscr();
+    drawTrophy();
     drawGameWonWindow();
 
     // Compares the score with the previous highscores
@@ -312,6 +322,7 @@ void chooseGameWon(struct game_state_t* gs){
         if (gs->points > gs->highscores[i]){
             for(j = 4; j >= i; j--){// Moves previous highscores, under the new highscore, one row down
                 gs->highscores[j] = gs->highscores[j-1];
+                memset(gs->highscorenames[j], 0x00, 14); // Makes sure there's no left overs of the previous name
                 for (k = 0; k < 7; k++){
                     gs->highscorenames[j][k] = gs->highscorenames[j-1][k];
                 }
@@ -327,6 +338,7 @@ void chooseGameWon(struct game_state_t* gs){
 
             // Asks for the player name
             gotoxy(MENUX1+14, MENUY1+14);
+            inverse(1);
             printf("Write your 6 chars: ");
 
             // Gets the player name
@@ -341,6 +353,7 @@ void chooseGameWon(struct game_state_t* gs){
                 k++;
             }
             underline(0);
+            inverse(0);
             gs->highscorenames[i][k] = 0x00; // Ends with a \0
 
             // Gets the time and date
@@ -455,6 +468,30 @@ void changeNumberOfPlayers(struct game_state_t* gs){
             gs->players = 1;
             gotoxy(30+INCRX+6,100+33);
             printf(" 1");
+        } else if (joystickValue == 4 || keyboardValue == A) {
+            chooseOptions(gs);
+        }
+    }
+}
+
+void changeController(struct game_state_t* gs){
+    uint8_t joystickValue = 0;
+    uint8_t keyboardValue = 0;
+
+    while(1) {
+        // Gets the input values
+        joystickValue = readJoyStick();
+        keyboardValue = readKeyboard();
+        if (joystickValue == 1 || keyboardValue == W) {
+            gotoxy(30+INCRX+8,100+33);
+            printf("   ");          // Removes Off
+            gs->I2C_Active = 1;
+            gotoxy(30+INCRX+8,100+33);
+            printf("On");
+        } else if (joystickValue == 2 || keyboardValue == S) {
+            gs->I2C_Active = 0;
+            gotoxy(30+INCRX+8,100+33);
+            printf("Off");
         } else if (joystickValue == 4 || keyboardValue == A) {
             chooseOptions(gs);
         }
