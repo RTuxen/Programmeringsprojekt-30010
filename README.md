@@ -2,7 +2,7 @@
  
 Af: Rasmus Tuxen, Mathias Krarup og Frederik Andersen
 
-Implementeret pa et Stm32f302R8 ARM Cortex M4 CPU ved brug af EmBitz 1.11
+Implementeret på et Stm32f302R8 ARM Cortex M4 CPU ved brug af EmBitz 1.11
 
 
 Yderligere tilføjelser til spillet:
